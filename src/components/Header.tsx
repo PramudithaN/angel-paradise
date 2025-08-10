@@ -1,0 +1,111 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Menu, X, MessageCircle, Baby } from 'lucide-react';
+
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  return (
+    <header className="bg-white/90 backdrop-blur-sm shadow-lg sticky top-0 z-50 border-b-2 border-pink-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16 md:h-20">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="bg-gradient-to-br from-pink-200 to-yellow-200 p-2 rounded-full group-hover:scale-110 transition-transform duration-300">
+              <Baby className="w-6 h-6 md:w-8 md:h-8 text-pink-600" />
+            </div>
+            <div className="hidden sm:block">
+              <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-pink-500 to-pink-600 bg-clip-text text-transparent">
+                Angel's Paradise
+              </h1>
+              <p className="text-xs text-pink-400 -mt-1">Little Girl's Fashion</p>
+            </div>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link to="/" className="text-gray-700 hover:text-pink-500 font-medium transition-colors duration-200 relative group">
+              Home
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-pink-500 group-hover:w-full transition-all duration-300"></span>
+            </Link>
+            <Link to="/shop" className="text-gray-700 hover:text-pink-500 font-medium transition-colors duration-200 relative group">
+              Shop
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-pink-500 group-hover:w-full transition-all duration-300"></span>
+            </Link>
+            <Link to="/about" className="text-gray-700 hover:text-pink-500 font-medium transition-colors duration-200 relative group">
+              About Us
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-pink-500 group-hover:w-full transition-all duration-300"></span>
+            </Link>
+            <Link to="/contact" className="text-gray-700 hover:text-pink-500 font-medium transition-colors duration-200 relative group">
+              Contact
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-pink-500 group-hover:w-full transition-all duration-300"></span>
+            </Link>
+          </nav>
+
+          {/* WhatsApp Button */}
+          <div className="flex items-center space-x-4">
+            <a
+              href="https://wa.me/1234567890"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full flex items-center space-x-2 transition-all duration-300 hover:scale-105 shadow-lg"
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span className="hidden sm:inline font-medium">WhatsApp</span>
+            </a>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={toggleMenu}
+              className="md:hidden p-2 rounded-lg bg-pink-100 text-pink-600 hover:bg-pink-200 transition-colors duration-200"
+            >
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-white border-t border-pink-100 shadow-lg">
+          <nav className="px-4 py-6 space-y-4">
+            <Link
+              to="/"
+              className="block text-gray-700 hover:text-pink-500 font-medium py-2 border-b border-pink-50 transition-colors duration-200"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              to="/shop"
+              className="block text-gray-700 hover:text-pink-500 font-medium py-2 border-b border-pink-50 transition-colors duration-200"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Shop
+            </Link>
+            <Link
+              to="/about"
+              className="block text-gray-700 hover:text-pink-500 font-medium py-2 border-b border-pink-50 transition-colors duration-200"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              About Us
+            </Link>
+            <Link
+              to="/contact"
+              className="block text-gray-700 hover:text-pink-500 font-medium py-2 transition-colors duration-200"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Contact
+            </Link>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+};
+
+export default Header;
