@@ -4,6 +4,7 @@ import { ArrowRight, Heart, Shield, Truck } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { products } from '../data/products';
 import { ProductReviews, ReviewForm } from '../components/Reviews';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 
 
 const HomePage = () => {
@@ -15,6 +16,7 @@ const HomePage = () => {
 
   return (
     <div className="space-y-16 pb-16">
+      <ScrollToTopButton />
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center">
         <div className="absolute inset-0 bg-gradient-to-r from-pink-100/90 to-yellow-100/90 rounded-3xl mx-4 overflow-hidden">
