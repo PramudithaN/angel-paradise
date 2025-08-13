@@ -1,35 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Star, Quote, ArrowRight, Heart, Shield, Truck } from 'lucide-react';
+import { ArrowRight, Heart, Shield, Truck } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { products } from '../data/products';
+import { ProductReviews, ReviewForm } from '../components/Reviews';
+
 
 const HomePage = () => {
+  const [refresh, setRefresh] = useState(0);
   const featuredProducts = products.filter(product => product.featured).slice(0, 6);
 
-  const testimonials = [
-    {
-      id: 1,
-      name: 'Sarah Johnson',
-      rating: 5,
-      comment: 'Absolutely love the quality! My daughter looks adorable in every outfit from Angel\'s Paradise.',
-      image: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg'
-    },
-    {
-      id: 2,
-      name: 'Maria Garcia',
-      rating: 5,
-      comment: 'The customer service is amazing and the clothes are so well-made. Highly recommend!',
-      image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg'
-    },
-    {
-      id: 3,
-      name: 'Emily Chen',
-      rating: 5,
-      comment: 'Perfect fits every time! The sizing guide is accurate and the materials are so soft.',
-      image: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg'
-    }
-  ];
+  // Temporary demo product ID for reviews section
+  const DEMO_PRODUCT_ID = "demo-product-1";
 
   return (
     <div className="space-y-16 pb-16">
@@ -157,7 +139,12 @@ const HomePage = () => {
 
       {/* Testimonials */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+                <div className="my-8">
+          <h2 className="text-xl font-semibold mb-2">Product Reviews</h2>
+          <ProductReviews productId={DEMO_PRODUCT_ID} key={refresh} />
+          <ReviewForm productId={DEMO_PRODUCT_ID} onReviewAdded={() => setRefresh(r => r + 1)} />
+        </div>
+        {/* <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             What Our Customers Say
           </h2>
@@ -192,7 +179,7 @@ const HomePage = () => {
               </div>
             </div>
           ))}
-        </div>
+        </div> */}
       </section>
     </div>
   );
