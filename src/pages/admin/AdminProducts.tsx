@@ -10,9 +10,21 @@ const AdminProducts = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
+  type Product = typeof initialProducts[number];
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-  const [formData, setFormData] = useState({
+  type FormData = {
+    name: string;
+    price: string;
+    image: string;
+    category: string;
+    description: string;
+    sizes: string[];
+    colors: string[];
+    inStock: boolean;
+  };
+
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     price: '',
     image: '',
@@ -29,15 +41,17 @@ const AdminProducts = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  type InputChangeEvent = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+
+  const handleInputChange = (e: InputChangeEvent) => {
+    const { name, value, type } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     }));
   };
 
-  const handleSizeToggle = (size) => {
+  const handleSizeToggle = (size: string) => {
     setFormData(prev => ({
       ...prev,
       sizes: prev.sizes.includes(size)
@@ -46,14 +60,14 @@ const AdminProducts = () => {
     }));
   };
 
-  const handleColorChange = (colors) => {
+  const handleColorChange = (colors: string) => {
     setFormData(prev => ({
       ...prev,
       colors: colors.split(',').map(c => c.trim()).filter(c => c)
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     
     const productData = {
@@ -84,7 +98,8 @@ const AdminProducts = () => {
     setEditingProduct(null);
   };
 
-  const handleEdit = (product) => {
+  const handleEdit = (product: Product) => {
+    if (!product) return;
     setEditingProduct(product);
     setFormData({
       name: product.name,
@@ -99,7 +114,7 @@ const AdminProducts = () => {
     setShowAddForm(true);
   };
 
-  const handleDelete = (productId) => {
+  const handleDelete = (productId: string) => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       setProducts(prev => prev.filter(p => p.id !== productId));
     }
