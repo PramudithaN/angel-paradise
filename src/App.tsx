@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -11,6 +10,8 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminSettings from './pages/admin/AdminSettings';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 
 function App() {
   return (
@@ -47,6 +48,8 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/shop" element={<ShopPage />} />
                     <Route path="/product/:id" element={<ProductPage />} />
+                    <Route path="/about" element={<AboutPage/>} />
+                    <Route path="/contact" element={<ContactPage/>} />
                   </Routes>
                 </main>
                 <Footer />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, MessageCircle, Baby } from 'lucide-react';
+import { Menu, X, MessageCircle, Baby, UserRound } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,11 +36,11 @@ const Header = () => {
               Shop
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 group-hover:w-full transition-all duration-300"></span>
             </Link>
-            <Link to="/about" className="text-gray-800 hover:text-orange-500 font-medium transition-colors duration-200 relative group">
+            <Link to="/about" className="text-gray-800 hover:text-orange-500 font-medium transition-colors duration-200 relative group flex items-center gap-1">
               About Us
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 group-hover:w-full transition-all duration-300"></span>
             </Link>
-            <Link to="/contact" className="text-gray-800 hover:text-orange-500 font-medium transition-colors duration-200 relative group">
+            <Link to="/contact" className="text-gray-800 hover:text-orange-500 font-medium transition-colors duration-200 relative group flex items-center gap-1">
               Contact
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 group-hover:w-full transition-all duration-300"></span>
             </Link>
@@ -89,16 +89,18 @@ const Header = () => {
             </Link>
             <Link
               to="/about"
-              className="block text-gray-800 hover:text-orange-500 font-medium py-2 border-b border-orange-50 transition-colors duration-200"
+              className="block text-gray-800 hover:text-orange-500 font-medium py-2 border-b border-orange-50 transition-colors duration-200 flex items-center gap-2"
               onClick={() => setIsMenuOpen(false)}
             >
+              <UserRound className="w-4 h-4 mb-0.5 text-orange-400" />
               About Us
             </Link>
             <Link
               to="/contact"
-              className="block text-gray-800 hover:text-orange-500 font-medium py-2 transition-colors duration-200"
+              className="block text-gray-800 hover:text-orange-500 font-medium py-2 transition-colors duration-200 flex items-center gap-2"
               onClick={() => setIsMenuOpen(false)}
             >
+              
               Contact
             </Link>
           </nav>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Package, ShoppingBag, Star, Users, TrendingUp, Eye, MessageCircle, Baby, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
