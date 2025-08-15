@@ -1,14 +1,40 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Filter, Search, X } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { products, categories, sizes } from '../data/products';
+import { categories, sizes } from '../data/products';
 
 const ShopPage = () => {
+  type Product = {
+    _id?: string;
+    id?: string;
+    name: string;
+    description: string;
+    price: number;
+    image: string;
+    category: string;
+    sizes?: string[];
+    colors?: string[];
+    inStock?: boolean;
+  };
+  const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/products');
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error('Failed to fetch products', err);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const filteredProducts = useMemo(() => {
     return products.filter(product => {
@@ -19,7 +45,7 @@ const ShopPage = () => {
 
       // Size filter
       if (selectedSizes.length > 0) {
-        const hasMatchingSize = product.sizes.some(size => selectedSizes.includes(size));
+        const hasMatchingSize = product.sizes && product.sizes.some((size: string) => selectedSizes.includes(size));
         if (!hasMatchingSize) return false;
       }
 
@@ -35,7 +61,7 @@ const ShopPage = () => {
 
       return true;
     });
-  }, [selectedCategory, selectedSizes, priceRange, searchQuery]);
+  }, [products, selectedCategory, selectedSizes, priceRange, searchQuery]);
 
   const handleSizeToggle = (size: string) => {
     setSelectedSizes(prev => 
@@ -218,7 +244,7 @@ const ShopPage = () => {
             {filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} showWhatsAppButton />
+                  <ProductCard key={String(product._id || product.id)} product={{...product, id: String(product._id || product.id)}} showWhatsAppButton />
                 ))}
               </div>
             ) : (

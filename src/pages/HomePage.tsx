@@ -183,7 +183,7 @@ const HomePage = () => {
           <h2 className="text-3xl font-bold mb-6 text-center text-orange-600">Share Your Experience</h2>
           <ReviewForm productId={DEMO_PRODUCT_ID} onReviewAdded={() => setRefresh(r => r + 1)} enhanced />
         </div>
-        {refresh > 0 && (
+        {DEMO_PRODUCT_ID  && (
           <div className="my-8">
             <h2 className="text-3xl font-bold mb-4 text-center text-orange-600">What Our Customers Say</h2>
             <ProductReviews productId={DEMO_PRODUCT_ID} key={refresh} cardMode />

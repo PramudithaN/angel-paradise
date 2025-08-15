@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, MessageCircle, Baby, UserRound } from 'lucide-react';
+import { Menu, X, MessageCircle, Baby } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -92,7 +92,6 @@ const Header = () => {
               className="block text-gray-800 hover:text-orange-500 font-medium py-2 border-b border-orange-50 transition-colors duration-200 flex items-center gap-2"
               onClick={() => setIsMenuOpen(false)}
             >
-              <UserRound className="w-4 h-4 mb-0.5 text-orange-400" />
               About Us
             </Link>
             <Link
