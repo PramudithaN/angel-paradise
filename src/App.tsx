@@ -16,7 +16,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-yellow-50">
+        <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-yellow-50">
           <Routes>
             {/* Admin Login Route (Public) */}
             <Route path="/admin-login" element={<AdminLogin />} />

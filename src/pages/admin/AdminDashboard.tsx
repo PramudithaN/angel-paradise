@@ -65,7 +65,7 @@ const AdminDashboard = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
               <div className="bg-gradient-to-br from-pink-100 to-yellow-100 p-2 rounded-lg">
-                <Baby className="w-6 h-6 text-pink-600" />
+                <Baby className="w-6 h-6 text-orange-600" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-800">Angel's Paradise Admin</h1>
@@ -75,7 +75,7 @@ const AdminDashboard = () => {
             <div className="flex items-center space-x-4">
               <Link
                 to="/"
-                className="flex items-center space-x-2 text-pink-600 hover:text-pink-700 transition-colors duration-200"
+                className="flex items-center space-x-2 text-orange-600 hover:text-orange-700 transition-colors duration-200"
               >
                 <Eye className="w-4 h-4" />
                 <span className="text-sm font-medium">View Store</span>
@@ -125,7 +125,7 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-semibold text-gray-800">Recent Orders</h2>
-              <button className="text-pink-600 hover:text-pink-700 text-sm font-medium">
+              <button className="text-orange-600 hover:text-orange-700 text-sm font-medium">
                 View All
               </button>
             </div>
@@ -141,7 +141,7 @@ const AdminDashboard = () => {
                     <span className={`text-xs px-2 py-1 rounded-full ${
                       order.status === 'Delivered' ? 'bg-green-100 text-green-600' :
                       order.status === 'Shipped' ? 'bg-blue-100 text-blue-600' :
-                      'bg-yellow-100 text-yellow-600'
+                      'bg-yellow-100 text-orange-600'
                     }`}>
                       {order.status}
                     </span>
@@ -155,7 +155,7 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-semibold text-gray-800">Top Products</h2>
-              <button className="text-pink-600 hover:text-pink-700 text-sm font-medium">
+              <button className="text-orange-600 hover:text-orange-700 text-sm font-medium">
                 View Analytics
               </button>
             </div>
@@ -163,7 +163,7 @@ const AdminDashboard = () => {
               {topProducts.map((product, index) => (
                 <div key={product.name} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
                   <div className="flex items-center space-x-3">
-                    <div className="bg-pink-100 text-pink-600 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold">
+                    <div className="bg-yellow-100 text-orange-600 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold">
                       {index + 1}
                     </div>
                     <div>
@@ -186,7 +186,7 @@ const AdminDashboard = () => {
           >
             <Package className="w-8 h-8 mb-3" />
             <h3 className="font-semibold text-lg mb-1">Manage Products</h3>
-            <p className="text-pink-100 text-sm">Add, edit, and organize your product catalog</p>
+            <p className="text-orange-100 text-sm">Add, edit, and organize your product catalog</p>
           </Link>
 
           <a

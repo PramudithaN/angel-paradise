@@ -16,7 +16,7 @@ const ProductPage = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Product Not Found</h2>
-          <Link to="/shop" className="text-pink-500 hover:text-pink-600">
+          <Link to="/shop" className="text-yellow-500 hover:text-yellow-600">
             Return to Shop
           </Link>
         </div>
@@ -63,7 +63,7 @@ Please confirm availability and shipping details.`;
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 mb-8 text-sm">
-          <Link to="/shop" className="text-pink-500 hover:text-pink-600 flex items-center space-x-1">
+          <Link to="/shop" className="text-yellow-500 hover:text-yellow-600 flex items-center space-x-1">
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Shop</span>
           </Link>
@@ -147,10 +147,10 @@ Please confirm availability and shipping details.`;
                 {product.name}
               </h1>
               <div className="flex items-center space-x-4">
-                <span className="text-3xl font-bold text-pink-600">
+                <span className="text-3xl font-bold text-yellow-600">
                   ${product.price}
                 </span>
-                <span className="bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-sm font-medium">
+                <span className="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-sm font-medium">
                   {product.category}
                 </span>
               </div>
@@ -182,8 +182,8 @@ Please confirm availability and shipping details.`;
                     onClick={() => setSelectedSize(size)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                       selectedSize === size
-                        ? 'bg-pink-500 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-pink-100 hover:text-pink-600'
+                        ? 'bg-yellow-500 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-yellow-600'
                     }`}
                   >
                     {size}
@@ -203,8 +203,8 @@ Please confirm availability and shipping details.`;
                       onClick={() => setSelectedColor(color)}
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                         selectedColor === color
-                          ? 'bg-pink-500 text-white'
-                          : 'bg-gray-100 text-gray-600 hover:bg-pink-100 hover:text-pink-600'
+                          ? 'bg-yellow-500 text-white'
+                          : 'bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-yellow-600'
                       }`}
                     >
                       {color}
@@ -245,14 +245,14 @@ Please confirm availability and shipping details.`;
               </button>
               
               <div className="text-center text-gray-600 text-sm">
-                Total: <span className="font-bold text-lg text-pink-600">${(product.price * quantity).toFixed(2)}</span>
+                Total: <span className="font-bold text-lg text-yellow-600">${(product.price * quantity).toFixed(2)}</span>
               </div>
             </div>
 
             {/* Features */}
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-pink-100">
               <div className="text-center">
-                <Heart className="w-6 h-6 text-pink-500 mx-auto mb-2" />
+                <Heart className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
                 <p className="text-xs text-gray-600">Made with Love</p>
               </div>
               <div className="text-center">

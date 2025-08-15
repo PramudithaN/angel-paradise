@@ -25,7 +25,7 @@ const ScrollToTopButton: React.FC = () => {
         bottom: 32,
         right: 32,
         zIndex: 1000,
-        background: "#ec4899",
+        background: "#ea580c",
         color: "white",
         border: "none",
         borderRadius: "50%",

@@ -135,8 +135,8 @@ const AdminProducts = () => {
                 <span>Back to Dashboard</span>
               </Link>
               <div className="flex items-center space-x-3">
-                <div className="bg-gradient-to-br from-pink-100 to-yellow-100 p-2 rounded-lg">
-                  <Baby className="w-5 h-5 text-pink-600" />
+                <div className="bg-gradient-to-br from-orange-100 to-yellow-100 p-2 rounded-lg">
+                  <Baby className="w-5 h-5 text-orange-600" />
                 </div>
                 <h1 className="text-xl font-bold text-gray-800">Product Management</h1>
               </div>
@@ -144,7 +144,7 @@ const AdminProducts = () => {
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setShowAddForm(true)}
-                className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
+                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
               >
                 <Plus className="w-4 h-4" />
                 <span>Add Product</span>
@@ -173,7 +173,7 @@ const AdminProducts = () => {
                   placeholder="Search products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
                 />
               </div>
             </div>
@@ -181,7 +181,7 @@ const AdminProducts = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
               >
                 {categories.map(category => (
                   <option key={category} value={category}>{category}</option>
@@ -237,7 +237,7 @@ const AdminProducts = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 py-1 text-xs font-medium bg-pink-100 text-pink-600 rounded-full">
+                      <span className="px-2 py-1 text-xs font-medium bg-yellow-100 text-orange-600 rounded-full">
                         {product.category}
                       </span>
                     </td>
@@ -257,7 +257,7 @@ const AdminProducts = () => {
                       <div className="flex space-x-2">
                         <button
                           onClick={() => handleEdit(product)}
-                          className="text-blue-600 hover:text-blue-700 transition-colors duration-200"
+                          className="text-cyan-600 hover:text-cyan-700 transition-colors duration-200"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
@@ -306,7 +306,7 @@ const AdminProducts = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
                 />
               </div>
 
@@ -323,7 +323,7 @@ const AdminProducts = () => {
                     step="0.01"
                     min="0"
                     required
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
                   />
                 </div>
 
@@ -335,7 +335,7 @@ const AdminProducts = () => {
                     name="category"
                     value={formData.category}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
                   >
                     {categories.filter(cat => cat !== 'All').map(category => (
                       <option key={category} value={category}>{category}</option>
@@ -354,7 +354,7 @@ const AdminProducts = () => {
                   value={formData.image}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
                 />
               </div>
 
@@ -368,7 +368,7 @@ const AdminProducts = () => {
                   onChange={handleInputChange}
                   rows={3}
                   required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
                 />
               </div>
 
@@ -384,8 +384,8 @@ const AdminProducts = () => {
                       onClick={() => handleSizeToggle(size)}
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                         formData.sizes.includes(size)
-                          ? 'bg-pink-500 text-white'
-                          : 'bg-gray-100 text-gray-600 hover:bg-pink-100 hover:text-pink-600'
+                          ? 'bg-orange-500 text-white'
+                          : 'bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-orange-600'
                       }`}
                     >
                       {size}
@@ -403,7 +403,7 @@ const AdminProducts = () => {
                   placeholder="e.g., Pink, White, Yellow"
                   value={formData.colors.join(', ')}
                   onChange={(e) => handleColorChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
                 />
               </div>
 
@@ -413,7 +413,7 @@ const AdminProducts = () => {
                   name="inStock"
                   checked={formData.inStock}
                   onChange={handleInputChange}
-                  className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                  className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
                 />
                 <label className="ml-2 text-sm text-gray-700">
                   In Stock
@@ -423,7 +423,7 @@ const AdminProducts = () => {
               <div className="flex space-x-4 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors duration-200"
+                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors duration-200"
                 >
                   <Save className="w-4 h-4" />
                   <span>{editingProduct ? 'Update Product' : 'Add Product'}</span>

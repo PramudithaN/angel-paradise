@@ -39,7 +39,7 @@ const AdminLogin = () => {
         {/* Logo and Brand */}
         <div className="text-center mb-8">
           <div className="bg-gradient-to-br from-pink-200 to-yellow-200 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-            <Baby className="w-10 h-10 text-pink-600" />
+            <Baby className="w-10 h-10 text-yellow-600" />
           </div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-pink-600 bg-clip-text text-transparent mb-2">
             Angel's Paradise
@@ -128,7 +128,7 @@ const AdminLogin = () => {
         <div className="text-center mt-6">
           <a
             href="/"
-            className="text-pink-500 hover:text-pink-600 text-sm font-medium transition-colors duration-200"
+            className="text-yellow-500 hover:text-yellow-600 text-sm font-medium transition-colors duration-200"
           >
             ← Back to Store
           </a>

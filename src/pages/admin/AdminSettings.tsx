@@ -61,8 +61,8 @@ const AdminSettings = () => {
                 <span>Back to Dashboard</span>
               </Link>
               <div className="flex items-center space-x-3">
-                <div className="bg-gradient-to-br from-pink-100 to-yellow-100 p-2 rounded-lg">
-                  <Baby className="w-5 h-5 text-pink-600" />
+                <div className="bg-gradient-to-br from-pink-100 to-orange-100 p-2 rounded-lg">
+                  <Baby className="w-5 h-5 text-orange-600" />
                 </div>
                 <h1 className="text-xl font-bold text-gray-800">Settings</h1>
               </div>
@@ -71,7 +71,7 @@ const AdminSettings = () => {
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200 disabled:opacity-50"
+                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200 disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
                 <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
@@ -100,7 +100,7 @@ const AdminSettings = () => {
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
                       activeTab === tab.id
-                        ? 'bg-pink-100 text-pink-600 font-medium'
+                        ? 'bg-orange-100 text-orange-600 font-medium'
                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'
                     }`}
                   >

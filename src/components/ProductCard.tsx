@@ -32,14 +32,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton =
           className="w-full h-48 sm:h-56 object-cover group-hover:scale-110 transition-transform duration-500"
         />
         <div className="absolute top-3 right-3">
-          <span className="bg-pink-100 text-pink-600 text-xs font-semibold px-3 py-1 rounded-full">
+          <span className="bg-yellow-100 text-yellow-600 text-xs font-semibold px-3 py-1 rounded-full">
             {product.category}
           </span>
         </div>
         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <Link
             to={`/product/${product.id}`}
-            className="bg-white/90 backdrop-blur-sm text-pink-600 px-4 py-2 rounded-full flex items-center space-x-2 font-medium hover:bg-white transition-all duration-200"
+            className="bg-white/90 backdrop-blur-sm text-orange-600 px-4 py-2 rounded-full flex items-center space-x-2 font-medium hover:bg-white transition-all duration-200"
           >
             <Eye className="w-4 h-4" />
             <span>Quick View</span>
@@ -60,7 +60,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton =
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-pink-600">
+          <span className="text-lg font-bold text-orange-600">
             ${product.price}
           </span>
         </div>
@@ -77,7 +77,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton =
           ) : (
             <Link
               to={`/product/${product.id}`}
-              className="flex-1 bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full text-center font-medium transition-all duration-200 hover:scale-105 text-sm"
+              className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full text-center font-medium transition-all duration-200 hover:scale-105 text-sm"
             >
               View Product
             </Link>

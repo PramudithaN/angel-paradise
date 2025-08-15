@@ -6,10 +6,12 @@ import { products } from '../data/products';
 import { ProductReviews, ReviewForm } from '../components/Reviews';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 
-
 const HomePage = () => {
   const [refresh, setRefresh] = useState(0);
   const featuredProducts = products.filter(product => product.featured).slice(0, 6);
+
+  // Hero image URL
+  // const heroImage = "https://images.pexels.com/photos/1648386/pexels-photo-1648386.jpeg";
 
   // Temporary demo product ID for reviews section
   const DEMO_PRODUCT_ID = "demo-product-1";
@@ -36,6 +38,7 @@ const HomePage = () => {
         <div
           className="absolute inset-0 rounded-3xl mx-4 overflow-hidden will-change-transform"
           style={{ zIndex: 1 }}
+          //  style={{ backgroundImage: `url(${heroImage})` }}
         >
           <img
             src="https://images.pexels.com/photos/1648386/pexels-photo-1648386.jpeg"
@@ -45,14 +48,14 @@ const HomePage = () => {
             id="hero-img"
           />
           {/* Dark overlay for better text contrast */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-pink-200/10 to-yellow-200/30"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-yellow-200/10 to-yellow-200/30"></div>
         </div>
 
         {/* Hero Text with enhanced visibility and drop shadow */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
           <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight drop-shadow-2xl">
             The place to find
-            <span className="block bg-gradient-to-r from-pink-400 to-pink-600 bg-clip-text text-transparent drop-shadow-2xl">
+            <span className="block bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent drop-shadow-2xl">
               little girl's accessories
             </span>
           </h1>
@@ -61,7 +64,7 @@ const HomePage = () => {
           </p>
           <Link
             to="/shop"
-            className="inline-flex items-center space-x-3 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+            className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
             style={{ boxShadow: '0 4px 24px 0 rgba(236,72,153,0.25)' }}
           >
             <span>Shop Now</span>
@@ -130,7 +133,7 @@ const HomePage = () => {
         <div className="text-center">
           <Link
             to="/shop"
-            className="inline-flex items-center space-x-2 bg-pink-100 hover:bg-pink-200 text-pink-600 px-6 py-3 rounded-full font-medium transition-all duration-200 hover:scale-105"
+            className="inline-flex items-center space-x-2 bg-orange-100 hover:bg-orange-200 text-orange-600 px-6 py-3 rounded-full font-medium transition-all duration-200 hover:scale-105"
           >
             <span>View All Products</span>
             <ArrowRight className="w-4 h-4" />
@@ -140,7 +143,7 @@ const HomePage = () => {
 
       {/* About Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-pink-50 to-yellow-50 rounded-3xl p-8 md:p-12">
+        <div className="bg-gradient-to-r from-orange-50 to-orange-50 rounded-3xl p-8 md:p-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
@@ -154,7 +157,7 @@ const HomePage = () => {
               </p>
               <Link
                 to="/about"
-                className="inline-flex items-center space-x-2 text-pink-600 hover:text-pink-700 font-medium transition-colors duration-200"
+                className="inline-flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-medium transition-colors duration-200"
               >
                 <span>Learn More About Us</span>
                 <ArrowRight className="w-4 h-4" />
@@ -166,8 +169,8 @@ const HomePage = () => {
                 alt="About Angel's Paradise"
                 className="w-full rounded-2xl shadow-lg"
               />
-              <div className="absolute -top-4 -right-4 bg-yellow-200 p-4 rounded-full shadow-lg">
-                <Heart className="w-8 h-8 text-pink-600" />
+              <div className="absolute -top-4 -right-4 bg-orange-200 p-4 rounded-full shadow-lg">
+                <Heart className="w-8 h-8 text-orange-600" />
               </div>
             </div>
           </div>
@@ -177,13 +180,15 @@ const HomePage = () => {
       {/* Testimonials */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="my-8">
-          <h2 className="text-3xl font-bold mb-6 text-center text-pink-600">Share Your Experience</h2>
+          <h2 className="text-3xl font-bold mb-6 text-center text-orange-600">Share Your Experience</h2>
           <ReviewForm productId={DEMO_PRODUCT_ID} onReviewAdded={() => setRefresh(r => r + 1)} enhanced />
         </div>
-        <div className="my-8">
-          <h2 className="text-2xl font-semibold mb-4 text-center">What Our Customers Say</h2>
-          <ProductReviews productId={DEMO_PRODUCT_ID} key={refresh} cardMode />
-        </div>
+        {refresh > 0 && (
+          <div className="my-8">
+            <h2 className="text-3xl font-bold mb-4 text-center text-orange-600">What Our Customers Say</h2>
+            <ProductReviews productId={DEMO_PRODUCT_ID} key={refresh} cardMode />
+          </div>
+        )}
       </section>
     </div>
   );

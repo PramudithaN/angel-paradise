@@ -26,7 +26,7 @@ export function ProductReviews({
 
   if (cardMode) {
     return (
-      <div className="overflow-x-auto p-2 bg-red-50 rounded-2xl"style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+      <div className="overflow-x-auto p-2 bg-orange-50 rounded-2xl"style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
         <div
           className="flex gap-8 min-w-max"
           
@@ -37,7 +37,7 @@ export function ProductReviews({
           {reviews.map((r) => (
             <div
               key={r._id}
-              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-pink-100 flex flex-col justify-between min-w-[320px] max-w-xs flex-shrink-0"
+              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-orange-100 flex flex-col justify-between min-w-[320px] max-w-xs flex-shrink-0"
             >
               <div className="flex items-center mb-4">
                 <div className="flex space-x-1 mr-2">
@@ -45,7 +45,7 @@ export function ProductReviews({
                     star <= r.rating ? (
                       <svg
                         key={i}
-                        className="w-5 h-5 text-yellow-400 inline"
+                        className="w-5 h-5 text-orange-400 inline"
                         fill="currentColor"
                         stroke="currentColor"
                         viewBox="0 0 20 20"
@@ -66,7 +66,7 @@ export function ProductReviews({
                     )
                   )}
                 </div>
-                <span className="font-semibold text-pink-600">{r.userId}</span>
+                <span className="font-semibold text-orange-600">{r.userId}</span>
               </div>
               <div className="text-gray-700 italic mb-2">{r.comment}</div>
               <div className="text-xs text-gray-400 mt-2">
@@ -128,10 +128,10 @@ export function ReviewForm({
     return (
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col md:flex-row items-center justify-center gap-4 bg-pink-50 p-6 rounded-2xl shadow-md max-w-2xl mx-auto"
+        className="flex flex-col md:flex-row items-center justify-center gap-4 bg-orange-50 p-6 rounded-3xl shadow-md max-w-3xl mx-auto"
       >
         <input
-          className="border border-pink-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400 transition w-32 text-center"
+          className="border border-orange-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 transition w-32 text-center"
           type="text"
           value={user}
           onChange={(e) => setUser(e.target.value)}
@@ -143,7 +143,7 @@ export function ReviewForm({
             <button
               type="button"
               key={star}
-              className={star <= rating ? "text-yellow-400" : "text-gray-300"}
+              className={star <= rating ? "text-orange-400" : "text-gray-300"}
               onClick={() => setRating(star)}
               aria-label={`Set rating to ${star}`}
             >
@@ -154,7 +154,7 @@ export function ReviewForm({
           ))}
         </div>
         <input
-          className="border border-pink-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400 transition flex-1"
+          className="border border-orange-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 transition flex-1"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           placeholder="Your review..."
@@ -163,7 +163,7 @@ export function ReviewForm({
         />
         <button
           type="submit"
-          className="bg-pink-500 hover:bg-pink-600 text-white font-semibold px-6 py-2 rounded-full shadow transition disabled:opacity-60"
+          className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2 rounded-full shadow transition disabled:opacity-60"
           disabled={submitting || !comment.trim()}
         >
           {submitting ? "Submitting..." : "Submit"}

@@ -53,7 +53,7 @@ const ShopPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-yellow-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-yellow-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -73,7 +73,7 @@ const ShopPage = () => {
             placeholder="Search products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-pink-200 rounded-full focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-3 border border-orange-200 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
           />
         </div>
 
@@ -83,19 +83,19 @@ const ShopPage = () => {
             {/* Mobile Filter Button */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="lg:hidden w-full bg-pink-500 text-white px-4 py-3 rounded-xl flex items-center justify-center space-x-2 mb-4"
+              className="lg:hidden w-full bg-orange-500 text-white px-4 py-3 rounded-xl flex items-center justify-center space-x-2 mb-4"
             >
               <Filter className="w-5 h-5" />
               <span>Filters</span>
             </button>
 
             {/* Filter Panel */}
-            <div className={`bg-white rounded-2xl p-6 shadow-lg border border-pink-100 ${showFilters ? 'block' : 'hidden lg:block'}`}>
+            <div className={`bg-white rounded-2xl p-6 shadow-lg border border-orange-100 ${showFilters ? 'block' : 'hidden lg:block'}`}>
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-gray-800">Filters</h3>
                 <button
                   onClick={clearFilters}
-                  className="text-pink-500 hover:text-pink-600 text-sm font-medium transition-colors duration-200"
+                  className="text-orange-500 hover:text-orange-600 text-sm font-medium transition-colors duration-200"
                 >
                   Clear All
                 </button>
@@ -117,8 +117,8 @@ const ShopPage = () => {
                       />
                       <div className={`w-4 h-4 rounded-full border-2 mr-3 transition-all duration-200 ${
                         selectedCategory === category 
-                          ? 'bg-pink-500 border-pink-500' 
-                          : 'border-gray-300 group-hover:border-pink-300'
+                          ? 'bg-orange-500 border-orange-500' 
+                          : 'border-gray-300 group-hover:border-orange-300'
                       }`}>
                         {selectedCategory === category && (
                           <div className="w-2 h-2 bg-white rounded-full mx-auto mt-1"></div>
@@ -126,8 +126,8 @@ const ShopPage = () => {
                       </div>
                       <span className={`text-sm transition-colors duration-200 ${
                         selectedCategory === category 
-                          ? 'text-pink-600 font-medium' 
-                          : 'text-gray-600 group-hover:text-pink-500'
+                          ? 'text-orange-600 font-medium' 
+                          : 'text-gray-600 group-hover:text-orange-500'
                       }`}>
                         {category}
                       </span>
@@ -146,8 +146,8 @@ const ShopPage = () => {
                       onClick={() => handleSizeToggle(size)}
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                         selectedSizes.includes(size)
-                          ? 'bg-pink-500 text-white'
-                          : 'bg-gray-100 text-gray-600 hover:bg-pink-100 hover:text-pink-600'
+                          ? 'bg-orange-500 text-white'
+                          : 'bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600'
                       }`}
                     >
                       {size}
@@ -161,23 +161,25 @@ const ShopPage = () => {
                 <h4 className="font-medium text-gray-700 mb-3">
                   Price Range: ${priceRange[0]} - ${priceRange[1]}
                 </h4>
-                <div className="space-y-4">
+                <div className="bg-[#fcf7f2] rounded-xl p-4 shadow-inner">
+                  <div className="flex justify-between mb-2">
+                  <span className="text-gray-600 text-base font-medium">$0</span>
+                  <span className="text-gray-600 text-base font-medium">$100+</span>
+                  </div>
+                  <div className="relative w-full">
                   <input
                     type="range"
-                    min="0"
-                    max="100"
-                    value={priceRange[0]}
-                    onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])}
-                    className="w-full h-2 bg-pink-200 rounded-lg appearance-none cursor-pointer slider"
-                  />
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
+                    min={0}
+                    max={100}
                     value={priceRange[1]}
-                    onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                    className="w-full h-2 bg-pink-200 rounded-lg appearance-none cursor-pointer slider"
+                    onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
+                    className="w-full h-2 rounded-full appearance-none bg-orange-200 accent-orange-300 cursor-pointer"
+                    style={{
+                    background: `linear-gradient(to right, #ea580c 0%, #ea580c ${priceRange[1]}%, #333 ${priceRange[1]}%, #333 100%)`,
+                    accentColor: '#ea580c',
+                    }}
                   />
+                  </div>
                 </div>
               </div>
             </div>
@@ -193,7 +195,7 @@ const ShopPage = () => {
               {(selectedCategory !== 'All' || selectedSizes.length > 0 || searchQuery) && (
                 <div className="flex flex-wrap gap-2">
                   {selectedCategory !== 'All' && (
-                    <span className="bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-sm flex items-center space-x-1">
+                    <span className="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-sm flex items-center space-x-1">
                       <span>{selectedCategory}</span>
                       <button onClick={() => setSelectedCategory('All')}>
                         <X className="w-3 h-3" />
@@ -201,7 +203,7 @@ const ShopPage = () => {
                     </span>
                   )}
                   {selectedSizes.map(size => (
-                    <span key={size} className="bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-sm flex items-center space-x-1">
+                    <span key={size} className="bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-sm flex items-center space-x-1">
                       <span>{size}</span>
                       <button onClick={() => handleSizeToggle(size)}>
                         <X className="w-3 h-3" />
@@ -226,7 +228,7 @@ const ShopPage = () => {
                 <p className="text-gray-600 mb-6">Try adjusting your filters or search terms</p>
                 <button
                   onClick={clearFilters}
-                  className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-3 rounded-full font-medium transition-colors duration-200"
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-full font-medium transition-colors duration-200"
                 >
                   Clear Filters
                 </button>
