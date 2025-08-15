@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Swal from "../../utils/swal";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft,
@@ -130,9 +131,7 @@ const AdminProducts = () => {
       if (editingProduct && (editingProduct._id || editingProduct.id)) {
         // Update existing product
         response = await fetch(
-          `http://localhost:5000/api/products/${
-            editingProduct._id || editingProduct.id
-          }`,
+          `http://localhost:5000/api/products/${editingProduct._id || editingProduct.id}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -149,6 +148,7 @@ const AdminProducts = () => {
               : p
           )
         );
+        Swal.fire({ icon: "success", title: "Product updated!", text: "The product was updated successfully." });
       } else {
         // Add new product
         response = await fetch("http://localhost:5000/api/products/add", {
@@ -167,6 +167,8 @@ const AdminProducts = () => {
             id: data.product._id,
           },
         ]);
+      console.log(response, "RESPONSE");
+        Swal.fire({ icon: "success", title: "Product added!", text: "The product was added successfully." });
       }
       // Reset form
       setFormData({
@@ -182,8 +184,7 @@ const AdminProducts = () => {
       setShowAddForm(false);
       setEditingProduct(null);
     } catch (error) {
-      console.log(error);
-      alert("Error saving product. Please try again.");
+      Swal.fire({ icon: "error", title: "Error", text: error instanceof Error ? error.message : "An error occurred" });
     }
   };
 
@@ -213,9 +214,25 @@ const AdminProducts = () => {
     }
   };
 
-  const handleDelete = (productId: string) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      setProducts((prev) => prev.filter((p) => p.id !== productId));
+  const handleDelete = async (productId: string) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!"
+    });
+    if (result.isConfirmed) {
+      try {
+        const res = await fetch(`http://localhost:5000/api/products/${productId}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Failed to delete product");
+        setProducts((prev) => prev.filter((p) => p.id !== productId && p._id !== productId));
+        Swal.fire({ icon: "success", title: "Deleted!", text: "Product has been deleted." });
+      } catch {
+        Swal.fire({ icon: "error", title: "Error", text: "Failed to delete product." });
+      }
     }
   };
 
