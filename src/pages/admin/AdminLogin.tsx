@@ -34,21 +34,21 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-yellow-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-yellow-50 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
         {/* Logo and Brand */}
         <div className="text-center mb-8">
-          <div className="bg-gradient-to-br from-pink-200 to-yellow-200 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+          <div className="bg-gradient-to-br from-orange-200 to-yellow-200 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
             <Baby className="w-10 h-10 text-yellow-600" />
           </div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-pink-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent mb-2">
             Angel's Paradise
           </h1>
           <p className="text-gray-600">Admin Portal</p>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white rounded-2xl shadow-xl border border-pink-100 p-8">
+        <div className="bg-white rounded-2xl shadow-xl border border-orange-100 p-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
             Sign In to Dashboard
           </h2>
@@ -56,7 +56,7 @@ const AdminLogin = () => {
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-center space-x-3">
               <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-              <p className="text-red-700 text-sm">{error}</p>
+              <p className="text-orange-700 text-sm">{error}</p>
             </div>
           )}
 
@@ -71,7 +71,7 @@ const AdminLogin = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent transition-all duration-200"
                 placeholder="admin@angelsparadise.com"
               />
             </div>
@@ -87,7 +87,7 @@ const AdminLogin = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent transition-all duration-200"
+                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent transition-all duration-200"
                   placeholder="Enter your password"
                 />
                 <button
@@ -103,7 +103,7 @@ const AdminLogin = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center space-x-2">
