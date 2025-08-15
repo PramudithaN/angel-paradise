@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Heart, Shield, Truck } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
@@ -14,39 +14,74 @@ const HomePage = () => {
   // Temporary demo product ID for reviews section
   const DEMO_PRODUCT_ID = "demo-product-1";
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const img = document.getElementById('hero-img') as HTMLImageElement | null;
+      if (img) {
+        const scrollY = window.scrollY;
+        img.style.transform = `translateY(${scrollY * 0.15}px) scale(1.03)`;
+        img.style.filter = scrollY > 40 ? 'brightness(0.5) blur(1.5px)' : 'brightness(0.7) blur(0px)';
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className="space-y-16 pb-16">
       <ScrollToTopButton />
       {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center">
-        <div className="absolute inset-0 bg-gradient-to-r from-pink-100/90 to-yellow-100/90 rounded-3xl mx-4 overflow-hidden">
+      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
+        {/* Animated Hero Image with floating and scroll effect */}
+        <div
+          className="absolute inset-0 rounded-3xl mx-4 overflow-hidden will-change-transform"
+          style={{ zIndex: 1 }}
+        >
           <img
             src="https://images.pexels.com/photos/1648386/pexels-photo-1648386.jpeg"
             alt="Baby clothing collection"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover animate-float"
+            style={{ filter: 'brightness(0.7) blur(0px)' }}
+            id="hero-img"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-pink-200/80 via-transparent to-yellow-200/80"></div>
+          {/* Dark overlay for better text contrast */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-pink-200/10 to-yellow-200/30"></div>
         </div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-6 leading-tight">
+
+        {/* Hero Text with enhanced visibility and drop shadow */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+          <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight drop-shadow-2xl">
             The place to find
-            <span className="block bg-gradient-to-r from-pink-500 to-pink-600 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-pink-400 to-pink-600 bg-clip-text text-transparent drop-shadow-2xl">
               little girl's accessories
             </span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed drop-shadow-xl">
             Discover adorable, high-quality clothing and accessories that make every little angel shine bright
           </p>
           <Link
             to="/shop"
             className="inline-flex items-center space-x-3 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+            style={{ boxShadow: '0 4px 24px 0 rgba(236,72,153,0.25)' }}
           >
             <span>Shop Now</span>
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </section>
+      {/* Floating animation keyframes */}
+      <style>{`
+        @keyframes float {
+          0% { transform: translateY(0px) scale(1.03); }
+          50% { transform: translateY(-18px) scale(1.05); }
+          100% { transform: translateY(0px) scale(1.03); }
+        }
+        .animate-float {
+          animation: float 5s ease-in-out infinite;
+          transition: filter 0.3s;
+        }
+      `}</style>
+      {/* Scroll animation for hero image is handled in useEffect above */}
 
       {/* Features Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -141,47 +176,14 @@ const HomePage = () => {
 
       {/* Testimonials */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="my-8">
-          <h2 className="text-xl font-semibold mb-2">Product Reviews</h2>
-          <ProductReviews productId={DEMO_PRODUCT_ID} key={refresh} />
-          <ReviewForm productId={DEMO_PRODUCT_ID} onReviewAdded={() => setRefresh(r => r + 1)} />
+        <div className="my-8">
+          <h2 className="text-3xl font-bold mb-6 text-center text-pink-600">Share Your Experience</h2>
+          <ReviewForm productId={DEMO_PRODUCT_ID} onReviewAdded={() => setRefresh(r => r + 1)} enhanced />
         </div>
-        {/* <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-            What Our Customers Say
-          </h2>
-          <p className="text-lg text-gray-600">
-            Hear from happy parents who love shopping with us
-          </p>
+        <div className="my-8">
+          <h2 className="text-2xl font-semibold mb-4 text-center">What Our Customers Say</h2>
+          <ProductReviews productId={DEMO_PRODUCT_ID} key={refresh} cardMode />
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-pink-100">
-              <div className="flex items-center mb-4">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover mr-4"
-                />
-                <div>
-                  <h4 className="font-semibold text-gray-800">{testimonial.name}</h4>
-                  <div className="flex space-x-1">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="relative">
-                <Quote className="w-6 h-6 text-pink-200 absolute -top-2 -left-2" />
-                <p className="text-gray-600 italic leading-relaxed pl-4">
-                  {testimonial.comment}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div> */}
       </section>
     </div>
   );
