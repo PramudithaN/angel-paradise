@@ -1,9 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, MessageCircle, Baby } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [whatsapp, setWhatsapp] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/business-info');
+        const data = await res.json();
+        setWhatsapp(data.whatsapp || null);
+      } catch {
+        setWhatsapp(null);
+      }
+    };
+    fetchInfo();
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -48,15 +62,17 @@ const Header = () => {
 
           {/* WhatsApp Button */}
           <div className="flex items-center space-x-4">
-            <a
-              href="https://wa.me/1234567890"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full flex items-center space-x-2 transition-all duration-300 hover:scale-105 shadow-lg"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span className="hidden sm:inline font-medium">WhatsApp</span>
-            </a>
+            {whatsapp && (
+              <a
+                href={`https://wa.me/${whatsapp}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full flex items-center space-x-2 transition-all duration-300 hover:scale-105 shadow-lg"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span className="hidden sm:inline font-medium">WhatsApp</span>
+              </a>
+            )}
 
             {/* Mobile Menu Button */}
             <button
@@ -99,7 +115,7 @@ const Header = () => {
               className="block text-gray-800 hover:text-orange-500 font-medium py-2 transition-colors duration-200 flex items-center gap-2"
               onClick={() => setIsMenuOpen(false)}
             >
-              
+
               Contact
             </Link>
           </nav>

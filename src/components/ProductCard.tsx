@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MessageCircle, Eye } from 'lucide-react';
 
@@ -8,7 +8,12 @@ interface Product {
   price: number;
   image: string;
   category: string;
+  description?: string;
   sizes?: string[];
+  colors?: string[];
+  inStock?: boolean;
+  gallery?: string[];
+  featured?: boolean;
 }
 
 interface ProductCardProps {
@@ -17,10 +22,40 @@ interface ProductCardProps {
   onQuickView?: () => void;
 }
 
+interface BusinessInfo {
+  name?: string;
+  tagline?: string;
+  about?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  address?: string;
+  whatsapp?: string;
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+  heroTitle?: string;
+  heroSubtitle?: string;
+}
+
 const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton = false, onQuickView }) => {
+  const [info, setInfo] = useState<BusinessInfo | null>(null);
+
+  useEffect(() => {
+    const fetchInfo = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/business-info');
+        const data = await res.json();
+        setInfo(data);
+      } catch {
+        setInfo(null);
+      }
+    };
+    fetchInfo();
+  }, []);
+  console.log(product, "Product Info");
   const handleWhatsAppOrder = () => {
     const message = `Hi! I'm interested in ordering: ${product.name} - $${product.price}`;
-    const whatsappUrl = `https://wa.me/1234567890?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${info?.whatsapp}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -62,13 +97,35 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton =
               Sizes: {product.sizes.join(', ')}
             </p>
           )}
+          {product.colors && product.colors.length > 0 && (
+            <p className="text-xs text-gray-500 mt-1">
+              Colors: {product.colors.join(', ')}
+            </p>
+          )}
+          {product.description && (
+            <p className="text-xs text-gray-600 mt-1 line-clamp-2">{product.description}</p>
+          )}
         </div>
 
         <div className="flex items-center justify-between">
           <span className="text-lg font-bold text-orange-600">
             ${product.price}
           </span>
+          {product.inStock === false && (
+            <span className="text-xs text-red-500 font-semibold ml-2">Out of Stock</span>
+          )}
+          {product.featured && (
+            <span className="text-xs text-yellow-500 font-semibold ml-2">★ Featured</span>
+          )}
         </div>
+
+        {product.gallery && product.gallery.length > 1 && (
+          <div className="flex gap-2 mt-2">
+            {product.gallery.slice(0, 3).map((img, idx) => (
+              <img key={idx} src={img} alt={product.name + ' gallery'} className="w-10 h-10 object-cover rounded" />
+            ))}
+          </div>
+        )}
 
         <div className="flex flex-col sm:flex-row gap-2">
           {showWhatsAppButton ? (

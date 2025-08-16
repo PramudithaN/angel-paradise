@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Save, Baby, LogOut, Phone, Mail, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import Swal from 'sweetalert2';
 
 const AdminSettings = () => {
   const { logout } = useAuth();
@@ -20,6 +21,34 @@ const AdminSettings = () => {
     aboutText: "Founded with love and passion for dressing little angels, Angel's Paradise has been creating magical moments for families worldwide. We believe every little girl deserves to feel special, comfortable, and beautifully dressed."
   });
 
+  React.useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/business-info');
+        if (!res.ok) return;
+        const data = await res.json();
+        setSettings(prev => ({
+          ...prev,
+          businessName: data.name || prev.businessName,
+          tagline: data.tagline || prev.tagline,
+          phone: data.contactPhone || prev.phone,
+          email: data.contactEmail || prev.email,
+          address: data.address || prev.address,
+          whatsapp: data.whatsapp || prev.whatsapp,
+          facebook: data.facebook || prev.facebook,
+          instagram: data.instagram || prev.instagram,
+          twitter: data.twitter || prev.twitter,
+          heroTitle: data.heroTitle || prev.heroTitle,
+          heroSubtitle: data.heroSubtitle || prev.heroSubtitle,
+          aboutText: data.about || prev.aboutText,
+        }));
+      } catch {
+        // ignore
+      }
+    };
+    fetchSettings();
+  }, []);
+
   const [activeTab, setActiveTab] = useState('business');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -33,10 +62,32 @@ const AdminSettings = () => {
 
   const handleSave = async () => {
     setIsSaving(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsSaving(false);
-    alert('Settings saved successfully!');
+    try {
+      const res = await fetch('http://localhost:5000/api/business-info', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: settings.businessName,
+          tagline: settings.tagline,
+          about: settings.aboutText,
+          contactEmail: settings.email,
+          contactPhone: settings.phone,
+          address: settings.address,
+          whatsapp: settings.whatsapp,
+          facebook: settings.facebook,
+          instagram: settings.instagram,
+          twitter: settings.twitter,
+          heroTitle: settings.heroTitle,
+          heroSubtitle: settings.heroSubtitle,
+        }),
+      });
+      if (!res.ok) throw new Error('Failed to save settings');
+      Swal.fire({ icon: "success", title: "Saved!", text: "Data has been saved." });
+    } catch {
+      Swal.fire({ icon: "error", title: "Error", text: "Failed to save settings." });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const tabs = [
@@ -98,11 +149,10 @@ const AdminSettings = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
-                      activeTab === tab.id
-                        ? 'bg-orange-100 text-orange-600 font-medium'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'
-                    }`}
+                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${activeTab === tab.id
+                      ? 'bg-orange-100 text-orange-600 font-medium'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'
+                      }`}
                   >
                     <tab.icon className="w-5 h-5" />
                     <span>{tab.label}</span>
@@ -119,7 +169,7 @@ const AdminSettings = () => {
               {activeTab === 'business' && (
                 <div className="space-y-6">
                   <h2 className="text-2xl font-bold text-gray-800 mb-6">Business Information</h2>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -167,7 +217,7 @@ const AdminSettings = () => {
               {activeTab === 'contact' && (
                 <div className="space-y-6">
                   <h2 className="text-2xl font-bold text-gray-800 mb-6">Contact Details</h2>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -232,7 +282,7 @@ const AdminSettings = () => {
               {activeTab === 'content' && (
                 <div className="space-y-6">
                   <h2 className="text-2xl font-bold text-gray-800 mb-6">Website Content</h2>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Hero Section Title
@@ -265,7 +315,7 @@ const AdminSettings = () => {
               {activeTab === 'social' && (
                 <div className="space-y-6">
                   <h2 className="text-2xl font-bold text-gray-800 mb-6">Social Media Links</h2>
-                  
+
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">

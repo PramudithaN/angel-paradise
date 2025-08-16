@@ -41,7 +41,7 @@ const HomePage = () => {
         //  style={{ backgroundImage: `url(${heroImage})` }}
         >
           <img
-            src="https://images.pexels.com/photos/2171218/pexels-photo-2171218.jpeg"
+            src="https://images.pexels.com/photos/33459585/pexels-photo-33459585.jpeg"
             alt="Baby clothing collection"
             className="w-full h-full object-cover animate-float"
             style={{ filter: 'brightness(0.7) blur(0px)' }}

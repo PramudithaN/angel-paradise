@@ -1,7 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MessageCircle, Mail, MapPin, Facebook, Instagram, Baby } from 'lucide-react';
 
+interface BusinessInfo {
+  name?: string;
+  tagline?: string;
+  about?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  address?: string;
+  whatsapp?: string;
+  facebook?: string;
+  instagram?: string;
+  twitter?: string;
+  heroTitle?: string;
+  heroSubtitle?: string;
+}
+
 const Footer = () => {
+  const [info, setInfo] = useState<BusinessInfo | null>(null);
+  useEffect(() => {
+    const fetchInfo = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/business-info');
+        const data = await res.json();
+        setInfo(data);
+      } catch {
+        setInfo(null);
+      }
+    };
+    fetchInfo();
+  }, []);
+  console.log(info, "Footer Info");
   return (
     <footer className="bg-gradient-to-r from-yellow-100 to-yellow-50 border-t-2 border-yellow-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -13,12 +42,12 @@ const Footer = () => {
                 <Baby className="w-6 h-6 text-orange-600" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-orange-600">Angel's Paradise</h3>
-                <p className="text-sm text-orange-400">Little Girl's Fashion</p>
+                <h3 className="text-lg font-bold text-orange-600">{info?.name || "Angel's Paradise"}</h3>
+                <p className="text-sm text-orange-400">{info?.tagline || "Little Girl's Fashion"}</p>
               </div>
             </div>
             <p className="text-gray-600 text-sm leading-relaxed">
-              Your trusted destination for adorable, high-quality clothing and accessories for little angels.
+              {info?.about || "Your trusted destination for adorable, high-quality clothing and accessories for little angels."}
             </p>
           </div>
 
@@ -26,18 +55,24 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-gray-800 mb-4">Contact Us</h4>
             <div className="space-y-3">
-              <div className="flex items-center space-x-3 text-gray-600">
-                <MessageCircle className="w-4 h-4 text-green-500" />
-                <span className="text-sm">+1 (234) 567-8900</span>
-              </div>
-              <div className="flex items-center space-x-3 text-gray-600">
-                <Mail className="w-4 h-4 text-yellow-500" />
-                <span className="text-sm">hello@angelsparadise.com</span>
-              </div>
-              <div className="flex items-center space-x-3 text-gray-600">
-                <MapPin className="w-4 h-4 text-red-500" />
-                <span className="text-sm">123 Paradise St, Angel City</span>
-              </div>
+              {info?.contactPhone && (
+                <div className="flex items-center space-x-3 text-gray-600">
+                  <MessageCircle className="w-4 h-4 text-green-500" />
+                  <span className="text-sm">{info.contactPhone}</span>
+                </div>
+              )}
+              {info?.contactEmail && (
+                <div className="flex items-center space-x-3 text-gray-600">
+                  <Mail className="w-4 h-4 text-yellow-500" />
+                  <span className="text-sm">{info.contactEmail}</span>
+                </div>
+              )}
+              {info?.address && (
+                <div className="flex items-center space-x-3 text-gray-600">
+                  <MapPin className="w-4 h-4 text-red-500" />
+                  <span className="text-sm">{info.address}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -57,31 +92,28 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-gray-800 mb-4">Follow Us</h4>
             <div className="flex space-x-4">
-              <a href="#" className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
-                <Facebook className="w-4 h-4" />
-              </a>
-              <a href="#" className="bg-pink-500 hover:bg-pink-600 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a   href="https://wa.me/1234567890" className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
-                <MessageCircle className="w-4 h-4" />
-              </a>
+              {info?.facebook && (
+                <a href={info.facebook} target="_blank" rel="noopener noreferrer" className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
+                  <Facebook className="w-4 h-4" />
+                </a>
+              )}
+              {info?.instagram && (
+                <a href={info.instagram} target="_blank" rel="noopener noreferrer" className="bg-pink-500 hover:bg-pink-600 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
+                  <Instagram className="w-4 h-4" />
+                </a>
+              )}
+              {info?.whatsapp && (
+                <a href={`https://wa.me/${info.whatsapp}`} target="_blank" rel="noopener noreferrer" className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
+                  <MessageCircle className="w-4 h-4" />
+                </a>
+              )}
             </div>
-            {/* <a
-              href="https://wa.me/1234567890"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center space-x-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 text-sm font-medium"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span>Chat with us</span>
-            </a> */}
           </div>
         </div>
 
         <div className="border-t border-orange-200 mt-8 pt-8 text-center">
           <p className="text-gray-600 text-sm">
-            &copy; 2025 Angel's Paradise. All rights reserved. Made with ❤️ for little angels everywhere.
+            &copy; 2025 {info?.name || "Angel's Paradise"}. All rights reserved. Made with ❤️ for little angels everywhere.
           </p>
         </div>
       </div>

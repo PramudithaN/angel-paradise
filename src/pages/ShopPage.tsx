@@ -16,6 +16,8 @@ const ShopPage = () => {
     sizes?: string[];
     colors?: string[];
     inStock?: boolean;
+    featured?: boolean;
+    gallery?: string[];
   };
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -30,6 +32,7 @@ const ShopPage = () => {
       try {
         const res = await fetch('http://localhost:5000/api/products');
         const data = await res.json();
+        console.log(data, "Fetched Products");
         setProducts(data);
       } catch (err) {
         console.error('Failed to fetch products', err);
@@ -61,10 +64,10 @@ const ShopPage = () => {
         return false;
       }
 
+      console.log(filteredProducts, "Filtered Products");
       return true;
     });
   }, [products, selectedCategory, selectedSizes, priceRange, searchQuery]);
-
   const handleSizeToggle = (size: string) => {
     setSelectedSizes(prev =>
       prev.includes(size)
@@ -242,16 +245,21 @@ const ShopPage = () => {
             {/* Products Grid */}
             {filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map(product => (
-                  <div key={String(product._id || product.id)}>
-                    <ProductCard
-                      product={{ ...product, id: String(product._id || product.id) }}
-                      showWhatsAppButton
-                      // Add quick view handler
-                      onQuickView={() => setQuickViewProduct(product)}
-                    />
-                  </div>
-                ))}
+                {filteredProducts.map(product => {
+                  const normalizedProduct = {
+                    ...product,
+                    id: String(product._id || product.id),
+                  };
+                  return (
+                    <div key={normalizedProduct.id}>
+                      <ProductCard
+                        product={normalizedProduct}
+                        showWhatsAppButton
+                        onQuickView={() => setQuickViewProduct(product)}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-16">
