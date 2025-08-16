@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import Swal from 'sweetalert2';
 import { useCart } from '../contexts/CartContext';
 import { Link } from 'react-router-dom';
-import { MessageCircle, Eye } from 'lucide-react';
+import { Eye } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -23,36 +24,8 @@ interface ProductCardProps {
   onQuickView?: () => void;
 }
 
-interface BusinessInfo {
-  name?: string;
-  tagline?: string;
-  about?: string;
-  contactEmail?: string;
-  contactPhone?: string;
-  address?: string;
-  whatsapp?: string;
-  facebook?: string;
-  instagram?: string;
-  twitter?: string;
-  heroTitle?: string;
-  heroSubtitle?: string;
-}
+const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }) => {
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton = false, onQuickView }) => {
-  const [info, setInfo] = useState<BusinessInfo | null>(null);
-
-  useEffect(() => {
-    const fetchInfo = async () => {
-      try {
-        const res = await fetch('http://localhost:5000/api/business-info');
-        const data = await res.json();
-        setInfo(data);
-      } catch {
-        setInfo(null);
-      }
-    };
-    fetchInfo();
-  }, []);
   console.log(product, "Product Info");
   const { addToCart } = useCart();
   const handleAddToCart = () => {
@@ -66,12 +39,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton =
       colors: product.colors,
       category: product.category,
     });
+    Swal.fire({
+      icon: 'success',
+      title: 'Added to Cart',
+      text: `${product.name} has been added to your cart!`,
+      timer: 1200,
+      showConfirmButton: false,
+      position: 'top-end',
+      toast: true,
+      background: '#fff',
+    });
   };
-  // const handleWhatsAppOrder = () => {
-  //   const message = `Hi! I'm interested in ordering: ${product.name} - $${product.price}`;
-  //   const whatsappUrl = `https://wa.me/${info?.whatsapp}?text=${encodeURIComponent(message)}`;
-  //   window.open(whatsappUrl, '_blank');
-  // };
 
   return (
     <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden group">

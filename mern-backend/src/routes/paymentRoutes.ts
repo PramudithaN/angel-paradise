@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 const router = express.Router();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2022-11-15',
+  apiVersion: '2025-07-30.basil',
 });
 
 router.post('/create-payment-intent', async (req, res) => {
@@ -20,6 +20,7 @@ router.post('/create-payment-intent', async (req, res) => {
     });
     res.json({ clientSecret: paymentIntent.client_secret });
   } catch (err) {
+    console.log(err)
     res.status(500).json({ error: 'Failed to create PaymentIntent' });
   }
 });

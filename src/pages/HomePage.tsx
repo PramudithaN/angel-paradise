@@ -1,4 +1,62 @@
 import { useState, useEffect } from 'react';
+
+const heroImages = [
+  "https://images.pexels.com/photos/33459585/pexels-photo-33459585.jpeg",
+  "https://images.pexels.com/photos/1648386/pexels-photo-1648386.jpeg",
+  "https://images.pexels.com/photos/1620760/pexels-photo-1620760.jpeg"
+];
+
+function HeroImageSlider() {
+  const [index, setIndex] = useState(0);
+  const [prevIndex, setPrevIndex] = useState(0);
+  const [sliding, setSliding] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPrevIndex(index);
+      setSliding(true);
+      setTimeout(() => {
+        setIndex((prev: number) => (prev + 1) % heroImages.length);
+        setSliding(false);
+      }, 600); // slide duration
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [index]);
+
+  // For smooth slide, render both prev and current image, animate current from right to center, prev from center to left
+  return (
+    <div className="relative w-full h-full overflow-hidden">
+      <div className="absolute inset-0 w-full h-full">
+        <img
+          src={heroImages[prevIndex]}
+          alt=""
+          className={`w-full h-full object-cover animate-float transition-transform duration-700 ${sliding ? '-translate-x-full' : 'translate-x-0'} absolute top-0 left-0`}
+          style={{ filter: 'brightness(0.7) blur(0px)', zIndex: 1 }}
+          draggable={false}
+        />
+        <img
+          src={heroImages[index]}
+          alt="Baby clothing collection"
+          className={`w-full h-full object-cover animate-float transition-transform duration-700 ${sliding ? 'translate-x-0' : 'translate-x-full'} absolute top-0 left-0`}
+          style={{ filter: 'brightness(0.7) blur(0px)', zIndex: 2 }}
+          id="hero-img"
+          draggable={false}
+        />
+      </div>
+      {/* Dots indicator */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+        {heroImages.map((_, i) => (
+          <span
+            key={i}
+            className={`w-3 h-3 rounded-full ${i === index ? 'bg-orange-400' : 'bg-white/60'} border border-orange-400 transition-all duration-300`}
+            style={{ display: 'inline-block' }}
+          ></span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 import { Link } from 'react-router-dom';
 import { ArrowRight, Heart, Shield, Truck } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
@@ -35,18 +93,13 @@ const HomePage = () => {
       {/* Hero Section */}
       <section className="relative min-h-[70vh] flex items-center overflow-hidden">
         {/* Animated Hero Image with floating and scroll effect */}
+
+        {/* Hero Image Slider */}
         <div
           className="absolute inset-0 rounded-3xl mx-4 overflow-hidden will-change-transform"
           style={{ zIndex: 1 }}
-        //  style={{ backgroundImage: `url(${heroImage})` }}
         >
-          <img
-            src="https://images.pexels.com/photos/33459585/pexels-photo-33459585.jpeg"
-            alt="Baby clothing collection"
-            className="w-full h-full object-cover animate-float"
-            style={{ filter: 'brightness(0.7) blur(0px)' }}
-            id="hero-img"
-          />
+          <HeroImageSlider />
           {/* Dark overlay for better text contrast */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-yellow-200/10 to-yellow-200/30"></div>
         </div>
