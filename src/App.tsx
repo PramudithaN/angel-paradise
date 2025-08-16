@@ -12,6 +12,7 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminSettings from './pages/admin/AdminSettings';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import PaymentPage from './pages/PaymentPage';
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
           <Routes>
             {/* Admin Login Route (Public) */}
             <Route path="/admin-login" element={<AdminLogin />} />
-            
+
             {/* Protected Admin Routes */}
             <Route path="/admin" element={
               <ProtectedRoute>
@@ -38,7 +39,7 @@ function App() {
                 <AdminSettings />
               </ProtectedRoute>
             } />
-            
+
             {/* Main Website Routes */}
             <Route path="/*" element={
               <>
@@ -48,8 +49,9 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/shop" element={<ShopPage />} />
                     <Route path="/product/:id" element={<ProductPage />} />
-                    <Route path="/about" element={<AboutPage/>} />
-                    <Route path="/contact" element={<ContactPage/>} />
+                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/contact" element={<ContactPage />} />
+                    <Route path="/payment" element={<PaymentPage />} />
                   </Routes>
                 </main>
                 <Footer />

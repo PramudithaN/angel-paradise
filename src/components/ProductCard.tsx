@@ -14,9 +14,10 @@ interface Product {
 interface ProductCardProps {
   product: Product;
   showWhatsAppButton?: boolean;
+  onQuickView?: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton = false }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton = false, onQuickView }) => {
   const handleWhatsAppOrder = () => {
     const message = `Hi! I'm interested in ordering: ${product.name} - $${product.price}`;
     const whatsappUrl = `https://wa.me/1234567890?text=${encodeURIComponent(message)}`;
@@ -39,6 +40,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton =
         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <Link
             to={`/product/${product.id}`}
+            onClick={e => {
+              e.stopPropagation();
+              if (onQuickView) onQuickView();
+            }}
             className="bg-white/90 backdrop-blur-sm text-orange-600 px-4 py-2 rounded-full flex items-center space-x-2 font-medium hover:bg-white transition-all duration-200"
           >
             <Eye className="w-4 h-4" />

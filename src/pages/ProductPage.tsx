@@ -1,15 +1,55 @@
-import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MessageCircle, Star, ChevronLeft, ChevronRight, Heart, Shield, Truck } from 'lucide-react';
-import { products } from '../data/products';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, MessageCircle, ChevronLeft, ChevronRight, Heart, Shield, Truck } from 'lucide-react';
+
 
 const ProductPage = () => {
   const { id } = useParams();
-  const product = products.find(p => p.id === id);
+  const navigate = useNavigate();
+  interface Product {
+    _id?: string;
+    id?: string;
+    name: string;
+    description: string;
+    price: number;
+    image: string;
+    category: string;
+    sizes?: string[];
+    colors?: string[];
+    gallery?: string[];
+    inStock?: boolean;
+  }
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`http://localhost:5000/api/products/${id}`);
+        if (!res.ok) throw new Error('Product not found');
+        const data = await res.json();
+        setProduct(data);
+      } catch {
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center text-lg text-gray-600">Loading product...</div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -24,7 +64,7 @@ const ProductPage = () => {
     );
   }
 
-  const images = product.gallery || [product.image];
+  const images: string[] = product.gallery && product.gallery.length > 0 ? product.gallery : [product.image];
 
   const handleWhatsAppOrder = () => {
     const orderDetails = {
@@ -38,15 +78,15 @@ const ProductPage = () => {
 
     const message = `Hi! I'd like to order:
 
-Product: ${orderDetails.product}
-Size: ${orderDetails.size || 'Not specified'}
-Color: ${orderDetails.color || 'Not specified'}
-Quantity: ${orderDetails.quantity}
-Total: $${orderDetails.total}
+  Product: ${orderDetails.product}
+  Size: ${orderDetails.size || 'Not specified'}
+  Color: ${orderDetails.color || 'Not specified'}
+  Quantity: ${orderDetails.quantity}
+  Total: $${orderDetails.total}
 
-Please confirm availability and shipping details.`;
+  Please confirm availability and shipping details.`;
 
-    const whatsappUrl = `https://wa.me/1234567890?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/94713052556?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -56,6 +96,18 @@ Please confirm availability and shipping details.`;
 
   const prevImage = () => {
     setSelectedImage((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const handleProceedToCheckout = () => {
+    const order = {
+      product: product.name,
+      price: product.price,
+      size: selectedSize,
+      color: selectedColor,
+      quantity: quantity,
+      total: (product.price * quantity).toFixed(2),
+    };
+    navigate('/payment', { state: { order } });
   };
 
   return (
@@ -83,7 +135,7 @@ Please confirm availability and shipping details.`;
                 alt={product.name}
                 className="w-full h-96 lg:h-[500px] object-cover"
               />
-              
+
               {/* Navigation Arrows */}
               {images.length > 1 && (
                 <>
@@ -105,13 +157,11 @@ Please confirm availability and shipping details.`;
               {/* Image Indicators */}
               {images.length > 1 && (
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                  {images.map((_, index) => (
+                  {images.map((img: string, index: number) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                        index === selectedImage ? 'bg-white' : 'bg-white/50'
-                      }`}
+                      className={`w-2 h-2 rounded-full transition-all duration-200 ${index === selectedImage ? 'bg-white' : 'bg-white/50'}`}
                     />
                   ))}
                 </div>
@@ -121,13 +171,11 @@ Please confirm availability and shipping details.`;
             {/* Thumbnail Images */}
             {images.length > 1 && (
               <div className="grid grid-cols-4 gap-4">
-                {images.map((image, index) => (
+                {images.map((image: string, index: number) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`bg-white rounded-lg overflow-hidden shadow-md transition-all duration-200 ${
-                      index === selectedImage ? 'ring-2 ring-pink-500' : 'hover:shadow-lg'
-                    }`}
+                    className={`bg-white rounded-lg overflow-hidden shadow-md transition-all duration-200 ${index === selectedImage ? 'ring-2 ring-pink-500' : 'hover:shadow-lg'}`}
                   >
                     <img
                       src={image}
@@ -157,14 +205,14 @@ Please confirm availability and shipping details.`;
             </div>
 
             {/* Rating */}
-            <div className="flex items-center space-x-2">
+            {/* <div className="flex items-center space-x-2">
               <div className="flex space-x-1">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                 ))}
               </div>
               <span className="text-gray-600 text-sm">(4.9 / 5 based on 127 reviews)</span>
-            </div>
+            </div> */}
 
             {/* Description */}
             <div>
@@ -176,15 +224,14 @@ Please confirm availability and shipping details.`;
             <div>
               <h3 className="text-lg font-semibold text-gray-800 mb-3">Size</h3>
               <div className="grid grid-cols-5 gap-2">
-                {product.sizes.map(size => (
+                {product.sizes && product.sizes.map((size: string) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      selectedSize === size
-                        ? 'bg-yellow-500 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-yellow-600'
-                    }`}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${selectedSize === size
+                      ? 'bg-yellow-500 text-white'
+                      : 'bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-yellow-600'
+                      }`}
                   >
                     {size}
                   </button>
@@ -197,15 +244,14 @@ Please confirm availability and shipping details.`;
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">Color</h3>
                 <div className="flex space-x-3">
-                  {product.colors.map(color => (
+                  {product.colors && product.colors.map((color: string) => (
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        selectedColor === color
-                          ? 'bg-yellow-500 text-white'
-                          : 'bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-yellow-600'
-                      }`}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${selectedColor === color
+                        ? 'bg-yellow-500 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-yellow-600'
+                        }`}
                     >
                       {color}
                     </button>
@@ -234,16 +280,23 @@ Please confirm availability and shipping details.`;
               </div>
             </div>
 
-            {/* Order Button */}
+            {/* Order Buttons */}
             <div className="space-y-4">
               <button
-                onClick={handleWhatsAppOrder}
+                onClick={() => {
+                  handleWhatsAppOrder();
+                }}
                 className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-8 py-4 rounded-full font-semibold text-lg flex items-center justify-center space-x-3 transition-all duration-300 hover:scale-105 shadow-lg"
               >
                 <MessageCircle className="w-5 h-5" />
                 <span>Order Now on WhatsApp</span>
               </button>
-              
+              <button
+                onClick={handleProceedToCheckout}
+                className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white px-8 py-4 rounded-full font-semibold text-lg flex items-center justify-center space-x-3 transition-all duration-300 hover:scale-105 shadow-lg"
+              >
+                <span>Proceed to Checkout</span>
+              </button>
               <div className="text-center text-gray-600 text-sm">
                 Total: <span className="font-bold text-lg text-yellow-600">${(product.price * quantity).toFixed(2)}</span>
               </div>

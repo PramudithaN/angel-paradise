@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Heart, Shield, Truck } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
@@ -38,10 +38,10 @@ const HomePage = () => {
         <div
           className="absolute inset-0 rounded-3xl mx-4 overflow-hidden will-change-transform"
           style={{ zIndex: 1 }}
-          //  style={{ backgroundImage: `url(${heroImage})` }}
+        //  style={{ backgroundImage: `url(${heroImage})` }}
         >
           <img
-            src="https://images.pexels.com/photos/1648386/pexels-photo-1648386.jpeg"
+            src="https://images.pexels.com/photos/2171218/pexels-photo-2171218.jpeg"
             alt="Baby clothing collection"
             className="w-full h-full object-cover animate-float"
             style={{ filter: 'brightness(0.7) blur(0px)' }}
@@ -183,7 +183,7 @@ const HomePage = () => {
           <h2 className="text-3xl font-bold mb-6 text-center text-orange-600">Share Your Experience</h2>
           <ReviewForm productId={DEMO_PRODUCT_ID} onReviewAdded={() => setRefresh(r => r + 1)} enhanced />
         </div>
-        {DEMO_PRODUCT_ID  && (
+        {DEMO_PRODUCT_ID && (
           <div className="my-8">
             <h2 className="text-3xl font-bold mb-4 text-center text-orange-600">What Our Customers Say</h2>
             <ProductReviews productId={DEMO_PRODUCT_ID} key={refresh} cardMode />

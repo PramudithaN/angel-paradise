@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Filter, Search, X } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
+import ProductQuickViewModal from '../components/ProductQuickViewModal';
 import { categories, sizes } from '../data/products';
 
 const ShopPage = () => {
@@ -22,6 +23,7 @@ const ShopPage = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -64,8 +66,8 @@ const ShopPage = () => {
   }, [products, selectedCategory, selectedSizes, priceRange, searchQuery]);
 
   const handleSizeToggle = (size: string) => {
-    setSelectedSizes(prev => 
-      prev.includes(size) 
+    setSelectedSizes(prev =>
+      prev.includes(size)
         ? prev.filter(s => s !== size)
         : [...prev, size]
     );
@@ -141,20 +143,18 @@ const ShopPage = () => {
                         onChange={(e) => setSelectedCategory(e.target.value)}
                         className="sr-only"
                       />
-                      <div className={`w-4 h-4 rounded-full border-2 mr-3 transition-all duration-200 ${
-                        selectedCategory === category 
-                          ? 'bg-orange-500 border-orange-500' 
-                          : 'border-gray-300 group-hover:border-orange-300'
-                      }`}>
+                      <div className={`w-4 h-4 rounded-full border-2 mr-3 transition-all duration-200 ${selectedCategory === category
+                        ? 'bg-orange-500 border-orange-500'
+                        : 'border-gray-300 group-hover:border-orange-300'
+                        }`}>
                         {selectedCategory === category && (
                           <div className="w-2 h-2 bg-white rounded-full mx-auto mt-1"></div>
                         )}
                       </div>
-                      <span className={`text-sm transition-colors duration-200 ${
-                        selectedCategory === category 
-                          ? 'text-orange-600 font-medium' 
-                          : 'text-gray-600 group-hover:text-orange-500'
-                      }`}>
+                      <span className={`text-sm transition-colors duration-200 ${selectedCategory === category
+                        ? 'text-orange-600 font-medium'
+                        : 'text-gray-600 group-hover:text-orange-500'
+                        }`}>
                         {category}
                       </span>
                     </label>
@@ -170,11 +170,10 @@ const ShopPage = () => {
                     <button
                       key={size}
                       onClick={() => handleSizeToggle(size)}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        selectedSizes.includes(size)
-                          ? 'bg-orange-500 text-white'
-                          : 'bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600'
-                      }`}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${selectedSizes.includes(size)
+                        ? 'bg-orange-500 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600'
+                        }`}
                     >
                       {size}
                     </button>
@@ -189,22 +188,22 @@ const ShopPage = () => {
                 </h4>
                 <div className="bg-[#fcf7f2] rounded-xl p-4 shadow-inner">
                   <div className="flex justify-between mb-2">
-                  <span className="text-gray-600 text-base font-medium">$0</span>
-                  <span className="text-gray-600 text-base font-medium">$100+</span>
+                    <span className="text-gray-600 text-base font-medium">$0</span>
+                    <span className="text-gray-600 text-base font-medium">$100+</span>
                   </div>
                   <div className="relative w-full">
-                  <input
-                    type="range"
-                    min={0}
-                    max={100}
-                    value={priceRange[1]}
-                    onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
-                    className="w-full h-2 rounded-full appearance-none bg-orange-200 accent-orange-300 cursor-pointer"
-                    style={{
-                    background: `linear-gradient(to right, #ea580c 0%, #ea580c ${priceRange[1]}%, #333 ${priceRange[1]}%, #333 100%)`,
-                    accentColor: '#ea580c',
-                    }}
-                  />
+                    <input
+                      type="range"
+                      min={0}
+                      max={100}
+                      value={priceRange[1]}
+                      onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
+                      className="w-full h-2 rounded-full appearance-none bg-orange-200 accent-orange-300 cursor-pointer"
+                      style={{
+                        background: `linear-gradient(to right, #ea580c 0%, #ea580c ${priceRange[1]}%, #333 ${priceRange[1]}%, #333 100%)`,
+                        accentColor: '#ea580c',
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -244,7 +243,14 @@ const ShopPage = () => {
             {filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map(product => (
-                  <ProductCard key={String(product._id || product.id)} product={{...product, id: String(product._id || product.id)}} showWhatsAppButton />
+                  <div key={String(product._id || product.id)}>
+                    <ProductCard
+                      product={{ ...product, id: String(product._id || product.id) }}
+                      showWhatsAppButton
+                      // Add quick view handler
+                      onQuickView={() => setQuickViewProduct(product)}
+                    />
+                  </div>
                 ))}
               </div>
             ) : (
@@ -263,6 +269,18 @@ const ShopPage = () => {
           </div>
         </div>
       </div>
+      {/* Quick View Modal */}
+      {quickViewProduct && (
+        <ProductQuickViewModal
+          product={{
+            ...quickViewProduct,
+            id: String(quickViewProduct._id || quickViewProduct.id),
+            sizes: quickViewProduct.sizes ?? [],
+            inStock: quickViewProduct.inStock ?? false
+          }}
+          onClose={() => setQuickViewProduct(null)}
+        />
+      )}
     </div>
   );
 };
