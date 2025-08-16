@@ -20,7 +20,6 @@ const AboutPage = () => {
       try {
         const res = await fetch('http://localhost:5000/api/business-info');
         const data = await res.json();
-        console.log(res, "Fetched Business Info");
         setInfo(data);
       } catch {
         setInfo(null);

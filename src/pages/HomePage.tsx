@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
 
 const heroImages = [
@@ -60,19 +61,49 @@ function HeroImageSlider() {
 import { Link } from 'react-router-dom';
 import { ArrowRight, Heart, Shield, Truck } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { products } from '../data/products';
 import { ProductReviews, ReviewForm } from '../components/Reviews';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 
 const HomePage = () => {
   const [refresh, setRefresh] = useState(0);
-  const featuredProducts = products.filter(product => product.featured).slice(0, 6);
+  type Product = {
+    id: string;
+    featured?: boolean;
+    [key: string]: any;
+  };
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const featuredProducts = products.filter((product) => product.featured).slice(0, 6);
+
+  // Quick View modal state
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [showQuickView, setShowQuickView] = useState(false);
+
+
+  // Handler to close Quick View modal
+  const closeQuickView = () => {
+    setShowQuickView(false);
+    setQuickViewProduct(null);
+  };
 
   // Hero image URL
   // const heroImage = "https://images.pexels.com/photos/1648386/pexels-photo-1648386.jpeg";
 
   // Temporary demo product ID for reviews section
   const DEMO_PRODUCT_ID = "demo-product-1";
+
+  useEffect(() => {
+    // Fetch products from backend
+    setLoading(true);
+    fetch('http://localhost:5000/api/products')
+      .then(res => res.json())
+      .then(data => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [refresh]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -86,7 +117,7 @@ const HomePage = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
+console.log(featuredProducts,"Featured Products");
   return (
     <div className="space-y-16 pb-16">
       <ScrollToTopButton />
@@ -125,9 +156,6 @@ const HomePage = () => {
           </Link>
         </div>
       </section>
-      {/* Floating animation keyframes */}
-    {/* Removed floating animation for hero image */}
-      {/* Scroll animation for hero image is handled in useEffect above */}
 
       {/* Features Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -168,10 +196,58 @@ const HomePage = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {loading ? (
+            <div className="col-span-3 text-center text-gray-500">Loading featured products...</div>
+          ) : featuredProducts.length === 0 ? (
+            <div className="col-span-3 text-center text-gray-500">No featured products found.</div>
+          ) : (
+            featuredProducts.map(product => {
+                  const normalizedProduct = {
+                    ...product,
+                    id: String(product._id || product.id),
+                    name: product.name || "",
+                    price: product.price || 0,
+                    image: product.image || "",
+                    category: product.category || "",
+                  };
+                  return (
+                    <div key={normalizedProduct.id}>
+                      <ProductCard
+                        product={normalizedProduct}
+                        showWhatsAppButton
+                        onQuickView={() => setQuickViewProduct(product)}
+                      />
+                    </div>
+                  );
+                })
+            // featuredProducts.map((product) => (
+            //   <ProductCard key={product.id || product._id || id} product={product}/>
+            // )
+          )
+          }
         </div>
+
+        {/* Quick View Modal */}
+        {showQuickView && quickViewProduct && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 relative animate-fadeIn">
+              <button
+                className="absolute top-3 right-3 text-gray-400 hover:text-orange-600 text-2xl font-bold"
+                onClick={closeQuickView}
+                aria-label="Close"
+              >
+                &times;
+              </button>
+              <div className="flex flex-col items-center">
+                <img src={quickViewProduct.image} alt={quickViewProduct.name} className="w-48 h-48 object-cover rounded-xl mb-4" />
+                <h3 className="text-2xl font-bold mb-2 text-gray-800">{quickViewProduct.name}</h3>
+                <p className="text-lg text-orange-600 font-semibold mb-2">${quickViewProduct.price}</p>
+                <p className="text-gray-600 mb-4 text-center">{quickViewProduct.description}</p>
+                {/* Add more product details as needed */}
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="text-center">
           <Link

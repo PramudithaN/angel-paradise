@@ -18,15 +18,15 @@ interface Product {
   featured?: boolean;
 }
 
+
 interface ProductCardProps {
   product: Product;
   showWhatsAppButton?: boolean;
-  onQuickView?: () => void;
+  onQuickView?: (productId: string) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }) => {
-
-  console.log(product, "Product Info");
+const ProductCard: React.FC<ProductCardProps> = ({  product, onQuickView }) => {
+console.log(product, "Product Info");
   const { addToCart } = useCart();
   const handleAddToCart = () => {
     addToCart({
@@ -69,7 +69,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }) => {
             to={`/product/${product.id}`}
             onClick={e => {
               e.stopPropagation();
-              if (onQuickView) onQuickView();
+              if (onQuickView) onQuickView(product.id);
             }}
             className="bg-white/90 backdrop-blur-sm text-orange-600 px-4 py-2 rounded-full flex items-center space-x-2 font-medium hover:bg-white transition-all duration-200"
           >

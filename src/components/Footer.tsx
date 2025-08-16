@@ -30,7 +30,7 @@ const Footer = () => {
     };
     fetchInfo();
   }, []);
-  console.log(info, "Footer Info");
+
   return (
     <footer className="bg-gradient-to-r from-yellow-100 to-yellow-50 border-t-2 border-yellow-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

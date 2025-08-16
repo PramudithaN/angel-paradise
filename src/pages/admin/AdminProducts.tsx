@@ -116,7 +116,6 @@ const AdminProducts = () => {
   };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
-    console.log(formData, "FORMDATA");
     e.preventDefault();
     const productData = {
       name: formData.name,
@@ -171,7 +170,6 @@ const AdminProducts = () => {
             id: data.product._id,
           },
         ]);
-      console.log(response, "RESPONSE");
         Swal.fire({ icon: "success", title: "Product added!", text: "The product was added successfully." });
       }
       // Reset form
@@ -592,7 +590,7 @@ const AdminProducts = () => {
                     name="inStock"
                     checked={formData.inStock}
                     onChange={handleInputChange}
-                    className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                    className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
                   />
                   <label className="ml-2 text-sm text-gray-700">In Stock</label>
                 </div>
@@ -602,7 +600,7 @@ const AdminProducts = () => {
                     name="featured"
                     checked={formData.featured}
                     onChange={handleInputChange}
-                    className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                    className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
                   />
                   <label className="ml-2 text-sm text-gray-700">Featured</label>
                 </div>
