@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, MessageCircle, Baby } from 'lucide-react';
+import { Menu, X, MessageCircle, Baby, ShoppingCart } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,6 +24,7 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const { cart } = useCart();
   return (
     <header className="bg-white/50 backdrop-blur-xl shadow-lg sticky top-0 z-50 border-orange-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,6 +62,15 @@ const Header = () => {
             </Link>
           </nav>
 
+          {/* Cart Icon */}
+          <Link to="/payment" className="relative group mr-2">
+            <ShoppingCart className="w-6 h-6 text-orange-600 group-hover:scale-110 transition-transform duration-200" />
+            {cart.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full px-2 py-0.5 font-bold">
+                {cart.length}
+              </span>
+            )}
+          </Link>
           {/* WhatsApp Button */}
           <div className="flex items-center space-x-4">
             {whatsapp && (

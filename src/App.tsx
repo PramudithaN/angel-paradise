@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { CartProvider } from './contexts/CartContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -17,9 +18,10 @@ import PaymentPage from './pages/PaymentPage';
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-yellow-50">
-          <Routes>
+      <CartProvider>
+        <Router>
+          <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-yellow-50">
+            <Routes>
             {/* Admin Login Route (Public) */}
             <Route path="/admin-login" element={<AdminLogin />} />
 
@@ -57,9 +59,10 @@ function App() {
                 <Footer />
               </>
             } />
-          </Routes>
-        </div>
-      </Router>
+            </Routes>
+          </div>
+        </Router>
+      </CartProvider>
     </AuthProvider>
   );
 }

@@ -64,7 +64,7 @@ const ShopPage = () => {
         return false;
       }
 
-      console.log(filteredProducts, "Filtered Products");
+  // Removed invalid reference to filteredProducts inside its own definition
       return true;
     });
   }, [products, selectedCategory, selectedSizes, priceRange, searchQuery]);

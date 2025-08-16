@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useCart } from '../contexts/CartContext';
 import { Link } from 'react-router-dom';
 import { MessageCircle, Eye } from 'lucide-react';
 
@@ -53,11 +54,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton =
     fetchInfo();
   }, []);
   console.log(product, "Product Info");
-  const handleWhatsAppOrder = () => {
-    const message = `Hi! I'm interested in ordering: ${product.name} - $${product.price}`;
-    const whatsappUrl = `https://wa.me/${info?.whatsapp}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+  const { addToCart } = useCart();
+  const handleAddToCart = () => {
+    addToCart({
+      _id: product.id,
+      name: product.name,
+      image: product.image,
+      price: product.price,
+      quantity: 1,
+      sizes: product.sizes,
+      colors: product.colors,
+      category: product.category,
+    });
   };
+  // const handleWhatsAppOrder = () => {
+  //   const message = `Hi! I'm interested in ordering: ${product.name} - $${product.price}`;
+  //   const whatsappUrl = `https://wa.me/${info?.whatsapp}?text=${encodeURIComponent(message)}`;
+  //   window.open(whatsappUrl, '_blank');
+  // };
 
   return (
     <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden group">
@@ -128,7 +142,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton =
         )}
 
         <div className="flex flex-col sm:flex-row gap-2">
-          {showWhatsAppButton ? (
+          <button
+            onClick={handleAddToCart}
+            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full text-center font-medium transition-all duration-200 hover:scale-105 text-sm"
+          >
+            Add to Cart
+          </button>
+          {/* {showWhatsAppButton && (
             <button
               onClick={handleWhatsAppOrder}
               className="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full flex items-center justify-center space-x-2 font-medium transition-all duration-200 hover:scale-105 text-sm"
@@ -136,14 +156,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showWhatsAppButton =
               <MessageCircle className="w-4 h-4" />
               <span>Order via WhatsApp</span>
             </button>
-          ) : (
-            <Link
-              to={`/product/${product.id}`}
-              className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full text-center font-medium transition-all duration-200 hover:scale-105 text-sm"
-            >
-              View Product
-            </Link>
-          )}
+          )} */}
         </div>
       </div>
     </div>

@@ -27,6 +27,7 @@ const AdminSettings = () => {
         const res = await fetch('http://localhost:5000/api/business-info');
         if (!res.ok) return;
         const data = await res.json();
+        if (!data || typeof data !== 'object') return;
         setSettings(prev => ({
           ...prev,
           businessName: data.name || prev.businessName,
@@ -42,8 +43,10 @@ const AdminSettings = () => {
           heroSubtitle: data.heroSubtitle || prev.heroSubtitle,
           aboutText: data.about || prev.aboutText,
         }));
-      } catch {
-        // ignore
+      } catch (err) {
+        console.log(err)
+        
+        // Optionally log or show a message
       }
     };
     fetchSettings();
