@@ -9,6 +9,7 @@ const productSchema = new mongoose.Schema({
   sizes: { type: [String], default: [] },
   colors: { type: [String], default: [] },
   inStock: { type: Boolean, default: true },
+  featured: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
 

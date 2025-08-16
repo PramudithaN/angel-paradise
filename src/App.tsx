@@ -11,6 +11,8 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminSettings from './pages/admin/AdminSettings';
+import AdminOrders from './pages/admin/AdminOrders';
+import AnalyticsPage from './pages/admin/AnalyticsPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import PaymentPage from './pages/PaymentPage';
@@ -34,6 +36,18 @@ function App() {
             <Route path="/admin/products" element={
               <ProtectedRoute>
                 <AdminProducts />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/admin/orders" element={
+              <ProtectedRoute>
+                <AdminOrders />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/admin/analytics" element={
+              <ProtectedRoute>
+                <AnalyticsPage />
               </ProtectedRoute>
             } />
             <Route path="/admin/settings" element={

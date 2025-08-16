@@ -1,79 +1,8 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { STRIPE_PUBLISHABLE_KEY } from '../stripeKey';
-
-const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
-
-const CheckoutForm = ({ total, clearCart }: { total: number; clearCart: () => void }) => {
-    const stripe = useStripe();
-    const elements = useElements();
-    const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState(false);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
-
-        try {
-            // Call backend to create PaymentIntent
-            const res = await fetch('http://localhost:5000/api/payment/create-payment-intent', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: Math.round(total * 100), currency: 'usd' })
-            });
-            const data = await res.json();
-            const clientSecret = data.clientSecret;
-            if (!clientSecret) throw new Error('Failed to get client secret');
-
-            const result = await stripe!.confirmCardPayment(clientSecret, {
-                payment_method: {
-                    card: elements!.getElement(CardElement)!,
-                },
-            });
-
-            if (result.error) {
-                setError(result.error.message || 'Payment failed');
-            } else if (result.paymentIntent && result.paymentIntent.status === 'succeeded') {
-                setSuccess(true);
-                clearCart();
-                setTimeout(() => navigate('/'), 2000);
-            }
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message || 'Payment failed');
-            } else {
-                setError('Payment failed');
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    if (success) {
-        return <div className="text-center text-green-600 font-bold text-xl">Payment successful! Redirecting...</div>;
-    }
-
-    return (
-        <form onSubmit={handleSubmit} className="space-y-4">
-            <CardElement className="p-3 border rounded" options={{ hidePostalCode: true }} />
-            {error && <div className="text-red-500 text-sm">{error}</div>}
-            <button
-                type="submit"
-                disabled={!stripe || loading}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold text-lg transition-all duration-200 disabled:opacity-50"
-            >
-                {loading ? 'Processing...' : 'Pay Now'}
-            </button>
-        </form>
-    );
-};
+import Swal from 'sweetalert2';
 
 const PaymentPage = () => {
     const navigate = useNavigate();
@@ -152,9 +81,21 @@ const PaymentPage = () => {
                         Continue Shopping
                     </button>
                 </div>
-                <Elements stripe={stripePromise}>
-                    <CheckoutForm total={total} clearCart={clearCart} />
-                </Elements>
+                <button
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold text-lg transition-all duration-200"
+                    onClick={() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order Placed!',
+                            text: 'Thank you for your purchase!',
+                            confirmButtonColor: '#f97316',
+                        });
+                        clearCart();
+                        setTimeout(() => navigate('/'), 2000);
+                    }}
+                >
+                    Place Order
+                </button>
             </div>
         </div>
     );

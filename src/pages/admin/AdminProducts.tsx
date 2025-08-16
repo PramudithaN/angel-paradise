@@ -28,6 +28,7 @@ const AdminProducts = () => {
     sizes?: string[];
     colors?: string[];
     inStock?: boolean;
+    featured?: boolean;
   };
   const [products, setProducts] = useState<Product[]>([]);
   // Fetch products from backend on mount
@@ -58,6 +59,7 @@ const AdminProducts = () => {
     sizes: string[];
     colors: string[];
     inStock: boolean;
+    featured: boolean;
   };
 
   const [formData, setFormData] = useState<FormData>({
@@ -69,6 +71,7 @@ const AdminProducts = () => {
     sizes: [],
     colors: [],
     inStock: true,
+    featured: false,
   });
 
   const filteredProducts = products.filter((product) => {
@@ -124,6 +127,7 @@ const AdminProducts = () => {
       sizes: formData.sizes,
       colors: formData.colors,
       inStock: formData.inStock,
+      featured: formData.featured,
     };
 
     try {
@@ -180,6 +184,7 @@ const AdminProducts = () => {
         sizes: [],
         colors: [],
         inStock: true,
+        featured: false,
       });
       setShowAddForm(false);
       setEditingProduct(null);
@@ -206,6 +211,7 @@ const AdminProducts = () => {
         sizes: data.sizes || [],
         colors: data.colors || [],
         inStock: data.inStock ?? true,
+        featured: data.featured ?? false,
       });
       setShowAddForm(true);
     } catch (err) {
@@ -246,6 +252,7 @@ const AdminProducts = () => {
       sizes: [],
       colors: [],
       inStock: true,
+      featured: false,
     });
     setShowAddForm(false);
     setEditingProduct(null);
@@ -577,15 +584,28 @@ const AdminProducts = () => {
                 />
               </div>
 
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="inStock"
-                  checked={formData.inStock}
-                  onChange={handleInputChange}
-                  className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
-                />
-                <label className="ml-2 text-sm text-gray-700">In Stock</label>
+
+              <div className="flex items-center space-x-6">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="inStock"
+                    checked={formData.inStock}
+                    onChange={handleInputChange}
+                    className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                  />
+                  <label className="ml-2 text-sm text-gray-700">In Stock</label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    name="featured"
+                    checked={formData.featured}
+                    onChange={handleInputChange}
+                    className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                  />
+                  <label className="ml-2 text-sm text-gray-700">Featured</label>
+                </div>
               </div>
 
               <div className="flex space-x-4 pt-4">

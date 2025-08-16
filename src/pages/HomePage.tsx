@@ -27,17 +27,17 @@ function HeroImageSlider() {
   return (
     <div className="relative w-full h-full overflow-hidden">
       <div className="absolute inset-0 w-full h-full">
-        <img
-          src={heroImages[prevIndex]}
-          alt=""
-          className={`w-full h-full object-cover animate-float transition-transform duration-700 ${sliding ? '-translate-x-full' : 'translate-x-0'} absolute top-0 left-0`}
+          <img
+            src={heroImages[prevIndex]}
+            alt=""
+            className={`w-full h-full object-cover transition-transform duration-700 ${sliding ? '-translate-x-full' : 'translate-x-0'} absolute top-0 left-0`}
           style={{ filter: 'brightness(0.7) blur(0px)', zIndex: 1 }}
           draggable={false}
         />
         <img
           src={heroImages[index]}
           alt="Baby clothing collection"
-          className={`w-full h-full object-cover animate-float transition-transform duration-700 ${sliding ? 'translate-x-0' : 'translate-x-full'} absolute top-0 left-0`}
+           className={`w-full h-full object-cover transition-transform duration-700 ${sliding ? 'translate-x-0' : 'translate-x-full'} absolute top-0 left-0`}
           style={{ filter: 'brightness(0.7) blur(0px)', zIndex: 2 }}
           id="hero-img"
           draggable={false}
@@ -126,17 +126,7 @@ const HomePage = () => {
         </div>
       </section>
       {/* Floating animation keyframes */}
-      <style>{`
-        @keyframes float {
-          0% { transform: translateY(0px) scale(1.03); }
-          50% { transform: translateY(-18px) scale(1.05); }
-          100% { transform: translateY(0px) scale(1.03); }
-        }
-        .animate-float {
-          animation: float 5s ease-in-out infinite;
-          transition: filter 0.3s;
-        }
-      `}</style>
+    {/* Removed floating animation for hero image */}
       {/* Scroll animation for hero image is handled in useEffect above */}
 
       {/* Features Section */}

@@ -7,8 +7,8 @@ const router = express.Router();
 // Add New Product
 router.post('/add', async (req, res) => {
   try {
-    const { name, description, price, image, category,colors,sizes } = req.body;
-    const product = new Product({ name, description, price, image, category,colors,sizes });
+    const { name, description, price, image, category, colors, sizes, featured } = req.body;
+    const product = new Product({ name, description, price, image, category, colors, sizes, featured });
     await product.save();
     res.status(201).json({ message: 'Product added successfully', product });
   } catch (error) {
@@ -41,9 +41,14 @@ router.get('/:id', async (req, res) => {
 // Update a product by ID
 router.put('/:id', async (req, res) => {
   try {
+    const updateFields = { ...req.body };
+    // Only allow 'featured' to be updated if present in body
+    if (typeof req.body.featured !== 'undefined') {
+      updateFields.featured = req.body.featured;
+    }
     const updated = await Product.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateFields,
       { new: true }
     );
     if (!updated) return res.status(404).json({ message: 'Product not found' });
