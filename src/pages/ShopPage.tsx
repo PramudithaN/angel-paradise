@@ -63,10 +63,23 @@ const ShopPage = () => {
         return false;
       }
 
-  // Removed invalid reference to filteredProducts inside its own definition
       return true;
     });
   }, [products, selectedCategory, selectedSizes, priceRange, searchQuery]);
+
+  // Pagination logic
+  const PRODUCTS_PER_PAGE = 6;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const paginatedProducts = useMemo(() => {
+    const startIdx = (currentPage - 1) * PRODUCTS_PER_PAGE;
+    return filteredProducts.slice(startIdx, startIdx + PRODUCTS_PER_PAGE);
+  }, [filteredProducts, currentPage]);
+
+  // Reset to first page when filters/search change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, selectedSizes, priceRange, searchQuery]);
   const handleSizeToggle = (size: string) => {
     setSelectedSizes(prev =>
       prev.includes(size)
@@ -242,24 +255,54 @@ const ShopPage = () => {
             </div>
 
             {/* Products Grid */}
-            {filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map(product => {
-                  const normalizedProduct = {
-                    ...product,
-                    id: String(product._id || product.id),
-                  };
-                  return (
-                    <div key={normalizedProduct.id}>
-                      <ProductCard
-                        product={normalizedProduct}
-                        showWhatsAppButton
-                        onQuickView={() => setQuickViewProduct(product)}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
+            {paginatedProducts.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {paginatedProducts.map(product => {
+                    const normalizedProduct = {
+                      ...product,
+                      id: String(product._id || product.id),
+                    };
+                    return (
+                      <div key={normalizedProduct.id}>
+                        <ProductCard
+                          product={normalizedProduct}
+                          showWhatsAppButton
+                          onQuickView={() => setQuickViewProduct(product)}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center mt-8 space-x-2">
+                    <button
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 rounded-lg bg-orange-100 text-orange-600 font-semibold disabled:opacity-50"
+                    >
+                      Prev
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`px-4 py-2 rounded-lg font-semibold ${currentPage === page ? 'bg-orange-500 text-white' : 'bg-orange-50 text-orange-600 hover:bg-orange-200'}`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      className="px-4 py-2 rounded-lg bg-orange-100 text-orange-600 font-semibold disabled:opacity-50"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="text-center py-16">
                 <div className="text-6xl mb-4">🔍</div>

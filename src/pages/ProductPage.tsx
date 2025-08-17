@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useCart } from '../contexts/CartContext';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MessageCircle, ChevronLeft, ChevronRight, Heart, Shield, Truck } from 'lucide-react';
 
@@ -6,6 +7,7 @@ import { ArrowLeft, MessageCircle, ChevronLeft, ChevronRight, Heart, Shield, Tru
 const ProductPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
   interface Product {
     _id?: string;
     id?: string;
@@ -99,15 +101,19 @@ const ProductPage = () => {
   };
 
   const handleProceedToCheckout = () => {
-    const order = {
-      product: product.name,
+    if (!product) return;
+    // Add to cart (replace if already in cart)
+    addToCart({
+      _id: product._id || product.id || '',
+      name: product.name,
+      image: product.image,
       price: product.price,
-      size: selectedSize,
-      color: selectedColor,
-      quantity: quantity,
-      total: (product.price * quantity).toFixed(2),
-    };
-    navigate('/payment', { state: { order } });
+      quantity,
+      sizes: selectedSize ? [selectedSize] : [],
+      colors: selectedColor ? [selectedColor] : [],
+      category: product.category,
+    });
+    navigate('/payment');
   };
 
   return (
@@ -295,7 +301,7 @@ const ProductPage = () => {
                 onClick={handleProceedToCheckout}
                 className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white px-8 py-4 rounded-full font-semibold text-lg flex items-center justify-center space-x-3 transition-all duration-300 hover:scale-105 shadow-lg"
               >
-                <span>Proceed to Checkout</span>
+                <span>Proceed to Checkout-</span>
               </button>
               <div className="text-center text-gray-600 text-sm">
                 Total: <span className="font-bold text-lg text-yellow-600">${(product.price * quantity).toFixed(2)}</span>

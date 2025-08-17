@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import Swal from 'sweetalert2';
@@ -39,13 +38,20 @@ const PaymentPage = () => {
                                     {item.colors && item.colors.length > 0 && <div className="text-xs text-gray-500">Colors: {item.colors.join(', ')}</div>}
                                     <div className="flex items-center gap-2 mt-2">
                                         <span className="text-gray-700">Qty:</span>
-                                        <input
-                                            type="number"
-                                            min={1}
-                                            value={item.quantity}
-                                            onChange={e => updateQuantity(item._id, Number(e.target.value))}
-                                            className="w-16 px-2 py-1 border rounded"
-                                        />
+                                        <button
+                                            onClick={() => updateQuantity(item._id, Math.max(1, item.quantity - 1))}
+                                            className="px-2 py-1 bg-gray-200 rounded text-gray-700 font-bold text-lg hover:bg-gray-300"
+                                            disabled={item.quantity <= 1}
+                                        >
+                                            -
+                                        </button>
+                                        <span className="w-8 text-center">{item.quantity}</span>
+                                        <button
+                                            onClick={() => updateQuantity(item._id, item.quantity + 1)}
+                                            className="px-2 py-1 bg-gray-200 rounded text-gray-700 font-bold text-lg hover:bg-gray-300"
+                                        >
+                                            +
+                                        </button>
                                         <button
                                             onClick={() => removeFromCart(item._id)}
                                             className="ml-2 text-red-500 hover:text-red-700 text-xs font-medium"
