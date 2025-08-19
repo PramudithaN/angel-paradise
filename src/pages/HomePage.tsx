@@ -196,35 +196,33 @@ const HomePage = () => {
           </p>
         </div>
 
-        <Spin spinning={loading} >
+        <Spin spinning={loading}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
             {featuredProducts.length === 0 ? (
               <div className="col-span-3 text-center text-gray-500">No featured products found.</div>
             ) : (
-              featuredProducts.map(product => {
-                const normalizedProduct = {
-                  ...product,
-                  id: String(product._id || product.id),
-                  name: product.name || "",
-                  price: product.price || 0,
-                  image: product.image || "",
-                  category: product.category || "",
-                };
-                return (
-                  <div key={normalizedProduct.id}>
-                    <ProductCard
-                      product={normalizedProduct}
-                      showWhatsAppButton
-                      onQuickView={() => setQuickViewProduct(product)}
-                    />
-                  </div>
-                );
-              })
-              // featuredProducts.map((product) => (
-              //   <ProductCard key={product.id || product._id || id} product={product}/>
-              // )
-            )
-            }
+              featuredProducts
+                .slice(-3)
+                .map(product => {
+                  const normalizedProduct = {
+                    ...product,
+                    id: String(product._id || product.id),
+                    name: product.name || "",
+                    price: product.price || 0,
+                    image: product.image || "",
+                    category: product.category || "",
+                  };
+                  return (
+                    <div key={normalizedProduct.id}>
+                      <ProductCard
+                        product={normalizedProduct}
+                        showWhatsAppButton
+                        onQuickView={() => setQuickViewProduct(product)}
+                      />
+                    </div>
+                  );
+                })
+            )}
           </div>
         </Spin>
 

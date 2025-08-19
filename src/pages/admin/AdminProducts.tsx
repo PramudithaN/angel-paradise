@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { products as categories, sizes } from "../../data/products";
 import { useAuth } from "../../contexts/AuthContext";
-import { Upload } from "antd";
+import { Spin, Upload } from "antd";
 
 const AdminProducts = () => {
   const { logout } = useAuth();
@@ -31,26 +31,6 @@ const AdminProducts = () => {
     inStock?: boolean;
     featured?: boolean;
   };
-  const [products, setProducts] = useState<Product[]>([]);
-  // Fetch products from backend on mount
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/api/products");
-        const data = await res.json();
-        setProducts(data);
-      } catch (err) {
-        console.error("Failed to fetch products", err);
-      }
-    };
-    fetchProducts();
-  }, []);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [showAddForm, setShowAddForm] = useState(false);
-  // Removed duplicate Product type
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-
   type FormData = {
     name: string;
     price: string;
@@ -62,7 +42,12 @@ const AdminProducts = () => {
     inStock: boolean;
     featured: boolean;
   };
-
+  const [products, setProducts] = useState<Product[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     price: "",
@@ -75,6 +60,22 @@ const AdminProducts = () => {
     featured: false,
   });
 
+  // Fetch products from backend on mount
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch("http://localhost:5000/api/products");
+        const data = await res.json();
+        setProducts(data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch products", err);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name
       .toLowerCase()
@@ -83,6 +84,15 @@ const AdminProducts = () => {
       selectedCategory === "All" || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 6;
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage
+  );
 
   type InputChangeEvent = React.ChangeEvent<
     HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -135,7 +145,9 @@ const AdminProducts = () => {
       if (editingProduct && (editingProduct._id || editingProduct.id)) {
         // Update existing product
         response = await fetch(
-          `http://localhost:5000/api/products/${editingProduct._id || editingProduct.id}`,
+          `http://localhost:5000/api/products/${
+            editingProduct._id || editingProduct.id
+          }`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -149,12 +161,16 @@ const AdminProducts = () => {
         setProducts((prev) =>
           prev.map((p) =>
             p._id === (editingProduct._id || editingProduct.id) ||
-              p.id === (editingProduct._id || editingProduct.id)
+            p.id === (editingProduct._id || editingProduct.id)
               ? data.product
               : p
           )
         );
-        Swal.fire({ icon: "success", title: "Product updated!", text: "The product was updated successfully." });
+        Swal.fire({
+          icon: "success",
+          title: "Product updated!",
+          text: "The product was updated successfully.",
+        });
       } else {
         // Add new product
         response = await fetch("http://localhost:5000/api/products/add", {
@@ -173,7 +189,11 @@ const AdminProducts = () => {
             id: data.product._id,
           },
         ]);
-        Swal.fire({ icon: "success", title: "Product added!", text: "The product was added successfully." });
+        Swal.fire({
+          icon: "success",
+          title: "Product added!",
+          text: "The product was added successfully.",
+        });
       }
       // Reset form
       setFormData({
@@ -190,7 +210,11 @@ const AdminProducts = () => {
       setShowAddForm(false);
       setEditingProduct(null);
     } catch (error) {
-      Swal.fire({ icon: "error", title: "Error", text: error instanceof Error ? error.message : "An error occurred" });
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error instanceof Error ? error.message : "An error occurred",
+      });
     }
   };
 
@@ -230,16 +254,29 @@ const AdminProducts = () => {
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Yes, delete it!",
     });
     if (result.isConfirmed) {
       try {
-        const res = await fetch(`http://localhost:5000/api/products/${productId}`, { method: "DELETE" });
+        const res = await fetch(
+          `http://localhost:5000/api/products/${productId}`,
+          { method: "DELETE" }
+        );
         if (!res.ok) throw new Error("Failed to delete product");
-        setProducts((prev) => prev.filter((p) => p.id !== productId && p._id !== productId));
-        Swal.fire({ icon: "success", title: "Deleted!", text: "Product has been deleted." });
+        setProducts((prev) =>
+          prev.filter((p) => p.id !== productId && p._id !== productId)
+        );
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Product has been deleted.",
+        });
       } catch {
-        Swal.fire({ icon: "error", title: "Error", text: "Failed to delete product." });
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to delete product.",
+        });
       }
     }
   };
@@ -349,96 +386,139 @@ const AdminProducts = () => {
         </div>
 
         {/* Products Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200">
-            <h2 className="text-lg font-semibold text-gray-800">
-              Products ({filteredProducts.length})
-            </h2>
-          </div>
+        <Spin spinning={loading}>
+          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="px-6 py-4 border-b border-slate-200">
+              <h2 className="text-lg font-semibold text-gray-800">
+                Products ({filteredProducts.length})
+              </h2>
+            </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Product
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Category
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Price
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-slate-200">
-                {filteredProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-slate-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-12 h-12 rounded-lg object-cover mr-4"
-                        />
-                        <div>
-                          <p className="text-sm font-medium text-gray-800">
-                            {product.name}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Sizes: {(product.sizes || []).join(", ")}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 py-1 text-xs font-medium bg-yellow-100 text-orange-600 rounded-full">
-                        {product.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-800">
-                      ${product.price}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${product.inStock
-                          ? "bg-green-100 text-green-600"
-                          : "bg-red-100 text-red-600"
-                          }`}
-                      >
-                        {product.inStock ? "In Stock" : "Out of Stock"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => handleEdit(product)}
-                          className="text-cyan-600 hover:text-cyan-700 transition-colors duration-200"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleDelete(product.id || product._id || "")
-                          }
-                          className="text-red-600 hover:text-red-700 transition-colors duration-200"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-slate-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Product
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Category
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Price
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-slate-200">
+                  {paginatedProducts.map((product) => (
+                    <tr
+                      key={product.id || product._id}
+                      className="hover:bg-slate-50"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-12 h-12 rounded-lg object-cover mr-4"
+                          />
+                          <div>
+                            <p className="text-sm font-medium text-gray-800">
+                              {product.name}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              Sizes: {(product.sizes || []).join(", ")}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-2 py-1 text-xs font-medium bg-yellow-100 text-orange-600 rounded-full">
+                          {product.category}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-800">
+                        ${product.price}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-2 py-1 text-xs font-medium rounded-full ${
+                            product.inStock
+                              ? "bg-green-100 text-green-600"
+                              : "bg-red-100 text-red-600"
+                          }`}
+                        >
+                          {product.inStock ? "In Stock" : "Out of Stock"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleEdit(product)}
+                            className="text-cyan-600 hover:text-cyan-700 transition-colors duration-200"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() =>
+                              handleDelete(product.id || product._id || "")
+                            }
+                            className="text-red-600 hover:text-red-700 transition-colors duration-200"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 py-4">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 rounded bg-slate-100 text-gray-600 hover:bg-slate-200 disabled:opacity-50"
+                >
+                  Prev
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-3 py-1 rounded ${
+                        page === currentPage
+                          ? "bg-orange-500 text-white"
+                          : "bg-slate-100 text-gray-600 hover:bg-slate-200"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+                <button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 rounded bg-slate-100 text-gray-600 hover:bg-slate-200 disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
-        </div>
+        </Spin>
       </div>
 
       {/* Add/Edit Product Modal */}
@@ -532,20 +612,26 @@ const AdminProducts = () => {
                   showUploadList={false}
                   customRequest={async ({ file, onSuccess, onError }) => {
                     const formDataObj = new FormData();
-                    formDataObj.append('image', file);
+                    formDataObj.append("image", file);
                     try {
                       // You must implement this endpoint in your backend to handle image uploads
-                      const res = await fetch('http://localhost:5000/api/products/upload', {
-                        method: 'POST',
-                        body: formDataObj,
-                      });
+                      const res = await fetch(
+                        "http://localhost:5000/api/products/upload",
+                        {
+                          method: "POST",
+                          body: formDataObj,
+                        }
+                      );
                       const data = await res.json();
-                      console.log(data)
+                      console.log(data);
                       if (data.imageUrl) {
-                        setFormData((prev) => ({ ...prev, image: data.imageUrl }));
+                        setFormData((prev) => ({
+                          ...prev,
+                          image: data.imageUrl,
+                        }));
                         if (onSuccess) onSuccess(data, file);
                       } else {
-                        if (onError) onError(new Error('No imageUrl returned'));
+                        if (onError) onError(new Error("No imageUrl returned"));
                       }
                     } catch (err) {
                       if (onError) onError(err as Error);
@@ -553,7 +639,16 @@ const AdminProducts = () => {
                   }}
                 >
                   {formData.image ? (
-                    <img src={formData.image} alt="Preview" style={{ width: '104px', height: '104px', objectFit: 'cover', borderRadius: '8px' }} />
+                    <img
+                      src={formData.image}
+                      alt="Preview"
+                      style={{
+                        width: "104px",
+                        height: "104px",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                      }}
+                    />
                   ) : (
                     <div>
                       <span className="text-gray-400">Upload</span>
@@ -586,10 +681,11 @@ const AdminProducts = () => {
                       key={size}
                       type="button"
                       onClick={() => handleSizeToggle(size)}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${formData.sizes.includes(size)
-                        ? "bg-orange-500 text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-orange-600"
-                        }`}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        formData.sizes.includes(size)
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-orange-600"
+                      }`}
                     >
                       {size}
                     </button>
@@ -609,7 +705,6 @@ const AdminProducts = () => {
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
                 />
               </div>
-
 
               <div className="flex items-center space-x-6">
                 <div className="flex items-center">
