@@ -34,10 +34,10 @@ router.get('/summary/:productId', async (req: Request, res: Response) => {
   }
 });
 
-// Get all reviews for a product
+// Get all reviews for a product, sorted by latest first
 router.get('/:productId', async (req: Request, res: Response) => {
   try {
-    const reviews = await Review.find({ productId: req.params.productId });
+    const reviews = await Review.find({ productId: req.params.productId }).sort({ createdAt: -1 });
     res.json(reviews);
   } catch {
     res.status(500).json({ error: 'Failed to fetch reviews' });
