@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -37,11 +38,7 @@ const AnalyticsPage: React.FC = () => {
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Monthly Sales</h2>
-          {loading ? (
-            <div className="flex items-center justify-center h-48">
-              <span className="text-orange-500 animate-pulse text-lg">Loading sales data...</span>
-            </div>
-          ) : (
+          <Spin spinning={loading}>
             <div className="flex items-end gap-4 h-48">
               {salesData.map((d) => (
                 <div key={d.label} className="flex flex-col items-center flex-1">
@@ -53,15 +50,11 @@ const AnalyticsPage: React.FC = () => {
                 </div>
               ))}
             </div>
-          )}
+          </Spin>
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Top Products</h2>
-          {loading ? (
-            <div className="flex items-center justify-center h-32">
-              <span className="text-orange-500 animate-pulse text-lg">Loading top products...</span>
-            </div>
-          ) : (
+          <Spin spinning={loading}>
             <ul className="divide-y divide-slate-100">
               {topProducts.map((p, i) => (
                 <li key={p.name} className="flex items-center justify-between py-3">
@@ -75,7 +68,7 @@ const AnalyticsPage: React.FC = () => {
                 </li>
               ))}
             </ul>
-          )}
+          </Spin>
         </div>
       </div>
     </div>

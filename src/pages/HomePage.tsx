@@ -28,17 +28,17 @@ function HeroImageSlider() {
   return (
     <div className="relative w-full h-full overflow-hidden">
       <div className="absolute inset-0 w-full h-full">
-          <img
-            src={heroImages[prevIndex]}
-            alt=""
-            className={`w-full h-full object-cover transition-transform duration-700 ${sliding ? '-translate-x-full' : 'translate-x-0'} absolute top-0 left-0`}
+        <img
+          src={heroImages[prevIndex]}
+          alt=""
+          className={`w-full h-full object-cover transition-transform duration-700 ${sliding ? '-translate-x-full' : 'translate-x-0'} absolute top-0 left-0`}
           style={{ filter: 'brightness(0.7) blur(0px)', zIndex: 1 }}
           draggable={false}
         />
         <img
           src={heroImages[index]}
           alt="Baby clothing collection"
-           className={`w-full h-full object-cover transition-transform duration-700 ${sliding ? 'translate-x-0' : 'translate-x-full'} absolute top-0 left-0`}
+          className={`w-full h-full object-cover transition-transform duration-700 ${sliding ? 'translate-x-0' : 'translate-x-full'} absolute top-0 left-0`}
           style={{ filter: 'brightness(0.7) blur(0px)', zIndex: 2 }}
           id="hero-img"
           draggable={false}
@@ -63,6 +63,7 @@ import { ArrowRight, Heart, Shield, Truck } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { ProductReviews, ReviewForm } from '../components/Reviews';
 import ScrollToTopButton from '../components/ScrollToTopButton';
+import { Spin } from 'antd';
 
 const HomePage = () => {
   const [refresh, setRefresh] = useState(0);
@@ -117,7 +118,7 @@ const HomePage = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-console.log(featuredProducts,"Featured Products");
+  console.log(featuredProducts, "Featured Products");
   return (
     <div className="space-y-16 pb-16">
       <ScrollToTopButton />
@@ -195,37 +196,37 @@ console.log(featuredProducts,"Featured Products");
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-          {loading ? (
-            <div className="col-span-3 text-center text-gray-500">Loading featured products...</div>
-          ) : featuredProducts.length === 0 ? (
-            <div className="col-span-3 text-center text-gray-500">No featured products found.</div>
-          ) : (
-            featuredProducts.map(product => {
-                  const normalizedProduct = {
-                    ...product,
-                    id: String(product._id || product.id),
-                    name: product.name || "",
-                    price: product.price || 0,
-                    image: product.image || "",
-                    category: product.category || "",
-                  };
-                  return (
-                    <div key={normalizedProduct.id}>
-                      <ProductCard
-                        product={normalizedProduct}
-                        showWhatsAppButton
-                        onQuickView={() => setQuickViewProduct(product)}
-                      />
-                    </div>
-                  );
-                })
-            // featuredProducts.map((product) => (
-            //   <ProductCard key={product.id || product._id || id} product={product}/>
-            // )
-          )
-          }
-        </div>
+        <Spin spinning={loading} >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+            {featuredProducts.length === 0 ? (
+              <div className="col-span-3 text-center text-gray-500">No featured products found.</div>
+            ) : (
+              featuredProducts.map(product => {
+                const normalizedProduct = {
+                  ...product,
+                  id: String(product._id || product.id),
+                  name: product.name || "",
+                  price: product.price || 0,
+                  image: product.image || "",
+                  category: product.category || "",
+                };
+                return (
+                  <div key={normalizedProduct.id}>
+                    <ProductCard
+                      product={normalizedProduct}
+                      showWhatsAppButton
+                      onQuickView={() => setQuickViewProduct(product)}
+                    />
+                  </div>
+                );
+              })
+              // featuredProducts.map((product) => (
+              //   <ProductCard key={product.id || product._id || id} product={product}/>
+              // )
+            )
+            }
+          </div>
+        </Spin>
 
         {/* Quick View Modal */}
         {showQuickView && quickViewProduct && (

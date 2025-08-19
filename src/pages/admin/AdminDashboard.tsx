@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Package, ShoppingBag, Star, Users, TrendingUp, Eye, MessageCircle, Baby, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import React, { useEffect, useState } from 'react';
+import { Spin } from 'antd';
 
 const AdminDashboard = () => {
   const { logout } = useAuth();
@@ -116,7 +117,7 @@ const AdminDashboard = () => {
   // Test data for development/demo purposes
   // Remove or replace with real API calls in production
   // Uncomment below to use test orders instead of fetching from API
-  
+
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   // useEffect(() => {
@@ -135,7 +136,7 @@ const AdminDashboard = () => {
   // }, []);
 
 
- 
+
   useEffect(() => {
     setTimeout(() => {
       setRecentOrders([
@@ -177,7 +178,7 @@ const AdminDashboard = () => {
       setLoadingOrders(false);
     }, 500);
   }, []);
- 
+
   const [topProducts, setTopProducts] = useState<any[]>([]);
   const [loadingTopProducts, setLoadingTopProducts] = useState(true);
 
@@ -292,70 +293,70 @@ const AdminDashboard = () => {
               </button>
             </div>
             <div className="space-y-4">
-              {loadingOrders ? (
-                <div className="text-center text-gray-500 py-8">Loading orders...</div>
-              ) : recentOrders.length === 0 ? (
-                <div className="text-center text-gray-400 py-8">No recent orders found.</div>
-              ) : recentOrders.slice(0, 6).map((order) => (
-                <div
-                  key={order._id}
-                  className="flex flex-col md:flex-row md:items-center md:justify-between p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-200 group gap-3 relative overflow-hidden"
-                >
-                  {/* User Avatar/Initials */}
-                  <div className="flex items-center gap-3 flex-1">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-200 to-yellow-100 flex items-center justify-center text-lg font-bold text-orange-600 shadow-inner border border-white">
-                      {order.user?.split(' ').map((n: string) => n[0]).join('')}
+              <Spin spinning={loadingOrders}>
+                {recentOrders.length === 0 ? (
+                  <div className="text-center text-gray-400 py-8">No recent orders found.</div>
+                ) : recentOrders.slice(0, 6).map((order) => (
+                  <div
+                    key={order._id}
+                    className="flex flex-col md:flex-row md:items-center md:justify-between p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-200 group gap-3 relative overflow-hidden"
+                  >
+                    {/* User Avatar/Initials */}
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-200 to-yellow-100 flex items-center justify-center text-lg font-bold text-orange-600 shadow-inner border border-white">
+                        {order.user?.split(' ').map((n: string) => n[0]).join('')}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="font-semibold text-gray-900 text-base">{order.user}</p>
+                          <span className="text-xs text-gray-400">#{order._id}</span>
+                        </div>
+                        <div className="text-sm text-gray-600 mt-1">
+                          {order.items && order.items.map((item: any, idx: number) => (
+                            <span key={item.productId}>
+                              <span className="font-medium text-gray-800">{item.name}</span> <span className="text-gray-400">x{item.quantity}</span>{idx < order.items.length - 1 ? <span className="text-gray-300">,&nbsp;</span> : ''}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
+                          <svg className="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                          <span>Shipping: {order.shippingAddress}</span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
+                          <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                          <span>Placed: {new Date(order.createdAt).toLocaleString()}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-semibold text-gray-900 text-base">{order.user}</p>
-                        <span className="text-xs text-gray-400">#{order._id}</span>
+                    {/* Order Total & Status */}
+                    <div className="flex flex-col items-end min-w-[130px]">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-lg font-extrabold text-gray-900 bg-gradient-to-r from-orange-100 to-yellow-50 px-3 py-1 rounded-lg shadow-inner">${order.total.toFixed(2)}</span>
                       </div>
-                      <div className="text-sm text-gray-600 mt-1">
-                        {order.items && order.items.map((item: any, idx: number) => (
-                          <span key={item.productId}>
-                            <span className="font-medium text-gray-800">{item.name}</span> <span className="text-gray-400">x{item.quantity}</span>{idx < order.items.length - 1 ? <span className="text-gray-300">,&nbsp;</span> : ''}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
-                        <svg className="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                        <span>Shipping: {order.shippingAddress}</span>
-                      </div>
-                      <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
-                        <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                        <span>Placed: {new Date(order.createdAt).toLocaleString()}</span>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Order Total & Status */}
-                  <div className="flex flex-col items-end min-w-[130px]">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-lg font-extrabold text-gray-900 bg-gradient-to-r from-orange-100 to-yellow-50 px-3 py-1 rounded-lg shadow-inner">${order.total.toFixed(2)}</span>
-                    </div>
-                    <span
-                      className={`flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full shadow-sm
+                      <span
+                        className={`flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full shadow-sm
                         ${order.status === 'Delivered' ? 'bg-green-100 text-green-700' :
-                          order.status === 'Shipped' ? 'bg-blue-100 text-blue-700' :
-                          'bg-yellow-100 text-orange-700'}
+                            order.status === 'Shipped' ? 'bg-blue-100 text-blue-700' :
+                              'bg-yellow-100 text-orange-700'}
                         `}
-                    >
-                      {order.status === 'Delivered' && (
-                        <svg className="w-4 h-4 mr-1 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                      )}
-                      {order.status === 'Shipped' && (
-                        <svg className="w-4 h-4 mr-1 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h13M9 21V3m0 0l7 7-7-7z" /></svg>
-                      )}
-                      {order.status === 'Processing' && (
-                        <svg className="w-4 h-4 mr-1 text-orange-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" /></svg>
-                      )}
-                      {order.status}
-                    </span>
+                      >
+                        {order.status === 'Delivered' && (
+                          <svg className="w-4 h-4 mr-1 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                        )}
+                        {order.status === 'Shipped' && (
+                          <svg className="w-4 h-4 mr-1 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h13M9 21V3m0 0l7 7-7-7z" /></svg>
+                        )}
+                        {order.status === 'Processing' && (
+                          <svg className="w-4 h-4 mr-1 text-orange-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" /></svg>
+                        )}
+                        {order.status}
+                      </span>
+                    </div>
+                    {/* Decorative gradient bar on hover */}
+                    <div className="absolute left-0 bottom-0 h-1 w-full bg-gradient-to-r from-pink-400 via-orange-300 to-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                  {/* Decorative gradient bar on hover */}
-                  <div className="absolute left-0 bottom-0 h-1 w-full bg-gradient-to-r from-pink-400 via-orange-300 to-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-              ))}
+                ))}
+              </Spin>
             </div>
           </div>
 
@@ -371,40 +372,38 @@ const AdminDashboard = () => {
               </button>
             </div>
             <div className="space-y-4">
-              {loadingTopProducts ? (
-                <div className="flex items-center justify-center h-40">
-                  <span className="text-orange-500 animate-pulse text-lg">Loading top products...</span>
-                </div>
-              ) : (
-                topProducts.map((product, index) => (
-                  <div
-                    key={product.name}
-                    className="flex flex-col md:flex-row md:items-center md:justify-between p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-200 group gap-3 relative overflow-hidden"
-                  >
-                    {/* Product Avatar/Rank */}
-                    <div className="flex items-center gap-3 flex-1">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-200 to-orange-100 flex items-center justify-center text-lg font-bold text-orange-600 shadow-inner border border-white">
-                        #{index + 1}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <p className="font-semibold text-gray-900 text-base">{product.name}</p>
+              <Spin spinning={loadingTopProducts}>
+                {
+                  topProducts.map((product, index) => (
+                    <div
+                      key={product.name}
+                      className="flex flex-col md:flex-row md:items-center md:justify-between p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-200 group gap-3 relative overflow-hidden"
+                    >
+                      {/* Product Avatar/Rank */}
+                      <div className="flex items-center gap-3 flex-1">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-200 to-orange-100 flex items-center justify-center text-lg font-bold text-orange-600 shadow-inner border border-white">
+                          #{index + 1}
                         </div>
-                        <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
-                          <svg className="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 17v2a2 2 0 002 2h14a2 2 0 002-2v-2M16 11V7a4 4 0 00-8 0v4M5 11h14a2 2 0 012 2v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4a2 2 0 012-2z" /></svg>
-                          <span>{product.sales} sold</span>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold text-gray-900 text-base">{product.name}</p>
+                          </div>
+                          <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
+                            <svg className="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 17v2a2 2 0 002 2h14a2 2 0 002-2v-2M16 11V7a4 4 0 00-8 0v4M5 11h14a2 2 0 012 2v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4a2 2 0 012-2z" /></svg>
+                            <span>{product.sales} sold</span>
+                          </div>
                         </div>
                       </div>
+                      {/* Product Revenue */}
+                      <div className="flex flex-col items-end min-w-[110px]">
+                        <span className="text-lg font-extrabold text-gray-900 bg-gradient-to-r from-orange-100 to-yellow-50 px-3 py-1 rounded-lg shadow-inner">{product.revenue}</span>
+                      </div>
+                      {/* Decorative gradient bar on hover */}
+                      <div className="absolute left-0 bottom-0 h-1 w-full bg-gradient-to-r from-yellow-400 via-orange-300 to-pink-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
-                    {/* Product Revenue */}
-                    <div className="flex flex-col items-end min-w-[110px]">
-                      <span className="text-lg font-extrabold text-gray-900 bg-gradient-to-r from-orange-100 to-yellow-50 px-3 py-1 rounded-lg shadow-inner">{product.revenue}</span>
-                    </div>
-                    {/* Decorative gradient bar on hover */}
-                    <div className="absolute left-0 bottom-0 h-1 w-full bg-gradient-to-r from-yellow-400 via-orange-300 to-pink-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-                ))
-              )}
+                  ))
+                }
+              </Spin>
             </div>
           </div>
         </div>
