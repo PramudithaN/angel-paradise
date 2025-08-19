@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Heart, Shield, Truck } from 'lucide-react';
+import { Spin } from 'antd';
+import ProductCard from '../components/ProductCard';
+import { ProductReviews, ReviewForm } from '../components/Reviews';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 
 const heroImages = [
   "https://images.pexels.com/photos/33459585/pexels-photo-33459585.jpeg",
@@ -57,13 +63,6 @@ function HeroImageSlider() {
     </div>
   );
 }
-
-import { Link } from 'react-router-dom';
-import { ArrowRight, Heart, Shield, Truck } from 'lucide-react';
-import ProductCard from '../components/ProductCard';
-import { ProductReviews } from '../components/Reviews';
-import ScrollToTopButton from '../components/ScrollToTopButton';
-import { Spin } from 'antd';
 
 const HomePage = () => {
   type Product = {
@@ -293,11 +292,14 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
+ {/* User-friendly review form */}
+        <div className="mb-8">
+          <ReviewForm productId={DEMO_PRODUCT_ID} enhanced />
+        </div>
       {/* Testimonials/Reviews Section - Project Colors, Screenshot Layout */}
-       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white">
-      {/* <section className="max-w-4xl mx-auto my-12 p-6 bg-white rounded-2xl shadow border border-gray-200"> */}
+      <section className="max-w-4xl mx-auto my-12 p-6 bg-white rounded-2xl shadow border border-gray-200">
         <h2 className="text-2xl font-bold mb-6 text-gray-800">Reviews</h2>
+       
         <div className="flex flex-col gap-6">
           {/* Ratings summary */}
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">

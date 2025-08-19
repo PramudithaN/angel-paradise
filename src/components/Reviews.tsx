@@ -141,7 +141,6 @@ export function ReviewForm({
 }) {
   const [rating, setRating] = useState<number>(5);
   const [comment, setComment] = useState<string>("");
-  const [user, setUser] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -152,13 +151,12 @@ export function ReviewForm({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         productId,
-        userId: user || "Anonymous",
+        userId: "Anonymous",
         rating,
         comment,
       }),
     });
     setComment("");
-    setUser("");
     setRating(5);
     setSubmitting(false);
     if (onReviewAdded) onReviewAdded();
@@ -168,46 +166,42 @@ export function ReviewForm({
     return (
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col md:flex-row items-center justify-center gap-4 bg-orange-50 p-6 rounded-3xl shadow-md max-w-3xl mx-auto"
+        className="flex flex-col items-center gap-4 bg-orange-50 p-8 rounded-3xl shadow-md max-w-2xl mx-auto border border-orange-100"
       >
-        <input
-          className="border border-orange-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 transition w-32 text-center"
-          type="text"
-          value={user}
-          onChange={(e) => setUser(e.target.value)}
-          placeholder="Your name"
-          maxLength={20}
-        />
-        <div className="flex items-center gap-1">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              type="button"
-              key={star}
-              className={star <= rating ? "text-orange-400" : "text-gray-300"}
-              onClick={() => setRating(star)}
-              aria-label={`Set rating to ${star}`}
-            >
-              <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
-                <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
-              </svg>
-            </button>
-          ))}
+        <div className="w-full flex flex-col items-center mb-2">
+          <span className="text-lg font-semibold text-orange-600 mb-1">Rate your experience</span>
+          <div className="flex items-center gap-2 mb-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                type="button"
+                key={star}
+                className={star <= rating ? "text-orange-400 scale-110" : "text-gray-300"}
+                onClick={() => setRating(star)}
+                aria-label={`Set rating to ${star}`}
+              >
+                <svg className="w-9 h-9 transition-transform duration-150" fill="currentColor" viewBox="0 0 20 20">
+                  <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
+                </svg>
+              </button>
+            ))}
+          </div>
         </div>
-        <input
-          className="border border-orange-200 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400 transition flex-1"
+        <textarea
+          className="border border-orange-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400 transition w-full min-h-[60px] text-base resize-none"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          placeholder="Your review..."
+          placeholder="Share your thoughts..."
           required
-          maxLength={120}
+          maxLength={200}
         />
         <button
           type="submit"
-          className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2 rounded-full shadow transition disabled:opacity-60"
+          className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 py-3 rounded-full shadow-lg transition disabled:opacity-60 text-lg mt-2 w-full max-w-xs"
           disabled={submitting || !comment.trim()}
         >
-          {submitting ? "Submitting..." : "Submit"}
+          {submitting ? "Submitting..." : "Submit Review"}
         </button>
+        <div className="text-xs text-gray-400 mt-1">Your feedback helps us improve and helps other shoppers!</div>
       </form>
     );
   }
