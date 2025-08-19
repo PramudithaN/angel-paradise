@@ -89,8 +89,28 @@ const HomePage = () => {
   // Hero image URL
   // const heroImage = "https://images.pexels.com/photos/1648386/pexels-photo-1648386.jpeg";
 
+
   // Temporary demo product ID for reviews section
   const DEMO_PRODUCT_ID = "demo-product-1";
+
+  // Ratings summary state
+  const [ratingsSummary, setRatingsSummary] = useState({
+    average: 0,
+    count: 0,
+    breakdown: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
+  });
+  const [ratingsLoading, setRatingsLoading] = useState(true);
+
+  useEffect(() => {
+    setRatingsLoading(true);
+    fetch(`http://localhost:5000/api/reviews/summary/${DEMO_PRODUCT_ID}`)
+      .then(res => res.json())
+      .then(data => {
+        setRatingsSummary(data);
+        setRatingsLoading(false);
+      })
+      .catch(() => setRatingsLoading(false));
+  }, []);
 
   useEffect(() => {
     // Fetch products from backend
@@ -305,26 +325,43 @@ const HomePage = () => {
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
             {/* Left: Average rating and stars */}
             <div className="flex flex-col items-center md:items-start min-w-[160px]">
-              <span className="text-5xl font-bold text-gray-900">4.0</span>
-              <div className="flex items-center gap-1 mt-1 mb-1">
-                {[...Array(4)].map((_,i) => (
-                  <svg key={i} className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.386-2.46a1 1 0 00-1.175 0l-3.386 2.46c-.784.57-1.838-.196-1.539-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.045 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z"/></svg>
-                ))}
-                <svg className="w-5 h-5 text-orange-200" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.386-2.46a1 1 0 00-1.175 0l-3.386 2.46c-.784.57-1.838-.196-1.539-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.045 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z"/></svg>
-              </div>
-              <span className="text-sm text-gray-500 mb-2">35K ratings</span>
+              {ratingsLoading ? (
+                <span className="text-2xl text-gray-400">Loading...</span>
+              ) : (
+                <>
+                  <span className="text-5xl font-bold text-gray-900">{ratingsSummary.average.toFixed(1)}</span>
+                  <div className="flex items-center gap-1 mt-1 mb-1">
+                    {[1,2,3,4,5].map((star) => (
+                      <svg
+                        key={star}
+                        className={`w-5 h-5 ${star <= Math.round(ratingsSummary.average) ? "text-orange-500" : "text-orange-200"}`}
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.386-2.46a1 1 0 00-1.175 0l-3.386 2.46c-.784.57-1.838-.196-1.539-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.045 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z"/>
+                      </svg>
+                    ))}
+                  </div>
+                  <span className="text-sm text-gray-500 mb-2">{ratingsSummary.count.toLocaleString()} ratings</span>
+                </>
+              )}
             </div>
             {/* Middle: Bar chart */}
             <div className="flex-1 w-full ">
-              {[5,4,3,2,1].map((star, idx) => (
-                <div key={star} className="flex gap-2 mb-1">
-                  <span className="w-6 text-sm font-medium text-gray-700">{star}.0</span>
-                  <div className="flex-1 h-2 rounded bg-gray-200 overflow-hidden">
-                    <div className="h-2 rounded bg-orange-400" style={{width: `${[70,40,30,10,50][idx]}%`}}></div>
+              {[5,4,3,2,1].map((star) => {
+                const key = star as keyof typeof ratingsSummary.breakdown;
+                const count = ratingsSummary.breakdown[key] || 0;
+                const percent = ratingsSummary.count ? (count / ratingsSummary.count) * 100 : 0;
+                return (
+                  <div key={star} className="flex gap-2 mb-1 items-center">
+                    <span className="w-6 text-sm font-medium text-gray-700">{star}.0</span>
+                    <div className="flex-1 h-2 rounded bg-gray-200 overflow-hidden">
+                      <div className="h-2 rounded bg-orange-400 transition-all duration-500" style={{width: `${percent}%`}}></div>
+                    </div>
+                    <span className="w-14 text-xs text-gray-400 text-right">{count} review{count !== 1 ? 's' : ''}</span>
                   </div>
-                  <span className="w-14 text-xs text-gray-400 text-right">{["14K","6K","4K","800","9K"][idx]} reviews</span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
       <div className="border-t pt-4 mt-2">
