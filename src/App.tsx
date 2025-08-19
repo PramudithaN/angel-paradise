@@ -16,6 +16,7 @@ import AnalyticsPage from './pages/admin/AnalyticsPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import PaymentPage from './pages/PaymentPage';
+import AllReviewsPage from './pages/AllReviewsPage';
 
 function App() {
   return (
@@ -68,6 +69,7 @@ function App() {
                     <Route path="/about" element={<AboutPage />} />
                     <Route path="/contact" element={<ContactPage />} />
                     <Route path="/payment" element={<PaymentPage />} />
+                    <Route path="/all-reviews" element={<AllReviewsPage />} />
                   </Routes>
                 </main>
                 <Footer />

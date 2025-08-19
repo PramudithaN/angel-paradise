@@ -61,12 +61,11 @@ function HeroImageSlider() {
 import { Link } from 'react-router-dom';
 import { ArrowRight, Heart, Shield, Truck } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { ProductReviews, ReviewForm } from '../components/Reviews';
+import { ProductReviews } from '../components/Reviews';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 import { Spin } from 'antd';
 
 const HomePage = () => {
-  const [refresh, setRefresh] = useState(0);
   type Product = {
     id: string;
     featured?: boolean;
@@ -104,7 +103,7 @@ const HomePage = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [refresh]);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -295,18 +294,52 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="my-8">
-          <h2 className="text-3xl font-bold mb-6 text-center text-orange-600">Share Your Experience</h2>
-          <ReviewForm productId={DEMO_PRODUCT_ID} onReviewAdded={() => setRefresh(r => r + 1)} enhanced />
-        </div>
-        {DEMO_PRODUCT_ID && (
-          <div className="my-8">
-            <h2 className="text-3xl font-bold mb-4 text-center text-orange-600">What Our Customers Say</h2>
-            <ProductReviews productId={DEMO_PRODUCT_ID} key={refresh} cardMode />
+      {/* Testimonials/Reviews Section - Project Colors, Screenshot Layout */}
+      <section className="max-w-4xl mx-auto my-12 p-6 bg-white rounded-2xl shadow border border-gray-200">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">Reviews</h2>
+        <div className="flex flex-col gap-6">
+          {/* Ratings summary */}
+          <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+            {/* Left: Average rating and stars */}
+            <div className="flex flex-col items-center md:items-start min-w-[160px]">
+              <span className="text-5xl font-bold text-gray-900">4.0</span>
+              <div className="flex items-center gap-1 mt-1 mb-1">
+                {[...Array(4)].map((_,i) => (
+                  <svg key={i} className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.386-2.46a1 1 0 00-1.175 0l-3.386 2.46c-.784.57-1.838-.196-1.539-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.045 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z"/></svg>
+                ))}
+                <svg className="w-5 h-5 text-orange-200" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.386-2.46a1 1 0 00-1.175 0l-3.386 2.46c-.784.57-1.838-.196-1.539-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.045 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z"/></svg>
+              </div>
+              <span className="text-sm text-gray-500 mb-2">35K ratings</span>
+            </div>
+            {/* Middle: Bar chart */}
+            <div className="flex-1 w-full max-w-md">
+              {[5,4,3,2,1].map((star, idx) => (
+                <div key={star} className="flex items-center gap-2 mb-1">
+                  <span className="w-6 text-sm font-medium text-gray-700">{star}.0</span>
+                  <div className="flex-1 h-2 rounded bg-gray-200 overflow-hidden">
+                    <div className="h-2 rounded bg-orange-400" style={{width: `${[70,40,30,10,50][idx]}%`}}></div>
+                  </div>
+                  <span className="w-14 text-xs text-gray-400 text-right">{["14K","6K","4K","800","9K"][idx]} reviews</span>
+                </div>
+              ))}
+            </div>
           </div>
-        )}
+          {/* Category badges */}
+          <div className="flex flex-wrap gap-2 mt-2 mb-2">
+            <span className="bg-orange-50 text-orange-700 font-semibold px-3 py-1 rounded-full text-sm">4.0 Cleanliness</span>
+            <span className="bg-orange-50 text-orange-700 font-semibold px-3 py-1 rounded-full text-sm">4.0 Safety & Security</span>
+            <span className="bg-orange-50 text-orange-700 font-semibold px-3 py-1 rounded-full text-sm">4.0 Staff</span>
+            <span className="bg-orange-100 text-orange-700 font-semibold px-3 py-1 rounded-full text-sm">3.5 Amenities</span>
+            <span className="bg-orange-100 text-orange-700 font-semibold px-3 py-1 rounded-full text-sm">3.0 Location</span>
+          </div>
+          {/* Reviews list (dynamic) */}
+          <div className="w-full">
+            <ProductReviews productId={DEMO_PRODUCT_ID} cardMode/>
+          </div>
+          <div className="border-t pt-4 mt-2">
+            <Link to="/all-reviews" className="text-orange-600 font-semibold hover:underline">Read all reviews</Link>
+          </div>
+        </div>
       </section>
     </div>
   );

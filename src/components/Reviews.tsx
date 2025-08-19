@@ -24,60 +24,68 @@ export function ProductReviews({
       .then((data) => setReviews(data));
   }, [productId]);
 
+  // Card UI for both homepage (limit 3) and all reviews (show all)
+  const renderCard = (r: Review) => (
+    <div
+      key={r._id}
+      className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-orange-100 flex flex-col justify-between min-w-[320px] flex-shrink-0 my-2"
+    >
+      <div className="flex items-center mb-4">
+        <div className="flex space-x-1 mr-2">
+          {[1, 2, 3, 4, 5].map((star, i) =>
+            star <= r.rating ? (
+              <svg
+                key={i}
+                className="w-5 h-5 text-orange-400 inline"
+                fill="currentColor"
+                stroke="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
+              </svg>
+            ) : (
+              <svg
+                key={i}
+                className="w-5 h-5 text-gray-300 inline"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="0.5"
+                viewBox="0 0 20 20"
+              >
+                <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
+              </svg>
+            )
+          )}
+        </div>
+        <span className="font-semibold text-orange-600">{r.userId}</span>
+      </div>
+      <div className="text-gray-700 italic mb-2">{r.comment}</div>
+      <div className="text-xs text-gray-400 mt-2">
+        {new Date(r.createdAt).toLocaleDateString()}
+      </div>
+    </div>
+  );
+
   if (cardMode) {
     return (
-      <div className="overflow-x-auto p-2 bg-orange-50 rounded-2xl"style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-        <div
-          className="flex gap-8 min-w-max"
-          
-        >
+      <div className="overflow-x-auto p-2 bg-orange-50 rounded-2xl" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+        <div>
           {reviews.length === 0 && (
             <div className="text-center text-gray-400">No reviews yet.</div>
           )}
-          {reviews.map((r) => (
-            <div
-              key={r._id}
-              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-orange-100 flex flex-col justify-between min-w-[320px] max-w-xs flex-shrink-0"
-            >
-              <div className="flex items-center mb-4">
-                <div className="flex space-x-1 mr-2">
-                  {[1, 2, 3, 4, 5].map((star, i) =>
-                    star <= r.rating ? (
-                      <svg
-                        key={i}
-                        className="w-5 h-5 text-orange-400 inline"
-                        fill="currentColor"
-                        stroke="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
-                      </svg>
-                    ) : (
-                      <svg
-                        key={i}
-                        className="w-5 h-5 text-gray-300 inline"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="0.5"
-                        viewBox="0 0 20 20"
-                      >
-                        <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
-                      </svg>
-                    )
-                  )}
-                </div>
-                <span className="font-semibold text-orange-600">{r.userId}</span>
-              </div>
-              <div className="text-gray-700 italic mb-2">{r.comment}</div>
-              <div className="text-xs text-gray-400 mt-2">
-                {new Date(r.createdAt).toLocaleDateString()}
-              </div>
-            </div>
-          ))}
+          {reviews.slice(0, 3).map(renderCard)}
         </div>
       </div>
     );
   }
+
+  // All reviews as cards (not plain text)
+  return (
+    <div className="flex flex-col gap-4">
+      {reviews.length === 0 && <div className="text-center text-gray-400">No reviews yet.</div>}
+      {reviews.map(renderCard)}
+    </div>
+  );
 
   return (
     <div>
