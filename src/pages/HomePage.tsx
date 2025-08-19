@@ -295,7 +295,8 @@ const HomePage = () => {
       </section>
 
       {/* Testimonials/Reviews Section - Project Colors, Screenshot Layout */}
-      <section className="max-w-4xl mx-auto my-12 p-6 bg-white rounded-2xl shadow border border-gray-200">
+       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white">
+      {/* <section className="max-w-4xl mx-auto my-12 p-6 bg-white rounded-2xl shadow border border-gray-200"> */}
         <h2 className="text-2xl font-bold mb-6 text-gray-800">Reviews</h2>
         <div className="flex flex-col gap-6">
           {/* Ratings summary */}
@@ -312,9 +313,9 @@ const HomePage = () => {
               <span className="text-sm text-gray-500 mb-2">35K ratings</span>
             </div>
             {/* Middle: Bar chart */}
-            <div className="flex-1 w-full max-w-md">
+            <div className="flex-1 w-full ">
               {[5,4,3,2,1].map((star, idx) => (
-                <div key={star} className="flex items-center gap-2 mb-1">
+                <div key={star} className="flex gap-2 mb-1">
                   <span className="w-6 text-sm font-medium text-gray-700">{star}.0</span>
                   <div className="flex-1 h-2 rounded bg-gray-200 overflow-hidden">
                     <div className="h-2 rounded bg-orange-400" style={{width: `${[70,40,30,10,50][idx]}%`}}></div>
@@ -324,21 +325,14 @@ const HomePage = () => {
               ))}
             </div>
           </div>
-          {/* Category badges */}
-          <div className="flex flex-wrap gap-2 mt-2 mb-2">
-            <span className="bg-orange-50 text-orange-700 font-semibold px-3 py-1 rounded-full text-sm">4.0 Cleanliness</span>
-            <span className="bg-orange-50 text-orange-700 font-semibold px-3 py-1 rounded-full text-sm">4.0 Safety & Security</span>
-            <span className="bg-orange-50 text-orange-700 font-semibold px-3 py-1 rounded-full text-sm">4.0 Staff</span>
-            <span className="bg-orange-100 text-orange-700 font-semibold px-3 py-1 rounded-full text-sm">3.5 Amenities</span>
-            <span className="bg-orange-100 text-orange-700 font-semibold px-3 py-1 rounded-full text-sm">3.0 Location</span>
+      <div className="border-t pt-4 mt-2">
+            <Link to="/all-reviews" className="text-orange-600 font-semibold hover:underline">Read all reviews</Link>
           </div>
           {/* Reviews list (dynamic) */}
           <div className="w-full">
             <ProductReviews productId={DEMO_PRODUCT_ID} cardMode/>
           </div>
-          <div className="border-t pt-4 mt-2">
-            <Link to="/all-reviews" className="text-orange-600 font-semibold hover:underline">Read all reviews</Link>
-          </div>
+          
         </div>
       </section>
     </div>

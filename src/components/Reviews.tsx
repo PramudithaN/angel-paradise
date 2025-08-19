@@ -24,7 +24,12 @@ export function ProductReviews({
       .then((data) => setReviews(data));
   }, [productId]);
 
-  // Card UI for both homepage (limit 3) and all reviews (show all)
+  // Card UI for both homepage (limit 3) and all reviews (paginated)
+  const [currentPage, setCurrentPage] = useState(1);
+  const REVIEWS_PER_PAGE = 6;
+  const totalPages = Math.ceil(reviews.length / REVIEWS_PER_PAGE);
+  const paginatedReviews = reviews.slice((currentPage - 1) * REVIEWS_PER_PAGE, currentPage * REVIEWS_PER_PAGE);
+
   const renderCard = (r: Review) => (
     <div
       key={r._id}
@@ -79,11 +84,38 @@ export function ProductReviews({
     );
   }
 
-  // All reviews as cards (not plain text)
+  // All reviews as cards (paginated)
   return (
     <div className="flex flex-col gap-4">
       {reviews.length === 0 && <div className="text-center text-gray-400">No reviews yet.</div>}
-      {reviews.map(renderCard)}
+      {paginatedReviews.map(renderCard)}
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 py-4">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 rounded bg-orange-100 text-orange-600 hover:bg-orange-200 disabled:opacity-50"
+          >
+            Prev
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-1 rounded ${page === currentPage ? "bg-orange-500 text-white" : "bg-orange-50 text-orange-600 hover:bg-orange-200"}`}
+            >
+              {page}
+            </button>
+          ))}
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 rounded bg-orange-100 text-orange-600 hover:bg-orange-200 disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 
