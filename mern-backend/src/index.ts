@@ -1,3 +1,5 @@
+import productImageUploadRoute from "./routes/productImageUploadRoute";
+import path from "path";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -12,13 +14,21 @@ import orderRoutes from "./routes/orderRoutes";
 dotenv.config();
 
 const app = express();
+// CORS middleware should be at the top
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"],
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "http://localhost:5174",
+    ],
     credentials: true,
   })
 );
 app.use(express.json());
+// Serve uploaded images statically
+app.use("/uploads", express.static(path.join(__dirname, "../../uploads")));
+app.use("/api/products", productImageUploadRoute);
 
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/products", productRoutes);

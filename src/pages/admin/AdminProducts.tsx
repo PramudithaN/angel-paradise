@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { products as categories, sizes } from "../../data/products";
 import { useAuth } from "../../contexts/AuthContext";
+import { Upload } from "antd";
 
 const AdminProducts = () => {
   const { logout } = useAuth();
@@ -141,12 +142,14 @@ const AdminProducts = () => {
             body: JSON.stringify(productData),
           }
         );
+
+        console.log(response, "Response from update");
         if (!response.ok) throw new Error("Failed to update product");
         data = await response.json();
         setProducts((prev) =>
           prev.map((p) =>
             p._id === (editingProduct._id || editingProduct.id) ||
-            p.id === (editingProduct._id || editingProduct.id)
+              p.id === (editingProduct._id || editingProduct.id)
               ? data.product
               : p
           )
@@ -197,6 +200,7 @@ const AdminProducts = () => {
       const res = await fetch(
         `http://localhost:5000/api/products/${product._id || product.id}`
       );
+      console.log(res, "Response from edit fetch");
       if (!res.ok) throw new Error("Failed to fetch product");
       const data: Product = await res.json();
       setEditingProduct(data);
@@ -403,11 +407,10 @@ const AdminProducts = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          product.inStock
-                            ? "bg-green-100 text-green-600"
-                            : "bg-red-100 text-red-600"
-                        }`}
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${product.inStock
+                          ? "bg-green-100 text-green-600"
+                          : "bg-red-100 text-red-600"
+                          }`}
                       >
                         {product.inStock ? "In Stock" : "Out of Stock"}
                       </span>
@@ -521,16 +524,42 @@ const AdminProducts = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Image URL
+                  Product Image
                 </label>
-                <input
-                  type="url"
+                <Upload
                   name="image"
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
-                />
+                  listType="picture-card"
+                  showUploadList={false}
+                  customRequest={async ({ file, onSuccess, onError }) => {
+                    const formDataObj = new FormData();
+                    formDataObj.append('image', file);
+                    try {
+                      // You must implement this endpoint in your backend to handle image uploads
+                      const res = await fetch('http://localhost:5000/api/products/upload', {
+                        method: 'POST',
+                        body: formDataObj,
+                      });
+                      const data = await res.json();
+                      console.log(data)
+                      if (data.imageUrl) {
+                        setFormData((prev) => ({ ...prev, image: data.imageUrl }));
+                        if (onSuccess) onSuccess(data, file);
+                      } else {
+                        if (onError) onError(new Error('No imageUrl returned'));
+                      }
+                    } catch (err) {
+                      if (onError) onError(err as Error);
+                    }
+                  }}
+                >
+                  {formData.image ? (
+                    <img src={formData.image} alt="Preview" style={{ width: '104px', height: '104px', objectFit: 'cover', borderRadius: '8px' }} />
+                  ) : (
+                    <div>
+                      <span className="text-gray-400">Upload</span>
+                    </div>
+                  )}
+                </Upload>
               </div>
 
               <div>
@@ -557,11 +586,10 @@ const AdminProducts = () => {
                       key={size}
                       type="button"
                       onClick={() => handleSizeToggle(size)}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        formData.sizes.includes(size)
-                          ? "bg-orange-500 text-white"
-                          : "bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-orange-600"
-                      }`}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${formData.sizes.includes(size)
+                        ? "bg-orange-500 text-white"
+                        : "bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-orange-600"
+                        }`}
                     >
                       {size}
                     </button>
