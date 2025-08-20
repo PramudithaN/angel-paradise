@@ -48,6 +48,7 @@ const AdminProducts = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [loadingImage, setLoadingImage] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     name: "",
     price: "",
@@ -145,8 +146,7 @@ const AdminProducts = () => {
       if (editingProduct && (editingProduct._id || editingProduct.id)) {
         // Update existing product
         response = await fetch(
-          `http://localhost:5000/api/products/${
-            editingProduct._id || editingProduct.id
+          `http://localhost:5000/api/products/${editingProduct._id || editingProduct.id
           }`,
           {
             method: "PUT",
@@ -161,7 +161,7 @@ const AdminProducts = () => {
         setProducts((prev) =>
           prev.map((p) =>
             p._id === (editingProduct._id || editingProduct.id) ||
-            p.id === (editingProduct._id || editingProduct.id)
+              p.id === (editingProduct._id || editingProduct.id)
               ? data.product
               : p
           )
@@ -448,11 +448,10 @@ const AdminProducts = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`px-2 py-1 text-xs font-medium rounded-full ${
-                            product.inStock
+                          className={`px-2 py-1 text-xs font-medium rounded-full ${product.inStock
                               ? "bg-green-100 text-green-600"
                               : "bg-red-100 text-red-600"
-                          }`}
+                            }`}
                         >
                           {product.inStock ? "In Stock" : "Out of Stock"}
                         </span>
@@ -496,11 +495,10 @@ const AdminProducts = () => {
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-1 rounded ${
-                        page === currentPage
+                      className={`px-3 py-1 rounded ${page === currentPage
                           ? "bg-orange-500 text-white"
                           : "bg-slate-100 text-gray-600 hover:bg-slate-200"
-                      }`}
+                        }`}
                     >
                       {page}
                     </button>
@@ -522,50 +520,153 @@ const AdminProducts = () => {
       </div>
 
       {/* Add/Edit Product Modal */}
-      {showAddForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-slate-200">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-800">
-                  {editingProduct ? "Edit Product" : "Add New Product"}
-                </h2>
-                <button
-                  onClick={resetForm}
-                  className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Product Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
-                />
+      <Spin spinning={loadingImage}>
+        {showAddForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-slate-200">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-gray-800">
+                    {editingProduct ? "Edit Product" : "Add New Product"}
+                  </h2>
+                  <button
+                    onClick={resetForm}
+                    className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <form onSubmit={handleSubmit} className="p-6 space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Price ($)
+                    Product Name
                   </label>
                   <input
-                    type="number"
-                    name="price"
-                    value={formData.price}
+                    type="text"
+                    name="name"
+                    value={formData.name}
                     onChange={handleInputChange}
-                    step="0.01"
-                    min="0"
+                    required
+                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Price ($)
+                    </label>
+                    <input
+                      type="number"
+                      name="price"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      step="0.01"
+                      min="0"
+                      required
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Category
+                    </label>
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
+                    >
+                      {categories
+                        .filter((cat) =>
+                          typeof cat === "string"
+                            ? cat !== "All"
+                            : cat.category !== "All"
+                        )
+                        .map((cat) =>
+                          typeof cat === "string" ? (
+                            <option key={cat} value={cat}>
+                              {cat}
+                            </option>
+                          ) : (
+                            <option key={cat.category} value={cat.category}>
+                              {cat.category}
+                            </option>
+                          )
+                        )}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Product Image
+                  </label>
+                  <Upload
+                    name="image"
+                    listType="picture-card"
+                    showUploadList={false}
+                    customRequest={async ({ file, onSuccess, onError }) => {
+                      const formDataObj = new FormData();
+                      formDataObj.append("image", file);
+                      try {
+                        // You must implement this endpoint in your backend to handle image uploads
+                        setLoadingImage(true)
+                        const res = await fetch(
+                          "http://localhost:5000/api/products/upload",
+                          {
+                            method: "POST",
+                            body: formDataObj,
+                          }
+                        );
+                        const data = await res.json();
+                        console.log(data);
+                        if (data.imageUrl) {
+                          setFormData((prev) => ({
+                            ...prev,
+                            image: data.imageUrl,
+                          }));
+                          if (onSuccess) onSuccess(data, file);
+                        } else {
+                          if (onError) onError(new Error("No imageUrl returned"));
+                        }
+                        setLoadingImage(false);
+                      } catch (err) {
+                        if (onError) onError(err as Error);
+                      }
+                    }}
+                  >
+                    {formData.image ? (
+                      <img
+                        src={formData.image}
+                        alt="Preview"
+                        style={{
+                          width: "104px",
+                          height: "104px",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                        }}
+                      />
+                    ) : (
+                      <div>
+                        <span className="text-gray-400">Upload</span>
+                      </div>
+                    )}
+                  </Upload>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows={3}
                     required
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
                   />
@@ -573,184 +674,84 @@ const AdminProducts = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Category
+                    Available Sizes
                   </label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
+                  <div className="grid grid-cols-5 gap-2">
+                    {sizes.map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => handleSizeToggle(size)}
+                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${formData.sizes.includes(size)
+                            ? "bg-orange-500 text-white"
+                            : "bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-orange-600"
+                          }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Colors (comma-separated)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Pink, White, Yellow"
+                    value={formData.colors.join(", ")}
+                    onChange={(e) => handleColorChange(e.target.value)}
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
-                  >
-                    {categories
-                      .filter((cat) =>
-                        typeof cat === "string"
-                          ? cat !== "All"
-                          : cat.category !== "All"
-                      )
-                      .map((cat) =>
-                        typeof cat === "string" ? (
-                          <option key={cat} value={cat}>
-                            {cat}
-                          </option>
-                        ) : (
-                          <option key={cat.category} value={cat.category}>
-                            {cat.category}
-                          </option>
-                        )
-                      )}
-                  </select>
+                  />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Product Image
-                </label>
-                <Upload
-                  name="image"
-                  listType="picture-card"
-                  showUploadList={false}
-                  customRequest={async ({ file, onSuccess, onError }) => {
-                    const formDataObj = new FormData();
-                    formDataObj.append("image", file);
-                    try {
-                      // You must implement this endpoint in your backend to handle image uploads
-                      const res = await fetch(
-                        "http://localhost:5000/api/products/upload",
-                        {
-                          method: "POST",
-                          body: formDataObj,
-                        }
-                      );
-                      const data = await res.json();
-                      console.log(data);
-                      if (data.imageUrl) {
-                        setFormData((prev) => ({
-                          ...prev,
-                          image: data.imageUrl,
-                        }));
-                        if (onSuccess) onSuccess(data, file);
-                      } else {
-                        if (onError) onError(new Error("No imageUrl returned"));
-                      }
-                    } catch (err) {
-                      if (onError) onError(err as Error);
-                    }
-                  }}
-                >
-                  {formData.image ? (
-                    <img
-                      src={formData.image}
-                      alt="Preview"
-                      style={{
-                        width: "104px",
-                        height: "104px",
-                        objectFit: "cover",
-                        borderRadius: "8px",
-                      }}
+                <div className="flex items-center space-x-6">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="inStock"
+                      checked={formData.inStock}
+                      onChange={handleInputChange}
+                      className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
                     />
-                  ) : (
-                    <div>
-                      <span className="text-gray-400">Upload</span>
-                    </div>
-                  )}
-                </Upload>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows={3}
-                  required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Available Sizes
-                </label>
-                <div className="grid grid-cols-5 gap-2">
-                  {sizes.map((size) => (
-                    <button
-                      key={size}
-                      type="button"
-                      onClick={() => handleSizeToggle(size)}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                        formData.sizes.includes(size)
-                          ? "bg-orange-500 text-white"
-                          : "bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-orange-600"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
+                    <label className="ml-2 text-sm text-gray-700">In Stock</label>
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="featured"
+                      checked={formData.featured}
+                      onChange={handleInputChange}
+                      className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
+                    />
+                    <label className="ml-2 text-sm text-gray-700">Featured</label>
+                  </div>
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Colors (comma-separated)
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g., Pink, White, Yellow"
-                  value={formData.colors.join(", ")}
-                  onChange={(e) => handleColorChange(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent"
-                />
-              </div>
-
-              <div className="flex items-center space-x-6">
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="inStock"
-                    checked={formData.inStock}
-                    onChange={handleInputChange}
-                    className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
-                  />
-                  <label className="ml-2 text-sm text-gray-700">In Stock</label>
+                <div className="flex space-x-4 pt-4">
+                  <button
+                    type="submit"
+                    className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors duration-200"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>
+                      {editingProduct ? "Update Product" : "Add Product"}
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200"
+                  >
+                    Cancel
+                  </button>
                 </div>
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="featured"
-                    checked={formData.featured}
-                    onChange={handleInputChange}
-                    className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
-                  />
-                  <label className="ml-2 text-sm text-gray-700">Featured</label>
-                </div>
-              </div>
-
-              <div className="flex space-x-4 pt-4">
-                <button
-                  type="submit"
-                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium flex items-center justify-center space-x-2 transition-colors duration-200"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>
-                    {editingProduct ? "Update Product" : "Add Product"}
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </Spin>
     </div>
   );
 };

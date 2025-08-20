@@ -23,6 +23,7 @@ const ShopPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
+  const [minMaxPrice, setMinMaxPrice] = useState<[number, number]>([0, 100]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
@@ -33,6 +34,14 @@ const ShopPage = () => {
         const res = await fetch('http://localhost:5000/api/products');
         const data = await res.json();
         setProducts(data);
+        // Automatically set price range based on product data
+        if (data.length > 0) {
+          const prices = data.map((p: Product) => p.price);
+          const min = Math.min(...prices);
+          const max = Math.max(...prices);
+          setMinMaxPrice([min, max]);
+          setPriceRange([min, max]);
+        }
       } catch (err) {
         console.error('Failed to fetch products', err);
       }
@@ -94,7 +103,8 @@ const ShopPage = () => {
     setPriceRange([0, 100]);
     setSearchQuery('');
   };
-
+  console.log(products, "Products Info");
+  console.log(filteredProducts, "Filtered Products Info");
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-yellow-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -203,19 +213,19 @@ const ShopPage = () => {
                 </h4>
                 <div className="bg-[#fcf7f2] rounded-xl p-4 shadow-inner">
                   <div className="flex justify-between mb-2">
-                    <span className="text-gray-600 text-base font-medium">$0</span>
-                    <span className="text-gray-600 text-base font-medium">$100+</span>
+                    <span className="text-gray-600 text-base font-medium">${minMaxPrice[0]}</span>
+                    <span className="text-gray-600 text-base font-medium">${minMaxPrice[1]}+</span>
                   </div>
                   <div className="relative w-full">
                     <input
                       type="range"
-                      min={0}
-                      max={100}
+                      min={minMaxPrice[0]}
+                      max={minMaxPrice[1]}
                       value={priceRange[1]}
-                      onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
+                      onChange={(e) => setPriceRange([minMaxPrice[0], parseInt(e.target.value)])}
                       className="w-full h-2 rounded-full appearance-none bg-orange-200 accent-orange-300 cursor-pointer"
                       style={{
-                        background: `linear-gradient(to right, #ea580c 0%, #ea580c ${priceRange[1]}%, #333 ${priceRange[1]}%, #333 100%)`,
+                        background: `linear-gradient(to right, #ea580c 0%, #ea580c ${(priceRange[1] - minMaxPrice[0]) / (minMaxPrice[1] - minMaxPrice[0]) * 100}%, #333 ${(priceRange[1] - minMaxPrice[0]) / (minMaxPrice[1] - minMaxPrice[0]) * 100}%, #333 100%)`,
                         accentColor: '#ea580c',
                       }}
                     />
