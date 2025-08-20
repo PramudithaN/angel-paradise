@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Heart, Shield, Truck } from 'lucide-react';
 import { Spin } from 'antd';
@@ -30,7 +31,6 @@ function HeroImageSlider() {
     return () => clearInterval(interval);
   }, [index]);
 
-  // For smooth slide, render both prev and current image, animate current from right to center, prev from center to left
   return (
     <div className="relative w-full h-full overflow-hidden">
       <div className="absolute inset-0 w-full h-full">
@@ -55,7 +55,10 @@ function HeroImageSlider() {
         {heroImages.map((_, i) => (
           <span
             key={i}
-            className={`w-3 h-3 rounded-full ${i === index ? 'bg-orange-400' : 'bg-white/60'} border border-orange-400 transition-all duration-300`}
+            className={
+              'w-3 h-3 rounded-full border border-orange-400 transition-all duration-300 ' +
+              (i === index ? 'bg-orange-400' : 'bg-white/60')
+            }
             style={{ display: 'inline-block' }}
           ></span>
         ))}
@@ -101,17 +104,46 @@ const HomePage = () => {
   });
   const [ratingsLoading, setRatingsLoading] = useState(true);
 
+  // Fetch and calculate ratings summary from reviews
   useEffect(() => {
     setRatingsLoading(true);
-    fetch(`http://localhost:5000/api/reviews/summary/${DEMO_PRODUCT_ID}`)
-      .then(res => res.json())
-      .then(data => {
-        setRatingsSummary(data);
+    fetch(`http://localhost:5000/api/reviews/${DEMO_PRODUCT_ID}`)
+      .then((res) => res.json())
+      .then((reviews) => {
+        if (!Array.isArray(reviews) || reviews.length === 0) {
+          setRatingsSummary({
+            average: 0,
+            count: 0,
+            breakdown: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
+          });
+          setRatingsLoading(false);
+          return;
+        }
+        const breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        let sum = 0;
+        reviews.forEach((r: any) => {
+          const rating = Math.round(Number(r.rating)) as keyof typeof breakdown;
+          if (breakdown[rating] !== undefined) breakdown[rating]!++;
+          sum += Number(r.rating);
+        });
+        setRatingsSummary({
+          average: sum / reviews.length,
+          count: reviews.length,
+          breakdown
+        });
         setRatingsLoading(false);
       })
-      .catch(() => setRatingsLoading(false));
+      .catch(() => {
+        setRatingsSummary({
+          average: 0,
+          count: 0,
+          breakdown: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
+        });
+        setRatingsLoading(false);
+      });
   }, []);
 
+  // Parallax effect for hero image
   useEffect(() => {
     // Fetch products from backend
     setLoading(true);
@@ -136,75 +168,124 @@ const HomePage = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  console.log(featuredProducts, "Featured Products");
-  return (
-    <div className="space-y-16 pb-16">
-      <ScrollToTopButton />
-      {/* Hero Section */}
-      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
-        {/* Animated Hero Image with floating and scroll effect */}
 
-        {/* Hero Image Slider */}
-        <div
-          className="absolute inset-0 rounded-3xl mx-4 overflow-hidden will-change-transform"
-          style={{ zIndex: 1 }}
-        >
+  // Main return
+  return (
+    <div className="snap-y snap-mandatory">
+      <ScrollToTopButton />
+      {/* Animated floating shapes */}
+      <div className="pointer-events-none select-none">
+        <motion.div
+          className="fixed top-10 left-10 w-32 h-32 bg-primary-light rounded-full opacity-40 blur-2xl z-0"
+          animate={{ y: [0, 30, 0], x: [0, 20, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="fixed bottom-20 right-10 w-40 h-40 bg-accent-light rounded-full opacity-30 blur-2xl z-0"
+          animate={{ y: [0, -40, 0], x: [0, -30, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="fixed top-1/2 left-1/2 w-24 h-24 bg-primary-dark rounded-full opacity-20 blur-2xl z-0"
+          animate={{ scale: [1, 1.2, 1], rotate: [0, 30, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </div>
+
+      {/* Scroll indicator dots */}
+      <motion.div
+        className="fixed left-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-50"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 1, delay: 0.5 }}
+      >
+        {['hero', 'features', 'products', 'about', 'reviews'].map((id) => (
+          <a
+            key={id}
+            href={`#${id}`}
+            className="group"
+          >
+            <span
+              className="block w-4 h-4 rounded-full border-2 border-brown bg-white group-hover:bg-primary-dark transition-all duration-300 shadow"
+              style={{ boxShadow: '0 2px 8px 0 rgba(236,72,153,0.10)' }}
+            ></span>
+          </a>
+        ))}
+      </motion.div>
+
+      {/* Hero Section */}
+      <section id="hero" className="h-screen w-full flex items-center justify-center relative bg-gradient-to-br from-cream to-primary-light snap-start">
+        <div className="absolute inset-0 rounded-3xl mx-4 overflow-hidden will-change-transform z-0">
           <HeroImageSlider />
-          {/* Dark overlay for better text contrast */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-yellow-200/10 to-yellow-200/30"></div>
         </div>
-
-        {/* Hero Text with enhanced visibility and drop shadow */}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight drop-shadow-2xl">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-brown mb-6 leading-tight drop-shadow-2xl font-heading">
             The place to find
-            <span className="block bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent drop-shadow-2xl">
+            <span className="block bg-gradient-to-r from-primary-dark to-accent-dark bg-clip-text text-transparent drop-shadow-2xl">
               little girl's accessories
             </span>
           </h1>
-          <p className="text-lg md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed drop-shadow-xl">
+          <p className="text-xl md:text-2xl text-brown/80 mb-8 max-w-2xl mx-auto leading-relaxed drop-shadow-xl font-body">
             Discover adorable, high-quality clothing and accessories that make every little angel shine bright
           </p>
           <Link
-            to="/shop"
-            className="inline-flex items-center space-x-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
-            style={{ boxShadow: '0 4px 24px 0 rgba(236,72,153,0.25)' }}
+            to="#features"
+            className="inline-flex items-center space-x-3 bg-brown hover:bg-primary-dark text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+            style={{ boxShadow: '0 4px 24px 0 rgba(236,72,153,0.15)' }}
           >
             <span>Shop Now</span>
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
       </section>
-
       {/* Features Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center group">
-            <div className="bg-gradient-to-br from-pink-100 to-pink-200 p-6 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <Heart className="w-8 h-8 text-pink-600" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Made with Love</h3>
-            <p className="text-gray-600">Every piece is carefully selected for comfort, quality, and adorable style</p>
-          </div>
-          <div className="text-center group">
-            <div className="bg-gradient-to-br from-yellow-100 to-yellow-200 p-6 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <Shield className="w-8 h-8 text-yellow-600" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Safe & Gentle</h3>
-            <p className="text-gray-600">All materials are baby-safe and tested for sensitive skin</p>
-          </div>
-          <div className="text-center group">
-            <div className="bg-gradient-to-br from-green-100 to-green-200 p-6 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-              <Truck className="w-8 h-8 text-green-600" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Fast Delivery</h3>
-            <p className="text-gray-600">Quick and secure delivery right to your doorstep</p>
+      <motion.section
+        id="features"
+        className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-white to-primary-light snap-start"
+        style={{ transition: 'background 0.6s cubic-bezier(0.4,0,0.2,1)' }}
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+        viewport={{ once: true }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <motion.div className="text-center group" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.1 }} viewport={{ once: true }}>
+              <div className="bg-gradient-to-br from-primary to-primary-light p-6 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Heart className="w-8 h-8 text-pink-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-brown mb-2 font-heading">Made with Love</h3>
+              <p className="text-brown/70 font-body">Every piece is carefully selected for comfort, quality, and adorable style</p>
+            </motion.div>
+            <motion.div className="text-center group" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.2 }} viewport={{ once: true }}>
+              <div className="bg-gradient-to-br from-accent to-accent-light p-6 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Shield className="w-8 h-8 text-yellow-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-brown mb-2 font-heading">Safe & Gentle</h3>
+              <p className="text-brown/70 font-body">All materials are baby-safe and tested for sensitive skin</p>
+            </motion.div>
+            <motion.div className="text-center group" initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.3 }} viewport={{ once: true }}>
+              <div className="bg-gradient-to-br from-green-100 to-green-200 p-6 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                <Truck className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-brown mb-2 font-heading">Fast Delivery</h3>
+              <p className="text-brown/70 font-body">Quick and secure delivery right to your doorstep</p>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
+      {/* --- End Features Section --- */}
 
       {/* Featured Products */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        id="products"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 snap-start mt-8"
+        initial={{ opacity: 0, scale: 0.92 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+        viewport={{ once: true, amount: 0.3 }}
+      >
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Featured Products
@@ -275,10 +356,17 @@ const HomePage = () => {
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-      </section>
+      </motion.section>
 
       {/* About Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <motion.section
+        id="about"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 snap-start mt-8"
+        initial={{ opacity: 0, scale: 0.92 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+        viewport={{ once: true, amount: 0.3 }}
+      >
         <div className="bg-gradient-to-r from-orange-50 to-orange-50 rounded-3xl p-8 md:p-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
@@ -311,15 +399,22 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-      </section>
- {/* User-friendly review form */}
-        <div className="mb-8">
-          <ReviewForm productId={DEMO_PRODUCT_ID} enhanced />
-        </div>
+      </motion.section>
+      {/* User-friendly review form */}
+      <div className="mb-8 mt-8">
+        <ReviewForm productId={DEMO_PRODUCT_ID} enhanced />
+      </div>
       {/* Testimonials/Reviews Section - Project Colors, Screenshot Layout */}
-      <section className="max-w-4xl mx-auto my-12 p-6 bg-white rounded-2xl shadow border border-gray-200">
+      <motion.section
+        id="reviews"
+        className="max-w-4xl mx-auto my-12 p-6 bg-white rounded-2xl shadow border border-gray-200 snap-start"
+        initial={{ opacity: 0, scale: 0.92 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+        viewport={{ once: true, amount: 0.3 }}
+      >
         <h2 className="text-2xl font-bold mb-6 text-gray-800">Reviews</h2>
-       
+
         <div className="flex flex-col gap-6">
           {/* Ratings summary */}
           <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
@@ -331,14 +426,14 @@ const HomePage = () => {
                 <>
                   <span className="text-5xl font-bold text-gray-900">{ratingsSummary.average.toFixed(1)}</span>
                   <div className="flex items-center gap-1 mt-1 mb-1">
-                    {[1,2,3,4,5].map((star) => (
+                    {[1, 2, 3, 4, 5].map((star) => (
                       <svg
                         key={star}
                         className={`w-5 h-5 ${star <= Math.round(ratingsSummary.average) ? "text-orange-500" : "text-orange-200"}`}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.386-2.46a1 1 0 00-1.175 0l-3.386 2.46c-.784.57-1.838-.196-1.539-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.045 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z"/>
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1 1 0 00.95.69h4.18c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.287 3.966c.3.922-.755 1.688-1.54 1.118l-3.386-2.46a1 1 0 00-1.175 0l-3.386 2.46c-.784.57-1.838-.196-1.539-1.118l1.287-3.966a1 1 0 00-.364-1.118L2.045 9.394c-.783-.57-.38-1.81.588-1.81h4.18a1 1 0 00.95-.69l1.286-3.967z" />
                       </svg>
                     ))}
                   </div>
@@ -348,7 +443,7 @@ const HomePage = () => {
             </div>
             {/* Middle: Bar chart */}
             <div className="flex-1 w-full ">
-              {[5,4,3,2,1].map((star) => {
+              {[5, 4, 3, 2, 1].map((star) => {
                 const key = star as keyof typeof ratingsSummary.breakdown;
                 const count = ratingsSummary.breakdown[key] || 0;
                 const percent = ratingsSummary.count ? (count / ratingsSummary.count) * 100 : 0;
@@ -356,7 +451,7 @@ const HomePage = () => {
                   <div key={star} className="flex gap-2 mb-1 items-center">
                     <span className="w-6 text-sm font-medium text-gray-700">{star}.0</span>
                     <div className="flex-1 h-2 rounded bg-gray-200 overflow-hidden">
-                      <div className="h-2 rounded bg-orange-400 transition-all duration-500" style={{width: `${percent}%`}}></div>
+                      <div className="h-2 rounded bg-orange-400 transition-all duration-500" style={{ width: `${percent}%` }}></div>
                     </div>
                     <span className="w-14 text-xs text-gray-400 text-right">{count} review{count !== 1 ? 's' : ''}</span>
                   </div>
@@ -364,16 +459,16 @@ const HomePage = () => {
               })}
             </div>
           </div>
-      <div className="border-t pt-4 mt-2">
+          <div className="border-t pt-4 mt-2">
             <Link to="/all-reviews" className="text-orange-600 font-semibold hover:underline">Read all reviews</Link>
           </div>
           {/* Reviews list (dynamic) */}
           <div className="w-full">
-            <ProductReviews productId={DEMO_PRODUCT_ID} cardMode/>
+            <ProductReviews productId={DEMO_PRODUCT_ID} cardMode />
           </div>
-          
+
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };
