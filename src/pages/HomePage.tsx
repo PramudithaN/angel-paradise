@@ -14,42 +14,34 @@ const heroImages = [
   "https://images.pexels.com/photos/1620760/pexels-photo-1620760.jpeg"
 ];
 
+import { AnimatePresence, motion as fmMotion } from 'framer-motion';
+
 function HeroImageSlider() {
   const [index, setIndex] = useState(0);
-  const [prevIndex, setPrevIndex] = useState(0);
-  const [sliding, setSliding] = useState(false);
-
   useEffect(() => {
     const interval = setInterval(() => {
-      setPrevIndex(index);
-      setSliding(true);
-      setTimeout(() => {
-        setIndex((prev: number) => (prev + 1) % heroImages.length);
-        setSliding(false);
-      }, 600); // slide duration
+      setIndex((prev) => (prev + 1) % heroImages.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, [index]);
+  }, []);
 
   return (
     <div className="relative w-full h-full overflow-hidden">
-      <div className="absolute inset-0 w-full h-full">
-        <img
-          src={heroImages[prevIndex]}
-          alt=""
-          className={`w-full h-full object-cover transition-transform duration-700 ${sliding ? '-translate-x-full' : 'translate-x-0'} absolute top-0 left-0`}
-          style={{ filter: 'brightness(0.7) blur(0px)', zIndex: 1 }}
-          draggable={false}
-        />
-        <img
+      <AnimatePresence initial={false}>
+        <fmMotion.img
+          key={index}
           src={heroImages[index]}
           alt="Baby clothing collection"
-          className={`w-full h-full object-cover transition-transform duration-700 ${sliding ? 'translate-x-0' : 'translate-x-full'} absolute top-0 left-0`}
-          style={{ filter: 'brightness(0.7) blur(0px)', zIndex: 2 }}
+          className="w-full h-full object-cover absolute top-0 left-0"
           id="hero-img"
           draggable={false}
+          initial={{ opacity: 0, scale: 1.04, x: 80 }}
+          animate={{ opacity: 1, scale: 1, x: 0, filter: 'brightness(0.7) blur(0px)' }}
+          exit={{ opacity: 0, scale: 0.98, x: -80 }}
+          transition={{ duration: 1.1, ease: [0.43, 0.13, 0.23, 0.96] }}
+          style={{ zIndex: 2 }}
         />
-      </div>
+      </AnimatePresence>
       {/* Dots indicator */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {heroImages.map((_, i) => (
@@ -191,27 +183,6 @@ const HomePage = () => {
           transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
         />
       </div>
-
-      {/* Scroll indicator dots */}
-      <motion.div
-        className="fixed left-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-50"
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 1, delay: 0.5 }}
-      >
-        {['hero', 'features', 'products', 'about', 'reviews'].map((id) => (
-          <a
-            key={id}
-            href={`#${id}`}
-            className="group"
-          >
-            <span
-              className="block w-4 h-4 rounded-full border-2 border-brown bg-white group-hover:bg-primary-dark transition-all duration-300 shadow"
-              style={{ boxShadow: '0 2px 8px 0 rgba(236,72,153,0.10)' }}
-            ></span>
-          </a>
-        ))}
-      </motion.div>
 
       {/* Hero Section */}
       <section id="hero" className="h-screen w-full flex items-center justify-center relative bg-gradient-to-br from-cream to-primary-light snap-start">
