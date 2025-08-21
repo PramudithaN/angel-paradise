@@ -202,7 +202,7 @@ const HomePage = () => {
             Discover adorable, high-quality clothing and accessories that make every little angel shine bright
           </p>
           <Link
-            to="/shops"
+            to="/shop"
             className="inline-flex items-center space-x-3 bg-brown hover:bg-primary-dark text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
             style={{ boxShadow: '0 4px 24px 0 rgba(236,72,153,0.15)' }}
           >
