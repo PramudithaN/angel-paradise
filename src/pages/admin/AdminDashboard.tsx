@@ -300,7 +300,7 @@ const AdminDashboard = () => {
         <div className=" mb-6">
           <div className="grid grid-cols-3 gap-3">
             <button
-              onClick={() => navigate('/admin/products"')}
+              onClick={() => navigate('/admin/products')}
               className="flex flex-col items-center justify-center bg-white rounded-xl shadow border border-slate-200 py-3 px-1 hover:bg-orange-50 transition-all"
 
             >
@@ -308,7 +308,7 @@ const AdminDashboard = () => {
               <span className="text-xs font-semibold text-gray-700">Manage Products</span>
             </button>
             <a
-              href="https://wa.me/1234567890"
+              href="https://wa.me/713052556"
               target="_blank"
               rel="noopener noreferrer"
               className="flex flex-col items-center justify-center bg-white rounded-xl shadow border border-slate-200 py-3 px-1 hover:bg-green-50 transition-all"
@@ -509,7 +509,7 @@ const AdminDashboard = () => {
           </Link>
 
           <a
-            href="https://wa.me/1234567890"
+            href="https://wa.me/73052556"
             target="_blank"
             rel="noopener noreferrer"
             className="p-6 rounded-xl shadow-lg transition-all duration-200 hover:scale-105
