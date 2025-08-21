@@ -62,11 +62,12 @@ const AdminProducts = () => {
   });
 
   // Fetch products from backend on mount
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:5000/api/products");
+        const res = await fetch(`${API_BASE}/api/products`);
         const data = await res.json();
         setProducts(data);
         setLoading(false);
@@ -75,7 +76,7 @@ const AdminProducts = () => {
       }
     };
     fetchProducts();
-  }, []);
+  }, [API_BASE]);
 
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name
@@ -146,8 +147,7 @@ const AdminProducts = () => {
       if (editingProduct && (editingProduct._id || editingProduct.id)) {
         // Update existing product
         response = await fetch(
-          `http://localhost:5000/api/products/${editingProduct._id || editingProduct.id
-          }`,
+          `${API_BASE}/api/products/${editingProduct._id || editingProduct.id}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -173,7 +173,7 @@ const AdminProducts = () => {
         });
       } else {
         // Add new product
-        response = await fetch("http://localhost:5000/api/products/add", {
+        response = await fetch(`${API_BASE}/api/products/add`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(productData),
@@ -222,7 +222,7 @@ const AdminProducts = () => {
     if (!product) return;
     try {
       const res = await fetch(
-        `http://localhost:5000/api/products/${product._id || product.id}`
+        `${API_BASE}/api/products/${product._id || product.id}`
       );
       console.log(res, "Response from edit fetch");
       if (!res.ok) throw new Error("Failed to fetch product");
@@ -259,7 +259,7 @@ const AdminProducts = () => {
     if (result.isConfirmed) {
       try {
         const res = await fetch(
-          `http://localhost:5000/api/products/${productId}`,
+          `${API_BASE}/api/products/${productId}`,
           { method: "DELETE" }
         );
         if (!res.ok) throw new Error("Failed to delete product");
@@ -449,8 +449,8 @@ const AdminProducts = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`px-2 py-1 text-xs font-medium rounded-full ${product.inStock
-                              ? "bg-green-100 text-green-600"
-                              : "bg-red-100 text-red-600"
+                            ? "bg-green-100 text-green-600"
+                            : "bg-red-100 text-red-600"
                             }`}
                         >
                           {product.inStock ? "In Stock" : "Out of Stock"}
@@ -496,8 +496,8 @@ const AdminProducts = () => {
                       key={page}
                       onClick={() => setCurrentPage(page)}
                       className={`px-3 py-1 rounded ${page === currentPage
-                          ? "bg-orange-500 text-white"
-                          : "bg-slate-100 text-gray-600 hover:bg-slate-200"
+                        ? "bg-orange-500 text-white"
+                        : "bg-slate-100 text-gray-600 hover:bg-slate-200"
                         }`}
                     >
                       {page}
@@ -616,7 +616,7 @@ const AdminProducts = () => {
                         // You must implement this endpoint in your backend to handle image uploads
                         setLoadingImage(true)
                         const res = await fetch(
-                          "http://localhost:5000/api/products/upload",
+                          `${API_BASE}/api/products/upload`,
                           {
                             method: "POST",
                             body: formDataObj,
@@ -683,8 +683,8 @@ const AdminProducts = () => {
                         type="button"
                         onClick={() => handleSizeToggle(size)}
                         className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${formData.sizes.includes(size)
-                            ? "bg-orange-500 text-white"
-                            : "bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-orange-600"
+                          ? "bg-orange-500 text-white"
+                          : "bg-gray-100 text-gray-600 hover:bg-yellow-100 hover:text-orange-600"
                           }`}
                       >
                         {size}

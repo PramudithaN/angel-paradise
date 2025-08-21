@@ -97,9 +97,10 @@ const HomePage = () => {
   const [ratingsLoading, setRatingsLoading] = useState(true);
 
   // Fetch and calculate ratings summary from reviews
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   useEffect(() => {
     setRatingsLoading(true);
-    fetch(`http://localhost:5000/api/reviews/${DEMO_PRODUCT_ID}`)
+    fetch(`${API_BASE}/api/reviews/${DEMO_PRODUCT_ID}`)
       .then((res) => res.json())
       .then((reviews) => {
         if (!Array.isArray(reviews) || reviews.length === 0) {
@@ -133,13 +134,13 @@ const HomePage = () => {
         });
         setRatingsLoading(false);
       });
-  }, []);
+  }, [API_BASE]);
 
   // Parallax effect for hero image
   useEffect(() => {
     // Fetch products from backend
     setLoading(true);
-    fetch('http://localhost:5000/api/products')
+    fetch(`${API_BASE}/api/products`)
       .then(res => res.json())
       .then(data => {
         setProducts(data);

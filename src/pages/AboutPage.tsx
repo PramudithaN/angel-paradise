@@ -15,11 +15,12 @@ const AboutPage = () => {
   const [info, setInfo] = useState<BusinessInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   useEffect(() => {
     const fetchInfo = async () => {
       setLoading(true);
       try {
-        const res = await fetch('http://localhost:5000/api/business-info');
+        const res = await fetch(`${API_BASE}/api/business-info`);
         const data = await res.json();
         setInfo(data);
       } catch {
@@ -29,7 +30,7 @@ const AboutPage = () => {
       }
     };
     fetchInfo();
-  }, []);
+  }, [API_BASE]);
 
   if (loading) {
     return <div className="text-center py-16 text-lg text-gray-600">Loading...</div>;

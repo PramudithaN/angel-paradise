@@ -21,10 +21,11 @@ const AdminSettings = () => {
     aboutText: "Founded with love and passion for dressing little angels, Angel's Paradise has been creating magical moments for families worldwide. We believe every little girl deserves to feel special, comfortable, and beautifully dressed."
   });
 
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   React.useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/business-info');
+        const res = await fetch(`${API_BASE}/api/business-info`);
         if (!res.ok) return;
         const data = await res.json();
         if (!data || typeof data !== 'object') return;
@@ -45,12 +46,12 @@ const AdminSettings = () => {
         }));
       } catch (err) {
         console.log(err)
-        
+
         // Optionally log or show a message
       }
     };
     fetchSettings();
-  }, []);
+  }, [API_BASE]);
 
   const [activeTab, setActiveTab] = useState('business');
   const [isSaving, setIsSaving] = useState(false);
@@ -66,7 +67,7 @@ const AdminSettings = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const res = await fetch('http://localhost:5000/api/business-info', {
+      const res = await fetch(`${API_BASE}/api/business-info`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -28,10 +28,11 @@ const ShopPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/products');
+        const res = await fetch(`${API_BASE}/api/products`);
         const data = await res.json();
         setProducts(data);
         // Automatically set price range based on product data
@@ -47,7 +48,7 @@ const ShopPage = () => {
       }
     };
     fetchProducts();
-  }, []);
+  }, [API_BASE]);
 
   const filteredProducts = useMemo(() => {
     return products.filter(product => {

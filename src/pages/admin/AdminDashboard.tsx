@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Package, ShoppingBag, Star, Users, TrendingUp, Eye, MessageCircle, Baby, LogOut, Settings } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import React, { useEffect, useState } from 'react';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 import { Spin } from 'antd';
 
 const AdminDashboard = () => {
@@ -27,7 +29,7 @@ const AdminDashboard = () => {
   // You can adjust the API endpoint as needed
   useEffect(() => {
     setLoadingOrdersThisMonth(true);
-    fetch('http://localhost:5000/api/orders')
+    fetch(`${API_BASE}/api/orders`)
       .then(res => res.json())
       .then((orders) => {
         // Filter orders for the current month
@@ -46,7 +48,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     setLoadingCustomerReviews(true);
-    fetch('http://localhost:5000/api/reviews')
+    fetch(`${API_BASE}/api/reviews`)
       .then(res => res.json())
       .then((reviews) => {
         setCustomerReviews(Array.isArray(reviews) ? reviews.length : null);
@@ -57,7 +59,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     setLoadingActiveCustomers(true);
-    fetch('http://localhost:5000/api/orders')
+    fetch(`${API_BASE}/api/orders`)
       .then(res => res.json())
       .then((orders) => {
         // Count unique users who placed orders in the last 30 days
@@ -75,7 +77,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     setLoadingTotalProducts(true);
-    fetch('http://localhost:5000/api/products')
+    fetch(`${API_BASE}/api/products`)
       .then(res => res.json())
       .then((products) => {
         setTotalProducts(Array.isArray(products) ? products.length : null);
@@ -123,7 +125,7 @@ const AdminDashboard = () => {
   // useEffect(() => {
   //   const fetchOrders = async () => {
   //     try {
-  //       const res = await fetch('http://localhost:5000/api/orders');
+  //       const res = await fetch(`${API_BASE}/api/orders`);
   //       const data = await res.json();
   //       setRecentOrders(data);
   //     } catch {
