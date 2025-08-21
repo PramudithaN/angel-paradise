@@ -17,9 +17,9 @@ export function ProductReviews({
   cardMode?: boolean;
 }) {
   const [reviews, setReviews] = useState<Review[]>([]);
-
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   useEffect(() => {
-    fetch(`http://localhost:5000/api/reviews/${productId}`)
+    fetch(`${API_BASE}/api/reviews/${productId}`)
       .then((res) => res.json())
       .then((data) => setReviews(data));
   }, [productId]);
@@ -142,11 +142,11 @@ export function ReviewForm({
   const [rating, setRating] = useState<number>(5);
   const [comment, setComment] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
-
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    await fetch("http://localhost:5000/api/reviews", {
+    await fetch(`${API_BASE}/api/reviews`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

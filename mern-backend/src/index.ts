@@ -15,17 +15,24 @@ dotenv.config();
 
 const app = express();
 // CORS middleware should be at the top
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:3000",
-      "http://localhost:5174",
-      "https://your-frontend.vercel.app",
-    ],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:5173",
+//       "http://localhost:3000",
+//       "http://localhost:5174",
+//       "https://your-frontend.vercel.app",
+//     ],
+//     credentials: true,
+//   })
+// );
+// app.use(
+//   cors({
+//     origin: "https://your-frontend.vercel.app", // replace with your actual frontend URL
+//     credentials: true,
+//   })
+// );
+app.use(cors());
 app.use(express.json());
 // Serve uploaded images statically
 app.use("/uploads", express.static(path.join(__dirname, "../../uploads")));
