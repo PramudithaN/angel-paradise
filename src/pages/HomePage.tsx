@@ -192,18 +192,18 @@ const HomePage = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-yellow-200/10 to-yellow-200/30"></div>
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-          <h1 className="text-5xl md:text-7xl font-extrabold text-brown mb-6 leading-tight drop-shadow-2xl font-heading">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-yellow-50 mb-6 leading-tight drop-shadow-2xl font-heading">
             The place to find
-            <span className="block bg-gradient-to-r from-primary-dark to-accent-dark bg-clip-text text-transparent drop-shadow-2xl">
+            <span className="block bg-gradient-to-r from-primary-dark to-accent-dark bg-clip-text text-pink-200 drop-shadow-2xl">
               little girl's accessories
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-brown/80 mb-8 max-w-2xl mx-auto leading-relaxed drop-shadow-xl font-body">
+          <p className="text-xs md:text-lg text-gray-100 mb-8 max-w-2xl mx-auto leading-relaxed drop-shadow-xl font-body">
             Discover adorable, high-quality clothing and accessories that make every little angel shine bright
           </p>
           <Link
             to="/shop"
-            className="inline-flex items-center space-x-3 bg-brown hover:bg-primary-dark text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
+            className="inline-flex items-center space-x-3 bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl"
             style={{ boxShadow: '0 4px 24px 0 rgba(236,72,153,0.15)' }}
           >
             <span>Shop Now</span>
