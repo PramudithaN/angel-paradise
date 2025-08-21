@@ -18,10 +18,11 @@ interface BusinessInfo {
 
 const Footer = () => {
   const [info, setInfo] = useState<BusinessInfo | null>(null);
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   useEffect(() => {
     const fetchInfo = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/business-info');
+        const res = await fetch(`${API_BASE}/api/business-info`);
         const data = await res.json();
         setInfo(data);
       } catch {

@@ -6,11 +6,11 @@ import { useCart } from '../contexts/CartContext';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [whatsapp, setWhatsapp] = useState<string | null>(null);
-
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   useEffect(() => {
     const fetchInfo = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/business-info');
+        const res = await fetch(`${API_BASE}/api/business-info`);
         const data = await res.json();
         setWhatsapp(data.whatsapp || null);
       } catch {
