@@ -29,6 +29,11 @@ const ShopPage = () => {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {

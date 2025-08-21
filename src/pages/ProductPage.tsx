@@ -30,6 +30,11 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
 
   const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
+
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);

@@ -1,9 +1,14 @@
+
+import { useEffect } from 'react';
 import { ProductReviews } from '../components/Reviews';
 import { Link } from 'react-router-dom';
 
 const DEMO_PRODUCT_ID = "demo-product-1"; // Replace with actual product id logic if needed
 
 export default function AllReviewsPage() {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
   return (
     <div className="max-w-4xl mx-auto my-12 p-6 bg-orange-50 rounded-2xl shadow-lg">
       <div className="mb-6 flex items-center justify-between">
