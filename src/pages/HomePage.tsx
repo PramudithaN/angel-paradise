@@ -95,6 +95,7 @@ const HomePage = () => {
     breakdown: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 }
   });
   const [ratingsLoading, setRatingsLoading] = useState(true);
+  const [reviewsRefreshKey, setReviewsRefreshKey] = useState(0);
 
   // Fetch and calculate ratings summary from reviews
   const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -134,7 +135,7 @@ const HomePage = () => {
         });
         setRatingsLoading(false);
       });
-  }, [API_BASE]);
+  }, [API_BASE, reviewsRefreshKey]);
 
   // Parallax effect for hero image
   useEffect(() => {
@@ -374,7 +375,11 @@ const HomePage = () => {
       </motion.section>
       {/* User-friendly review form */}
       <div className="mb-8 mt-8">
-        <ReviewForm productId={DEMO_PRODUCT_ID} enhanced />
+        <ReviewForm
+          productId={DEMO_PRODUCT_ID}
+          enhanced
+          onReviewAdded={() => setReviewsRefreshKey((k) => k + 1)}
+        />
       </div>
       {/* Testimonials/Reviews Section - Project Colors, Screenshot Layout */}
       <motion.section
@@ -436,7 +441,7 @@ const HomePage = () => {
           </div>
           {/* Reviews list (dynamic) */}
           <div className="w-full">
-            <ProductReviews productId={DEMO_PRODUCT_ID} cardMode />
+            <ProductReviews productId={DEMO_PRODUCT_ID} cardMode refreshKey={reviewsRefreshKey} />
           </div>
 
         </div>

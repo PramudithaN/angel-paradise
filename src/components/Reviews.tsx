@@ -12,9 +12,11 @@ interface Review {
 export function ProductReviews({
   productId,
   cardMode,
+  refreshKey
 }: {
   productId: string;
   cardMode?: boolean;
+  refreshKey?: number;
 }) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -22,7 +24,7 @@ export function ProductReviews({
     fetch(`${API_BASE}/api/reviews/${productId}`)
       .then((res) => res.json())
       .then((data) => setReviews(data));
-  }, [productId]);
+  }, [productId, refreshKey, API_BASE]);
 
   // Card UI for both homepage (limit 3) and all reviews (paginated)
   const [currentPage, setCurrentPage] = useState(1);
