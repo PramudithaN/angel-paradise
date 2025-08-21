@@ -300,41 +300,77 @@ const AdminProducts = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Link
-                to="/admin"
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back to Dashboard</span>
-              </Link>
-              <div className="flex items-center space-x-3">
-                <div className="bg-gradient-to-br from-orange-100 to-yellow-100 p-2 rounded-lg">
-                  <Baby className="w-5 h-5 text-orange-600" />
+      <header className="bg-transparent border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+          {/* Mobile/desktop responsive navbar card */}
+          <div className="relative">
+            <div className="sm:hidden">
+              <div className="bg-orange-50 rounded-2xl shadow-md flex flex-col items-center px-4 py-7 mt-3 mb-4 mx-1 relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                  <Link
+                    to="/admin"
+                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+                  >
+                    <ArrowLeft className="w-5 h-5" />
+                    <span className="text-sm font-medium">Back</span>
+                  </Link>
                 </div>
-                <h1 className="text-xl font-bold text-gray-800">
-                  Product Management
-                </h1>
+                <div className="hidden sm:flex flex-col items-center">
+                  <div className="bg-gradient-to-br from-orange-100 to-yellow-100 p-2 rounded-lg mb-1">
+                    <Baby className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <h1 className="text-lg font-bold text-gray-800 text-center">Product Management</h1>
+                </div>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-2">
+                  <button
+                    onClick={() => setShowAddForm(true)}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-full flex items-center gap-2 shadow-md transition-colors duration-200 text-sm font-semibold"
+                  >
+                    <Plus className="w-5 h-5" /> Add Product
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="bg-white border border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 p-2 rounded-full shadow-md transition-colors duration-200"
+                    title="Logout"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setShowAddForm(true)}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Add Product</span>
-              </button>
-              <button
-                onClick={logout}
-                className="text-red-600 hover:text-red-700 p-2 transition-colors duration-200"
-                title="Logout"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
+            {/* Desktop navbar */}
+            <div className="hidden sm:flex flex-row justify-between items-center py-4">
+              <div className="flex items-center space-x-2">
+                <Link
+                  to="/admin"
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Back to Dashboard</span>
+                </Link>
+                <div className="flex items-center space-x-3 ml-2">
+                  <div className="bg-gradient-to-br from-orange-100 to-yellow-100 p-2 rounded-lg">
+                    <Baby className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <h1 className="text-xl font-bold text-gray-800">Product Management</h1>
+                </div>
+              </div>
+              <div className="flex flex-row gap-2 ml-auto">
+                <button
+                  onClick={() => setShowAddForm(true)}
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Add Product</span>
+                </button>
+                <button
+                  onClick={logout}
+                  className="text-red-600 hover:text-red-700 p-2 rounded-lg transition-colors duration-200"
+                  title="Logout"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -394,8 +430,10 @@ const AdminProducts = () => {
               </h2>
             </div>
 
+            {/* Responsive Product List/Table */}
             <div className="overflow-x-auto">
-              <table className="w-full">
+              {/* Desktop Table */}
+              <table className="w-full hidden md:table">
                 <thead className="bg-slate-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -461,6 +499,7 @@ const AdminProducts = () => {
                           <button
                             onClick={() => handleEdit(product)}
                             className="text-cyan-600 hover:text-cyan-700 transition-colors duration-200"
+                            title="Edit"
                           >
                             <Edit className="w-4 h-4" />
                           </button>
@@ -469,6 +508,7 @@ const AdminProducts = () => {
                               handleDelete(product.id || product._id || "")
                             }
                             className="text-red-600 hover:text-red-700 transition-colors duration-200"
+                            title="Delete"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -478,6 +518,66 @@ const AdminProducts = () => {
                   ))}
                 </tbody>
               </table>
+
+              {/* Mobile Card List */}
+              <div className="md:hidden space-y-4 p-2">
+                {paginatedProducts.map((product) => (
+                  <div
+                    key={product.id || product._id}
+                    className="bg-slate-50 rounded-xl shadow-sm border border-slate-200 flex flex-col p-4"
+                  >
+                    <div className="flex items-center gap-4">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-16 h-16 rounded-lg object-cover"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <p className="text-base font-semibold text-gray-800">
+                            {product.name}
+                          </p>
+                          <span className="px-2 py-1 text-xs font-medium bg-yellow-100 text-orange-600 rounded-full">
+                            {product.category}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Sizes: {(product.sizes || []).join(", ")}
+                        </p>
+                        <p className="text-sm font-bold text-gray-800 mt-1">
+                          ${product.price}
+                        </p>
+                        <span
+                          className={`inline-block mt-1 px-2 py-1 text-xs font-medium rounded-full ${product.inStock
+                            ? "bg-green-100 text-green-600"
+                            : "bg-red-100 text-red-600"
+                            }`}
+                        >
+                          {product.inStock ? "In Stock" : "Out of Stock"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-4">
+                      <button
+                        onClick={() => handleEdit(product)}
+                        className="flex-1 flex items-center justify-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                        title="Edit"
+                      >
+                        <Edit className="w-5 h-5" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => handleDelete(product.id || product._id || "")}
+                        className="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Pagination Controls */}

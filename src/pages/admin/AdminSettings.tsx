@@ -104,40 +104,80 @@ const AdminSettings = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Link
-                to="/admin"
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back to Dashboard</span>
-              </Link>
-              <div className="flex items-center space-x-3">
-                <div className="bg-gradient-to-br from-pink-100 to-orange-100 p-2 rounded-lg">
-                  <Baby className="w-5 h-5 text-orange-600" />
+      <header className="bg-transparent border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+          {/* Mobile/desktop responsive navbar card */}
+          <div className="relative">
+            <div className="sm:hidden">
+              <div className="bg-orange-50 rounded-2xl shadow-md flex flex-col items-center px-4 py-7 mt-3 mb-4 mx-1 relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                  <Link
+                    to="/admin"
+                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+                  >
+                    <ArrowLeft className="w-5 h-5" />
+                    <span className="text-sm font-medium">Back</span>
+                  </Link>
                 </div>
-                <h1 className="text-xl font-bold text-gray-800">Settings</h1>
+                {/* Hide icon/title on mobile for clean look */}
+                <div className="hidden sm:flex flex-col items-center">
+                  <div className="bg-gradient-to-br from-pink-100 to-orange-100 p-2 rounded-lg mb-1">
+                    <Baby className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <h1 className="text-lg font-bold text-gray-800 text-center">Settings</h1>
+                </div>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-2">
+                  <button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-full flex items-center gap-2 shadow-md transition-colors duration-200 text-sm font-semibold disabled:opacity-50"
+                  >
+                    <Save className="w-5 h-5" /> Save
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="bg-white border border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 p-2 rounded-full shadow-md transition-colors duration-200"
+                    title="Logout"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200 disabled:opacity-50"
-              >
-                <Save className="w-4 h-4" />
-                <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
-              </button>
-              <button
-                onClick={logout}
-                className="text-red-600 hover:text-red-700 p-2 transition-colors duration-200"
-                title="Logout"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
+            {/* Desktop navbar */}
+            <div className="hidden sm:flex flex-row justify-between items-center py-4">
+              <div className="flex items-center space-x-2">
+                <Link
+                  to="/admin"
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Back to Dashboard</span>
+                </Link>
+                <div className="flex items-center space-x-3 ml-2">
+                  <div className="bg-gradient-to-br from-pink-100 to-orange-100 p-2 rounded-lg">
+                    <Baby className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <h1 className="text-xl font-bold text-gray-800">Settings</h1>
+                </div>
+              </div>
+              <div className="flex flex-row gap-2 ml-auto">
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200 disabled:opacity-50"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
+                </button>
+                <button
+                  onClick={logout}
+                  className="text-red-600 hover:text-red-700 p-2 rounded-lg transition-colors duration-200"
+                  title="Logout"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -210,7 +250,7 @@ const AdminSettings = () => {
                       name="aboutText"
                       value={settings.aboutText}
                       onChange={handleInputChange}
-                      rows={4}
+                      rows={5}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-transparent"
                     />
                   </div>

@@ -11,10 +11,12 @@ import { Spin } from 'antd';
 const AdminDashboard = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     navigate('/');
+    setMenuOpen(false);
   };
 
   const [ordersThisMonth, setOrdersThisMonth] = useState<number | null>(null);
@@ -202,44 +204,127 @@ const AdminDashboard = () => {
       {/* Admin Header */}
       <header className="bg-white shadow-sm border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-br from-pink-100 to-yellow-100 p-2 rounded-lg">
-                <Baby className="w-6 h-6 text-orange-600" />
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 gap-3 relative">
+            {/* Logo and page name */}
+            <div className="flex items-center justify-between w-full sm:w-auto">
+              <div className="flex items-center gap-2">
+                <div className="bg-gradient-to-br from-pink-100 to-yellow-100 p-2 rounded-lg flex-shrink-0">
+                  <Baby className="w-6 h-6 text-orange-600" />
+                </div>
+                <div>
+                  <h1 className="text-lg sm:text-xl font-bold text-gray-800 leading-tight">Angel's Paradise Admin</h1>
+                  <p className="text-xs sm:text-sm text-gray-500 leading-tight">Management Dashboard</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-800">Angel's Paradise Admin</h1>
-                <p className="text-sm text-gray-500">Management Dashboard</p>
-              </div>
+              {/* Hamburger menu for mobile */}
+              <button
+                className="sm:hidden ml-2 p-2 rounded-md text-orange-600 hover:bg-orange-100 focus:outline-none"
+                onClick={() => setMenuOpen(true)}
+                aria-label="Open menu"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
             </div>
-            <div className="flex items-center space-x-4">
+            {/* Actions: visible on desktop, hidden on mobile */}
+            <div className="hidden sm:flex flex-row flex-nowrap gap-4 mt-2 sm:mt-0">
               <Link
                 to="/"
-                className="flex items-center space-x-2 text-orange-600 hover:text-orange-700 transition-colors duration-200"
+                className="flex items-center space-x-2 text-orange-600 hover:text-orange-700 transition-colors duration-200 px-3 py-2 rounded-md whitespace-nowrap"
               >
                 <Eye className="w-4 h-4" />
-                <span className="text-sm font-medium">View Store</span>
+                <span className="text-xs sm:text-sm font-medium">View Store</span>
               </Link>
               <Link
                 to="/admin/settings"
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 px-3 py-2 rounded-md whitespace-nowrap"
               >
                 <Settings className="w-4 h-4" />
-                <span className="text-sm font-medium">Settings</span>
+                <span className="text-xs sm:text-sm font-medium">Settings</span>
               </Link>
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors duration-200"
+                className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors duration-200 px-3 py-2 rounded-md whitespace-nowrap"
               >
                 <LogOut className="w-4 h-4" />
-                <span className="text-sm font-medium">Logout</span>
+                <span className="text-xs sm:text-sm font-medium">Logout</span>
               </button>
             </div>
+            {/* Mobile menu overlay */}
+            {menuOpen && (
+              <div className="fixed inset-0 z-50 flex sm:hidden">
+                <div className="fixed inset-0 bg-black bg-opacity-30" onClick={() => setMenuOpen(false)}></div>
+                <div className="relative w-56 bg-white shadow-xl h-full z-50 p-6 flex flex-col gap-4">
+                  <button
+                    className="absolute top-4 right-4 text-gray-500 hover:text-orange-600"
+                    onClick={() => setMenuOpen(false)}
+                    aria-label="Close menu"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                  <Link
+                    to="/"
+                    className="flex items-center space-x-2 text-orange-600 hover:text-orange-700 transition-colors duration-200 px-3 py-2 rounded-md whitespace-nowrap"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span className="text-sm font-medium">View Store</span>
+                  </Link>
+                  <Link
+                    to="/admin/settings"
+                    className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition-colors duration-200 px-3 py-2 rounded-md whitespace-nowrap"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <Settings className="w-4 h-4" />
+                    <span className="text-sm font-medium">Settings</span>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors duration-200 px-3 py-2 rounded-md whitespace-nowrap"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="text-sm font-medium">Logout</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        {/* Mobile Quick Actions Row */}
+        <div className=" mb-6">
+          <div className="grid grid-cols-3 gap-3">
+            <button
+              onClick={() => navigate('/admin/products"')}
+              className="flex flex-col items-center justify-center bg-white rounded-xl shadow border border-slate-200 py-3 px-1 hover:bg-orange-50 transition-all"
+
+            >
+              <Package className="w-6 h-6 text-orange-500 mb-1" />
+              <span className="text-xs font-semibold text-gray-700">Manage Products</span>
+            </button>
+            <a
+              href="https://wa.me/1234567890"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center justify-center bg-white rounded-xl shadow border border-slate-200 py-3 px-1 hover:bg-green-50 transition-all"
+            >
+              <MessageCircle className="w-6 h-6 text-green-500 mb-1" />
+              <span className="text-xs font-semibold text-gray-700">Support</span>
+            </a>
+            <button
+              onClick={() => navigate('/admin/analytics')}
+              className="flex flex-col items-center justify-center bg-white rounded-xl shadow border border-slate-200 py-3 px-1 hover:bg-blue-50 transition-all"
+            >
+              <TrendingUp className="w-6 h-6 text-blue-500 mb-1" />
+              <span className="text-xs font-semibold text-gray-700">Analytics</span>
+            </button>
+          </div>
+        </div>
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat) => (
@@ -301,7 +386,7 @@ const AdminDashboard = () => {
                 ) : recentOrders.slice(0, 6).map((order) => (
                   <div
                     key={order._id}
-                    className="flex flex-col md:flex-row md:items-center md:justify-between p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-200 group gap-3 relative overflow-hidden"
+                    className="flex flex-col md:flex-row md:items-center md:justify-between p-5 bg-white my-4 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-200 group gap-3 relative overflow-hidden"
                   >
                     {/* User Avatar/Initials */}
                     <div className="flex items-center gap-3 flex-1">
@@ -379,7 +464,7 @@ const AdminDashboard = () => {
                   topProducts.map((product, index) => (
                     <div
                       key={product.name}
-                      className="flex flex-col md:flex-row md:items-center md:justify-between p-5 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-200 group gap-3 relative overflow-hidden"
+                      className="flex flex-col md:flex-row md:items-center md:justify-between p-5 bg-white my-4 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-200 group gap-3 relative overflow-hidden"
                     >
                       {/* Product Avatar/Rank */}
                       <div className="flex items-center gap-3 flex-1">
@@ -412,33 +497,37 @@ const AdminDashboard = () => {
 
         {/* Quick Actions */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Mobile & Desktop: White card style on mobile, gradient on desktop */}
           <Link
             to="/admin/products"
-            className="bg-gradient-to-r from-pink-500 to-pink-600 text-white p-6 rounded-xl hover:from-pink-600 hover:to-pink-700 transition-all duration-200 hover:scale-105 shadow-lg"
+            className="p-6 rounded-xl shadow-lg transition-all duration-200 hover:scale-105
+              bg-white text-pink-600 border border-slate-200 hover:bg-pink-50 md:bg-gradient-to-r md:from-pink-500 md:to-pink-600 md:text-white md:border-0 md:hover:from-pink-600 md:hover:to-pink-700"
           >
             <Package className="w-8 h-8 mb-3" />
             <h3 className="font-semibold text-lg mb-1">Manage Products</h3>
-            <p className="text-orange-100 text-sm">Add, edit, and organize your product catalog</p>
+            <p className="text-pink-400 md:text-orange-100 text-sm">Add, edit, and organize your product catalog</p>
           </Link>
 
           <a
             href="https://wa.me/1234567890"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 hover:scale-105 shadow-lg"
+            className="p-6 rounded-xl shadow-lg transition-all duration-200 hover:scale-105
+              bg-white text-green-600 border border-slate-200 hover:bg-green-50 md:bg-gradient-to-r md:from-green-500 md:to-green-600 md:text-white md:border-0 md:hover:from-green-600 md:hover:to-green-700"
           >
             <MessageCircle className="w-8 h-8 mb-3" />
             <h3 className="font-semibold text-lg mb-1">Customer Support</h3>
-            <p className="text-green-100 text-sm">Handle customer inquiries via WhatsApp</p>
+            <p className="text-green-400 md:text-green-100 text-sm">Handle customer inquiries via WhatsApp</p>
           </a>
 
           <div
-            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 hover:scale-105 shadow-lg cursor-pointer"
+            className="p-6 rounded-xl shadow-lg transition-all duration-200 hover:scale-105 cursor-pointer
+              bg-white text-blue-600 border border-slate-200 hover:bg-blue-50 md:bg-gradient-to-r md:from-blue-500 md:to-blue-600 md:text-white md:border-0 md:hover:from-blue-600 md:hover:to-blue-700"
             onClick={() => navigate('/admin/analytics')}
           >
             <TrendingUp className="w-8 h-8 mb-3" />
             <h3 className="font-semibold text-lg mb-1">View Analytics</h3>
-            <p className="text-blue-100 text-sm">Track sales performance and insights</p>
+            <p className="text-blue-400 md:text-blue-100 text-sm">Track sales performance and insights</p>
           </div>
         </div>
       </div>
