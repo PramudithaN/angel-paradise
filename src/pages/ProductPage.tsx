@@ -304,7 +304,6 @@ const ProductPage = () => {
                 >
                   <MessageCircle className="w-5 h-5" />
                   <span>Order Now on WhatsApp</span>
-                  I added this line to test deploying process checking
                 </button>
                 <button
                   onClick={handleProceedToCheckout}
