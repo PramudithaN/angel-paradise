@@ -309,6 +309,7 @@ const ProductPage = () => {
                   onClick={handleProceedToCheckout}
                   className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white px-8 py-4 rounded-full font-semibold text-lg flex items-center justify-center space-x-3 transition-all duration-300 hover:scale-105 shadow-lg"
                 >
+                  test
                   <span>Proceed to Checkout</span>
                 </button>
                 <div className="text-center text-gray-600 text-sm">
