@@ -1,73 +1,173 @@
-# 👼 Angel-Paradise
+# 👼 Angel Paradise
 
-**Angel-Paradise** is an online platform designed for selling children's clothing.  
-It features a clean, modern, and responsive interface, making shopping simple and enjoyable for customers, while offering a hidden admin login for secure backend management.
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Stripe](https://img.shields.io/badge/Stripe-626CD9?style=for-the-badge&logo=stripe&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-> 🚧 This project is currently **under development**.
+> An online platform designed for selling children's clothing with a clean, modern, and responsive interface.
+
+---
+
+## 📸 Preview
+
+**Home Page**
+![Preview](https://github.com/PramudithaN/angel-paradise/raw/main/README.md) <!-- Placeholder as no actual screenshot was found in files -->
+
+---
+
+## 📖 About This Project
+
+**Angel Paradise** is a full-stack MERN application tailored for a children's clothing boutique. It offers a seamless shopping experience for customers and a comprehensive administrative suite for business owners. The frontend is built with React and TypeScript for a type-safe, performant UI, while the backend utilizes Express and MongoDB for robust data management. Key highlights include real-time payment processing with Stripe and optimized media handling via Cloudinary.
 
 ---
 
 ## ✨ Features
 
-- 📱 **Responsive Design** – Works seamlessly on mobile, tablet, and desktop.
-- 🔒 **Hidden Admin Login** – Extra layer of security for admin access.
-- 🎨 **Modern UI** – Styled with Tailwind CSS for a clean and minimal look.
-- ⚡ **Fast & Optimized** – Built with Vite for lightning-fast development and build times.
-- 🧹 **Code Quality** – ESLint ensures clean and consistent code.
+- 🚀 **Modern Storefront** - A clean, mobile-first UI styled with Tailwind CSS and Ant Design.
+- 🛍️ **Product Catalog** - Browse products by category with features like Quick View and detailed product pages.
+- 🛒 **Interactive Shopping Cart** - Efficient cart management powered by React Context API.
+- 💳 **Secure Checkout** - Integrated Stripe payment gateway for reliable and safe transactions.
+- 🛡️ **Admin Dashboard** - Secure administrative area to manage products, view orders, and update business settings.
+- 📊 **Business Analytics** - Data visualization for sales and customer trends.
+- 💬 **Customer Reviews** - Integrated system for product feedback and ratings.
+- ☁️ **Cloud Media** - Automated image uploads and optimization using Cloudinary.
 
 ---
 
-## 🛠 Tech Stack
+## 🛠️ Tech Stack
 
-- **Frontend:** TypeScript, React, Vite, Tailwind CSS
-- **Tooling:** ESLint
+| Layer | Technology |
+|-------|-----------|
+| **Frontend Framework** | [React 18.3](https://reactjs.org/) |
+| **Backend Framework** | [Express 4.19](https://expressjs.com/) |
+| **UI Components** | [Ant Design](https://ant.design/) |
+| **Styling** | [Tailwind CSS](https://tailwindcss.com/) |
+| **Language** | [TypeScript](https://www.typescriptlang.org/) |
+| **Database** | [MongoDB / Mongoose](https://www.mongodb.com/) |
+| **Payments** | [Stripe](https://stripe.com/) |
+| **Media Handling** | [Cloudinary](https://cloudinary.com/) |
+| **Animations** | [Framer Motion](https://www.framer.com/motion/) |
+| **Icons** | [Lucide React](https://lucide.dev/) |
+| **Development** | [Vite](https://vitejs.dev/) |
 
 ---
 
-## 📦 Installation
+## 📋 Prerequisites
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/PramudithaN/angel-paradise.git
-   cd angel-paradise
-Install dependencies
+- [Node.js](https://nodejs.org/) **v18.0 or higher**
+- [pnpm](https://pnpm.io/) (recommended) or [npm](https://www.npmjs.com/)
+- [MongoDB](https://www.mongodb.com/try/download/community) account or local instance
+- [Stripe](https://stripe.com/) account for API keys
+- [Cloudinary](https://cloudinary.com/) account for image storage
 
-bash
-Copy
-Edit
-npm install
-Run the development server
+---
 
-bash
-Copy
-Edit
-npm run dev
-Build for production
+## ⚙️ Getting Started
 
-bash
-Copy
-Edit
-npm run build
-📌 Project Status
-This project is actively being developed.
-Future updates will include:
+### 1. Clone the repository
 
-Product catalog & filtering
+```bash
+git clone https://github.com/PramudithaN/angel-paradise.git
+cd angel-paradise
+```
 
-Shopping cart functionality
+### 2. Install dependencies
 
-Payment integration
+Install root and backend dependencies:
 
-Admin dashboard
+```bash
+pnpm install
+cd mern-backend && npm install
+cd ..
+```
 
-📄 License
-This project is licensed under the MIT License – feel free to use, modify, and distribute.
+### 3. Set up environment variables
 
-🤝 Contributing
-Contributions, issues, and feature requests are welcome!
-Feel free to open an issue or submit a pull request.
+Create a `.env` file in the `mern-backend/` directory:
 
-📷 Screenshots
-(Coming soon – will be added once the UI is complete)
+```env
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
 
-Angel-Paradise – Because every little angel deserves paradise ✨
+*Note: Update `src/stripeKey.ts` with your Stripe Publishable Key.*
+
+### 4. Start the development servers
+
+**Start the Backend:**
+```bash
+cd mern-backend
+pnpm dev
+```
+
+**Start the Frontend (in a new terminal):**
+```bash
+pnpm dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## 📦 Available Scripts
+
+### Frontend (Root)
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Starts the Vite development server |
+| `pnpm build` | Builds the application for production |
+| `pnpm lint` | Runs ESLint to check for code issues |
+| `pnpm preview` | Locally previews the production build |
+
+### Backend (`mern-backend/`)
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Starts the backend server with `ts-node-dev` (auto-reload) |
+| `pnpm build` | Compiles TypeScript to JavaScript |
+| `pnpm start` | Runs the compiled backend server |
+
+---
+
+## 📁 Project Structure
+
+```
+angel-paradise/
+├── mern-backend/              # Node.js Express Backend
+│   ├── src/
+│   │   ├── models/            # Mongoose schemas
+│   │   ├── routes/            # API endpoints
+│   │   └── utils/             # Cloudinary & Multer config
+│   ├── Dockerfile             # Backend containerization
+│   └── package.json
+├── src/                       # React Frontend
+│   ├── components/            # Reusable UI elements
+│   ├── contexts/              # Auth & Cart State
+│   ├── pages/                 # Main pages & Admin views
+│   ├── data/                  # Static assets/mock data
+│   ├── utils/                 # Frontend helpers
+│   └── App.tsx                # Main App component
+├── tailwind.config.js         # Styling configuration
+└── vite.config.ts             # Build tool configuration
+```
+
+---
+
+## 🙋‍♂️ Connect with Me
+
+- **GitHub**: [PramudithaN](https://github.com/PramudithaN)
+- **LinkedIn**: [Pramuditha Nadun](https://linkedin.com/in/pramuditha-nadun-612b1b204)
+- **Email**: [pramudithanadun@gmail.com](mailto:pramudithanadun@gmail.com)
+
+---
+
+*Developed with ❤️ by Pramuditha Nadun.*
