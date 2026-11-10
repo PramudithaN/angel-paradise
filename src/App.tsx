@@ -23,58 +23,76 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
-          <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-yellow-50">
+          <div className="min-h-screen bg-voile text-bark-900 flex flex-col font-sans selection:bg-rose-200 selection:text-bark-900">
             <Routes>
-            {/* Admin Login Route (Public) */}
-            <Route path="/admin-login" element={<AdminLogin />} />
+              {/* Admin Login Route (Public) */}
+              <Route path="/admin-login" element={<AdminLogin />} />
 
-            {/* Protected Admin Routes */}
-            <Route path="/admin" element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/products" element={
-              <ProtectedRoute>
-                <AdminProducts />
-              </ProtectedRoute>
-            } />
+              {/* Protected Admin Routes */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/products"
+                element={
+                  <ProtectedRoute>
+                    <AdminProducts />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/admin/orders" element={
-              <ProtectedRoute>
-                <AdminOrders />
-              </ProtectedRoute>
-            } />
+              <Route
+                path="/admin/orders"
+                element={
+                  <ProtectedRoute>
+                    <AdminOrders />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/admin/analytics" element={
-              <ProtectedRoute>
-                <AnalyticsPage />
-              </ProtectedRoute>
-            } />
-            <Route path="/admin/settings" element={
-              <ProtectedRoute>
-                <AdminSettings />
-              </ProtectedRoute>
-            } />
+              <Route
+                path="/admin/analytics"
+                element={
+                  <ProtectedRoute>
+                    <AnalyticsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/settings"
+                element={
+                  <ProtectedRoute>
+                    <AdminSettings />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Main Website Routes */}
-            <Route path="/*" element={
-              <>
-                <Header />
-                <main className="min-h-screen">
-                  <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/shop" element={<ShopPage />} />
-                    <Route path="/product/:id" element={<ProductPage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/payment" element={<PaymentPage />} />
-                    <Route path="/all-reviews" element={<AllReviewsPage />} />
-                  </Routes>
-                </main>
-                <Footer />
-              </>
-            } />
+              {/* Main Website Routes */}
+              <Route
+                path="/*"
+                element={
+                  <div className="flex flex-col min-h-screen">
+                    <Header />
+                    <main className="flex-1">
+                      <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/shop" element={<ShopPage />} />
+                        <Route path="/product/:id" element={<ProductPage />} />
+                        <Route path="/about" element={<AboutPage />} />
+                        <Route path="/contact" element={<ContactPage />} />
+                        <Route path="/payment" element={<PaymentPage />} />
+                        <Route path="/all-reviews" element={<AllReviewsPage />} />
+                      </Routes>
+                    </main>
+                    <Footer />
+                  </div>
+                }
+              />
             </Routes>
           </div>
         </Router>

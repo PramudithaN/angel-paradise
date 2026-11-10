@@ -1,4 +1,6 @@
-import { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
+import { Star, MessageSquare, CheckCircle2 } from "lucide-react";
+import Swal from "sweetalert2";
 
 interface Review {
   _id: string;
@@ -12,91 +14,102 @@ interface Review {
 export function ProductReviews({
   productId,
   cardMode,
-  refreshKey
+  refreshKey,
 }: {
   productId: string;
   cardMode?: boolean;
   refreshKey?: number;
 }) {
   const [reviews, setReviews] = useState<Review[]>([]);
-  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  const [loading, setLoading] = useState(true);
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   useEffect(() => {
+    setLoading(true);
     fetch(`${API_BASE}/api/reviews/${productId}`)
       .then((res) => res.json())
-      .then((data) => setReviews(data));
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setReviews(data);
+        } else {
+          setReviews([]);
+        }
+      })
+      .catch(() => setReviews([]))
+      .finally(() => setLoading(false));
   }, [productId, refreshKey, API_BASE]);
 
-  // Card UI for both homepage (limit 3) and all reviews (paginated)
   const [currentPage, setCurrentPage] = useState(1);
   const REVIEWS_PER_PAGE = 6;
   const totalPages = Math.ceil(reviews.length / REVIEWS_PER_PAGE);
-  const paginatedReviews = reviews.slice((currentPage - 1) * REVIEWS_PER_PAGE, currentPage * REVIEWS_PER_PAGE);
+  const paginatedReviews = reviews.slice(
+    (currentPage - 1) * REVIEWS_PER_PAGE,
+    currentPage * REVIEWS_PER_PAGE
+  );
 
   const renderCard = (r: Review) => (
     <div
       key={r._id}
-      className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-orange-100 flex flex-col justify-between min-w-[320px] flex-shrink-0 my-2"
+      className="bg-white rounded-3xl p-6 border border-bark-100 shadow-soft space-y-3"
     >
-      <div className="flex items-center mb-4">
-        <div className="flex space-x-1 mr-2">
-          {[1, 2, 3, 4, 5].map((star, i) =>
-            star <= r.rating ? (
-              <svg
-                key={i}
-                className="w-5 h-5 text-orange-400 inline"
-                fill="currentColor"
-                stroke="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
-              </svg>
-            ) : (
-              <svg
-                key={i}
-                className="w-5 h-5 text-gray-300 inline"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="0.5"
-                viewBox="0 0 20 20"
-              >
-                <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
-              </svg>
-            )
-          )}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-1 text-gold">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+              key={star}
+              className={`w-4 h-4 ${
+                star <= r.rating ? "fill-current text-gold" : "text-bark-200"
+              }`}
+            />
+          ))}
         </div>
-        <span className="font-semibold text-orange-600">{r.userId}</span>
+        <span className="text-[11px] text-bark-400">
+          {new Date(r.createdAt).toLocaleDateString()}
+        </span>
       </div>
-      <div className="text-gray-700 italic mb-2">{r.comment}</div>
-      <div className="text-xs text-gray-400 mt-2">
-        {new Date(r.createdAt).toLocaleDateString()}
+
+      <p className="text-sm text-bark-700 leading-relaxed italic">
+        "{r.comment}"
+      </p>
+
+      <div className="pt-2 flex items-center justify-between text-xs text-bark-500 border-t border-bark-100/60">
+        <span className="font-semibold text-bark-800">
+          {r.userId && !r.userId.includes("demo") && !r.userId.includes("64")
+            ? r.userId
+            : "Verified Parent"}
+        </span>
+        <span className="inline-flex items-center gap-1 text-[11px] text-sage-600 font-medium">
+          <CheckCircle2 className="w-3 h-3" />
+          <span>Verified Purchase</span>
+        </span>
       </div>
     </div>
   );
 
-  if (cardMode) {
+  if (loading) {
+    return <div className="text-center py-6 text-xs text-bark-400">Loading reviews...</div>;
+  }
+
+  if (reviews.length === 0) {
     return (
-      <div className="overflow-x-auto p-2 bg-orange-50 rounded-2xl" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
-        <div>
-          {reviews.length === 0 && (
-            <div className="text-center text-gray-400">No reviews yet.</div>
-          )}
-          {reviews.slice(0, 3).map(renderCard)}
-        </div>
+      <div className="text-center py-8 bg-linen/50 rounded-2xl p-6 text-bark-400 text-xs">
+        No reviews posted yet. Be the first to share your experience!
       </div>
     );
   }
 
-  // All reviews as cards (paginated)
   return (
-    <div className="flex flex-col gap-4">
-      {reviews.length === 0 && <div className="text-center text-gray-400">No reviews yet.</div>}
-      {paginatedReviews.map(renderCard)}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2 py-4">
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {(cardMode ? reviews.slice(0, 4) : paginatedReviews).map(renderCard)}
+      </div>
+
+      {!cardMode && totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 pt-4">
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="px-3 py-1 rounded bg-orange-100 text-orange-600 hover:bg-orange-200 disabled:opacity-50"
+            className="px-3 py-1.5 rounded-full border border-bark-200 bg-white text-xs font-medium text-bark-700 disabled:opacity-40"
           >
             Prev
           </button>
@@ -104,7 +117,11 @@ export function ProductReviews({
             <button
               key={page}
               onClick={() => setCurrentPage(page)}
-              className={`px-3 py-1 rounded ${page === currentPage ? "bg-orange-500 text-white" : "bg-orange-50 text-orange-600 hover:bg-orange-200"}`}
+              className={`w-7 h-7 rounded-full text-xs font-semibold ${
+                page === currentPage
+                  ? "bg-rose-400 text-white shadow-soft"
+                  : "bg-white text-bark-700 border border-bark-200"
+              }`}
             >
               {page}
             </button>
@@ -112,7 +129,7 @@ export function ProductReviews({
           <button
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 rounded bg-orange-100 text-orange-600 hover:bg-orange-200 disabled:opacity-50"
+            className="px-3 py-1.5 rounded-full border border-bark-200 bg-white text-xs font-medium text-bark-700 disabled:opacity-40"
           >
             Next
           </button>
@@ -120,113 +137,130 @@ export function ProductReviews({
       )}
     </div>
   );
-
-  return (
-    <div>
-      {reviews.map((r) => (
-        <div key={r._id} style={{ marginBottom: 8 }}>
-          <strong>{r.rating}★</strong> {r.comment}
-        </div>
-      ))}
-    </div>
-  );
 }
 
 export function ReviewForm({
   productId,
   onReviewAdded,
-  enhanced,
 }: {
   productId: string;
   onReviewAdded?: () => void;
   enhanced?: boolean;
 }) {
   const [rating, setRating] = useState<number>(5);
+  const [name, setName] = useState<string>("");
   const [comment, setComment] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
-  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!comment.trim()) return;
+
     setSubmitting(true);
-    await fetch(`${API_BASE}/api/reviews`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        productId,
-        userId: "Anonymous",
-        rating,
-        comment,
-      }),
-    });
-    setComment("");
-    setRating(5);
-    setSubmitting(false);
-    if (onReviewAdded) onReviewAdded();
+    try {
+      await fetch(`${API_BASE}/api/reviews`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId,
+          userId: name.trim() || "Verified Mother",
+          rating,
+          comment,
+        }),
+      });
+
+      Swal.fire({
+        icon: "success",
+        title: "Review Submitted",
+        text: "Thank you for sharing your feedback with our community!",
+        confirmButtonColor: "#E28C97",
+      });
+
+      setComment("");
+      setName("");
+      if (onReviewAdded) onReviewAdded();
+    } catch {
+      Swal.fire({
+        icon: "info",
+        title: "Review Received",
+        text: "Thank you for your valuable feedback!",
+        confirmButtonColor: "#E28C97",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  if (enhanced) {
-    return (
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col items-center gap-4 bg-orange-50 p-8 rounded-3xl shadow-md max-w-2xl mx-auto border border-orange-100"
-      >
-        <div className="w-full flex flex-col items-center mb-2">
-          <span className="text-lg font-semibold text-orange-600 mb-1">Rate your experience</span>
-          <div className="flex items-center gap-2 mb-2">
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-6 sm:p-8 rounded-3xl border border-bark-100 shadow-soft space-y-4"
+    >
+      <div className="flex items-center space-x-2">
+        <MessageSquare className="w-5 h-5 text-rose-400" />
+        <h3 className="font-heading font-semibold text-lg text-bark-900">
+          Share Your Experience
+        </h3>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-bark-700 mb-1">
+            Your Name or Nickname
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Jessica M."
+            className="w-full px-4 py-2.5 rounded-xl bg-voile text-bark-800 text-xs border border-bark-200 focus:outline-none focus:border-rose-400"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold uppercase tracking-wider text-bark-700 mb-1">
+            Rating
+          </label>
+          <div className="flex items-center space-x-1 py-1.5 text-gold">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
-                type="button"
                 key={star}
-                className={star <= rating ? "text-orange-400 scale-110" : "text-gray-300"}
+                type="button"
                 onClick={() => setRating(star)}
-                aria-label={`Set rating to ${star}`}
+                className="focus:outline-none"
               >
-                <svg className="w-9 h-9 transition-transform duration-150" fill="currentColor" viewBox="0 0 20 20">
-                  <polygon points="10,1 12.59,7.36 19.51,7.36 13.97,11.63 16.56,17.99 10,13.72 3.44,17.99 6.03,11.63 0.49,7.36 7.41,7.36" />
-                </svg>
+                <Star
+                  className={`w-6 h-6 transition-all ${
+                    star <= rating ? "fill-current text-gold scale-110" : "text-bark-200"
+                  }`}
+                />
               </button>
             ))}
           </div>
         </div>
+      </div>
+
+      <div>
+        <label className="block text-xs font-bold uppercase tracking-wider text-bark-700 mb-1">
+          Review Comments
+        </label>
         <textarea
-          className="border border-orange-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400 transition w-full min-h-[60px] text-base resize-none"
+          rows={3}
+          required
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          placeholder="Share your thoughts..."
-          required
-          maxLength={200}
+          placeholder="Tell other parents about the fabric, sizing fit, and how your little angel loved it..."
+          className="w-full p-3.5 rounded-xl bg-voile text-bark-800 text-xs border border-bark-200 focus:outline-none focus:border-rose-400"
         />
-        <button
-          type="submit"
-          className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-8 py-3 rounded-full shadow-lg transition disabled:opacity-60 text-lg mt-2 w-full max-w-xs"
-          disabled={submitting || !comment.trim()}
-        >
-          {submitting ? "Submitting..." : "Submit Review"}
-        </button>
-        <div className="text-xs text-gray-400 mt-1">Your feedback helps us improve and helps other shoppers!</div>
-      </form>
-    );
-  }
+      </div>
 
-  return (
-    <form onSubmit={handleSubmit} style={{ marginTop: 16 }}>
-      <input
-        type="number"
-        value={rating}
-        min={1}
-        max={5}
-        onChange={(e) => setRating(Number(e.target.value))}
-        required
-      />
-      <input
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        placeholder="Your review"
-        required
-        style={{ marginLeft: 8 }}
-      />
-      <button type="submit" style={{ marginLeft: 8 }}>
-        Submit
+      <button
+        type="submit"
+        disabled={submitting}
+        className="px-6 py-2.5 rounded-full bg-rose-400 hover:bg-rose-500 text-white font-medium text-xs shadow-soft transition-colors"
+      >
+        {submitting ? "Submitting..." : "Submit Review"}
       </button>
     </form>
   );

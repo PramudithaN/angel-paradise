@@ -1,4 +1,4 @@
-# 👼 Angel Paradise
+# Angel Paradise
 
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
@@ -7,67 +7,56 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Stripe](https://img.shields.io/badge/Stripe-626CD9?style=for-the-badge&logo=stripe&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-> An online platform designed for selling children's clothing with a clean, modern, and responsive interface.
-
----
-
-## 📸 Preview
-
-**Home Page**
-![Preview](https://github.com/PramudithaN/angel-paradise/raw/main/README.md) <!-- Placeholder as no actual screenshot was found in files -->
+> A modern e-commerce storefront and administrative platform tailored for children's fashion and accessories.
 
 ---
 
-## 📖 About This Project
+## About This Project
 
-**Angel Paradise** is a full-stack MERN application tailored for a children's clothing boutique. It offers a seamless shopping experience for customers and a comprehensive administrative suite for business owners. The frontend is built with React and TypeScript for a type-safe, performant UI, while the backend utilizes Express and MongoDB for robust data management. Key highlights include real-time payment processing with Stripe and optimized media handling via Cloudinary.
-
----
-
-## ✨ Features
-
-- 🚀 **Modern Storefront** - A clean, mobile-first UI styled with Tailwind CSS and Ant Design.
-- 🛍️ **Product Catalog** - Browse products by category with features like Quick View and detailed product pages.
-- 🛒 **Interactive Shopping Cart** - Efficient cart management powered by React Context API.
-- 💳 **Secure Checkout** - Integrated Stripe payment gateway for reliable and safe transactions.
-- 🛡️ **Admin Dashboard** - Secure administrative area to manage products, view orders, and update business settings.
-- 📊 **Business Analytics** - Data visualization for sales and customer trends.
-- 💬 **Customer Reviews** - Integrated system for product feedback and ratings.
-- ☁️ **Cloud Media** - Automated image uploads and optimization using Cloudinary.
+Angel Paradise is a full-stack e-commerce web application engineered for an artisanal children's clothing boutique. The platform combines an editorial storefront with an administrative management suite. The frontend is built with React 18, TypeScript, and Tailwind CSS, featuring an Heirloom Boutique design system, slide-over cart drawer, and responsive product filtering. The backend is powered by Node.js Express and MongoDB, featuring automated initial data seeding and fallback database handling for development environments.
 
 ---
 
-## 🛠️ Tech Stack
+## Features
+
+- Boutique Storefront: A responsive, mobile-first shopping interface designed with editorial typography (Playfair Display and Plus Jakarta Sans) and soft organic hues.
+- Product Catalog and Filtering: Interactive catalog supporting category tabs, age and size filters, price sliders, and keyword search.
+- Quick View and Sizing Guides: Modal-based quick product exploration with embedded age-to-weight sizing charts.
+- Cart and State Architecture: Persistent shopping cart with composite variant keying to prevent SKU collisions across sizes and colors.
+- Slide-Over Cart Drawer: Real-time bag drawer allowing instant quantity adjustments, item removals, and subtotal calculations.
+- Multi-Channel Checkout: Two-column checkout capturing recipient details, shipping destinations, and optional gift-wrap notes.
+- Administrative Suite: Protected dashboard to manage product inventories, monitor customer orders, review business telemetry, and configure contact settings.
+- Cloud Media Integration: Automated image upload pipeline powered by Cloudinary and Multer.
+
+---
+
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| **Frontend Framework** | [React 18.3](https://reactjs.org/) |
-| **Backend Framework** | [Express 4.19](https://expressjs.com/) |
-| **UI Components** | [Ant Design](https://ant.design/) |
-| **Styling** | [Tailwind CSS](https://tailwindcss.com/) |
-| **Language** | [TypeScript](https://www.typescriptlang.org/) |
-| **Database** | [MongoDB / Mongoose](https://www.mongodb.com/) |
-| **Payments** | [Stripe](https://stripe.com/) |
-| **Media Handling** | [Cloudinary](https://cloudinary.com/) |
-| **Animations** | [Framer Motion](https://www.framer.com/motion/) |
-| **Icons** | [Lucide React](https://lucide.dev/) |
-| **Development** | [Vite](https://vitejs.dev/) |
+| Frontend Framework | [React 18.3](https://reactjs.org/) |
+| Backend Framework | [Express 4.19](https://expressjs.com/) |
+| Styling | [Tailwind CSS](https://tailwindcss.com/) |
+| Language | [TypeScript](https://www.typescriptlang.org/) |
+| Database | [MongoDB / Mongoose](https://www.mongodb.com/) |
+| Payments | [Stripe](https://stripe.com/) |
+| Media Storage | [Cloudinary](https://cloudinary.com/) |
+| Animations | [Framer Motion](https://www.framer.com/motion/) |
+| Icons | [Lucide React](https://lucide.dev/) |
+| Build Tool | [Vite](https://vitejs.dev/) |
 
 ---
 
-## 📋 Prerequisites
+## Prerequisites
 
-- [Node.js](https://nodejs.org/) **v18.0 or higher**
-- [pnpm](https://pnpm.io/) (recommended) or [npm](https://www.npmjs.com/)
-- [MongoDB](https://www.mongodb.com/try/download/community) account or local instance
-- [Stripe](https://stripe.com/) account for API keys
-- [Cloudinary](https://cloudinary.com/) account for image storage
+- [Node.js](https://nodejs.org/) v18.0 or higher
+- [pnpm](https://pnpm.io/) or [npm](https://www.npmjs.com/)
+- [Git](https://git-scm.com/)
 
 ---
 
-## ⚙️ Getting Started
+## Getting Started
 
 ### 1. Clone the repository
 
@@ -78,17 +67,15 @@ cd angel-paradise
 
 ### 2. Install dependencies
 
-Install root and backend dependencies:
-
 ```bash
 pnpm install
 cd mern-backend && npm install
 cd ..
 ```
 
-### 3. Set up environment variables
+### 3. Environment configuration
 
-Create a `.env` file in the `mern-backend/` directory:
+Create a `.env` file in the `mern-backend/` directory if connecting to a remote MongoDB Atlas cluster:
 
 ```env
 PORT=5000
@@ -98,76 +85,82 @@ CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 ```
 
-*Note: Update `src/stripeKey.ts` with your Stripe Publishable Key.*
+*Note: If no `MONGO_URI` is provided, the backend automatically initializes an integrated in-memory MongoDB engine with pre-seeded boutique products for immediate development.*
 
 ### 4. Start the development servers
 
-**Start the Backend:**
+Start the backend:
 ```bash
 cd mern-backend
-pnpm dev
+npm run dev
 ```
 
-**Start the Frontend (in a new terminal):**
+Start the frontend (in a separate terminal):
 ```bash
-pnpm dev
+npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
-## 📦 Available Scripts
+## Available Scripts
 
-### Frontend (Root)
+### Frontend (Project Root)
 
 | Command | Description |
 |---------|-------------|
-| `pnpm dev` | Starts the Vite development server |
-| `pnpm build` | Builds the application for production |
-| `pnpm lint` | Runs ESLint to check for code issues |
-| `pnpm preview` | Locally previews the production build |
+| `npm run dev` | Starts the Vite development server on port 5173 |
+| `npm run build` | Compiles TypeScript and builds production bundles |
+| `npm run lint` | Executes ESLint across the codebase |
+| `npm run preview` | Previews the production build locally |
 
 ### Backend (`mern-backend/`)
 
 | Command | Description |
 |---------|-------------|
-| `pnpm dev` | Starts the backend server with `ts-node-dev` (auto-reload) |
-| `pnpm build` | Compiles TypeScript to JavaScript |
-| `pnpm start` | Runs the compiled backend server |
+| `npm run dev` | Starts the backend with ts-node-dev and auto-reload |
+| `npm run build` | Compiles backend TypeScript to JavaScript |
+| `npm run start` | Runs the compiled server from `dist/` |
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 angel-paradise/
-├── mern-backend/              # Node.js Express Backend
+├── mern-backend/              # Express API and Database Layer
 │   ├── src/
-│   │   ├── models/            # Mongoose schemas
-│   │   ├── routes/            # API endpoints
-│   │   └── utils/             # Cloudinary & Multer config
-│   ├── Dockerfile             # Backend containerization
-│   └── package.json
+│   │   ├── models/            # Mongoose data schemas (Product, Order, Review)
+│   │   ├── routes/            # API route controllers
+│   │   ├── utils/             # Cloudinary upload helpers
+│   │   ├── seed.ts            # Default product and business data seeder
+│   │   └── index.ts           # Server entrypoint and database connection
+│   └── package.json           # Backend dependency manifest
+├── public/
+│   └── favicon.svg            # Custom boutique SVG favicon
 ├── src/                       # React Frontend
-│   ├── components/            # Reusable UI elements
-│   ├── contexts/              # Auth & Cart State
-│   ├── pages/                 # Main pages & Admin views
-│   ├── data/                  # Static assets/mock data
-│   ├── utils/                 # Frontend helpers
-│   └── App.tsx                # Main App component
-├── tailwind.config.js         # Styling configuration
-└── vite.config.ts             # Build tool configuration
+│   ├── components/            # UI components (Header, Footer, CartDrawer, ProductCard)
+│   ├── contexts/              # Global state (CartContext, AuthContext)
+│   ├── data/                  # Static product data and fallback collections
+│   ├── pages/                 # Application routes (HomePage, ShopPage, ProductPage, PaymentPage)
+│   ├── utils/                 # Utility functions and sweetalert helpers
+│   ├── App.tsx                # Main application routing
+│   ├── index.css              # Global styles and custom scrollbar
+│   └── main.tsx               # Client entrypoint
+├── index.html                 # HTML template and Google Fonts
+├── tailwind.config.js         # Design tokens, color palette, and font definitions
+└── vite.config.ts             # Vite build configuration
 ```
 
 ---
 
-## 🙋‍♂️ Connect with Me
+## Connect with Me
 
-- **GitHub**: [PramudithaN](https://github.com/PramudithaN)
-- **LinkedIn**: [Pramuditha Nadun](https://linkedin.com/in/pramuditha-nadun-612b1b204)
-- **Email**: [pramudithanadun@gmail.com](mailto:pramudithanadun@gmail.com)
+- GitHub: [PramudithaN](https://github.com/PramudithaN)
+- LinkedIn: [Pramuditha Nadun](https://linkedin.com/in/pramuditha-nadun-612b1b204)
+- Email: [pramudithanadun@gmail.com](mailto:pramudithanadun@gmail.com)
 
 ---
 
-*Developed with ❤️ by Pramuditha Nadun.*
+Developed by Pramuditha Nadun.

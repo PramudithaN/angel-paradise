@@ -1,99 +1,243 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Product } from '../data/products';
+import { X, ShoppingBag, ShieldCheck, Heart, ArrowRight } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
+import Swal from 'sweetalert2';
+
+interface Product {
+  id?: string;
+  _id?: string;
+  name: string;
+  price: number;
+  image: string;
+  category: string;
+  description?: string;
+  sizes?: string[];
+  colors?: string[];
+  gallery?: string[];
+  inStock?: boolean;
+}
 
 interface ProductQuickViewModalProps {
-    product: Product;
-    onClose: () => void;
+  product: Product;
+  onClose: () => void;
 }
 
 const ProductQuickViewModal: React.FC<ProductQuickViewModalProps> = ({ product, onClose }) => {
-    const [selectedSize, setSelectedSize] = useState('');
-    const [selectedColor, setSelectedColor] = useState('');
-    const [quantity, setQuantity] = useState(1);
-    const navigate = useNavigate();
+  const [selectedSize, setSelectedSize] = useState<string>(
+    product.sizes && product.sizes.length > 0 ? product.sizes[0] : ''
+  );
+  const [selectedColor, setSelectedColor] = useState<string>(
+    product.colors && product.colors.length > 0 ? product.colors[0] : ''
+  );
+  const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
 
-    const handleProceedToCheckout = () => {
-        const order = {
-            product: product.name,
-            price: product.price,
-            size: selectedSize,
-            color: selectedColor,
-            quantity: quantity,
-            total: (product.price * quantity).toFixed(2),
-        };
-        navigate('/payment', { state: { order } });
-        onClose();
-    };
+  const productId = product._id || product.id || '';
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-lg relative animate-fadeIn">
-                <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
-                <div className="flex flex-col md:flex-row gap-6">
-                    <img src={product.image} alt={product.name} className="w-full md:w-1/2 h-56 object-cover rounded-xl" />
-                    <div className="flex-1 flex flex-col gap-3">
-                        <h2 className="text-2xl font-bold text-gray-800">{product.name}</h2>
-                        <p className="text-lg text-orange-600 font-bold">${product.price}</p>
-                        <p className="text-gray-600 text-sm mb-2">{product.description}</p>
-                        {product.sizes && (
-                            <div>
-                                <h4 className="font-semibold text-gray-700 mb-1">Size</h4>
-                                <div className="flex gap-2 flex-wrap">
-                                    {product.sizes.map((size: string) => (
-                                        <button
-                                            key={size}
-                                            onClick={() => setSelectedSize(size)}
-                                            className={`px-3 py-1 rounded-lg text-sm font-medium transition-all duration-200 ${selectedSize === size ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600'}`}
-                                        >
-                                            {size}
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                        {product.colors && (
-                            <div>
-                                <h4 className="font-semibold text-gray-700 mb-1">Color</h4>
-                                <div className="flex gap-2 flex-wrap">
-                                    {product.colors
-                                        .filter(
-                                            (color: string | number | bigint | undefined): color is string | number | bigint =>
-                                                typeof color === 'string' ||
-                                                typeof color === 'number' ||
-                                                typeof color === 'bigint'
-                                        )
-                                        .map((color: string | number | bigint) => (
-                                            <button
-                                                key={color.toString()}
-                                                onClick={() => setSelectedColor(color.toString())}
-                                                className={`px-3 py-1 rounded-lg text-sm font-medium transition-all duration-200 ${selectedColor === color.toString() ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600'}`}
-                                            >
-                                                {color.toString()}
-                                            </button>
-                                        ))}
-                                </div>
-                            </div>
-                        )}
-                        <div>
-                            <h4 className="font-semibold text-gray-700 mb-1">Quantity</h4>
-                            <div className="flex items-center gap-2">
-                                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="bg-gray-100 px-3 py-1 rounded-lg">-</button>
-                                <span className="font-semibold text-lg">{quantity}</span>
-                                <button onClick={() => setQuantity(quantity + 1)} className="bg-gray-100 px-3 py-1 rounded-lg">+</button>
-                            </div>
-                        </div>
-                        <button
-                            onClick={handleProceedToCheckout}
-                            className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white px-6 py-3 rounded-full font-semibold text-lg mt-4 transition-all duration-200"
-                        >
-                            Proceed to Checkout
-                        </button>
-                    </div>
+  const handleAddToBag = () => {
+    addToCart({
+      _id: productId,
+      name: product.name,
+      image: product.image,
+      price: product.price,
+      quantity,
+      selectedSize,
+      selectedColor,
+      category: product.category,
+    });
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Added to Bag',
+      text: `${product.name} added to your shopping bag.`,
+      timer: 1500,
+      showConfirmButton: false,
+      position: 'top-end',
+      toast: true,
+      background: '#FAF7F2',
+      color: '#261E18',
+    });
+
+    onClose();
+  };
+
+  const handleProceedToCheckout = () => {
+    addToCart({
+      _id: productId,
+      name: product.name,
+      image: product.image,
+      price: product.price,
+      quantity,
+      selectedSize,
+      selectedColor,
+      category: product.category,
+    });
+    onClose();
+    navigate('/payment');
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-bark-900/50 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
+      />
+
+      {/* Modal Dialog */}
+      <div className="relative bg-voile rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden z-10 border border-bark-100 animate-fadeIn">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 text-bark-400 hover:text-bark-800 hover:bg-bark-50 rounded-full transition-colors z-20"
+          aria-label="Close modal"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          {/* Product Image */}
+          <div className="relative aspect-square md:aspect-auto h-64 md:h-full bg-linen/50">
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
+            <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-bark-700 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">
+              {product.category}
+            </span>
+          </div>
+
+          {/* Details */}
+          <div className="p-6 md:p-8 flex flex-col justify-between">
+            <div className="space-y-4">
+              <div>
+                <h2 className="font-heading text-2xl font-bold text-bark-900 leading-snug">
+                  {product.name}
+                </h2>
+                <div className="flex items-baseline space-x-2 mt-1">
+                  <span className="font-heading text-2xl font-bold text-rose-500">
+                    ${Number(product.price).toFixed(2)}
+                  </span>
+                  <span className="text-xs text-bark-400">Taxes included</span>
                 </div>
+              </div>
+
+              {product.description && (
+                <p className="text-sm text-bark-600 leading-relaxed">
+                  {product.description}
+                </p>
+              )}
+
+              {/* Sizes Selection */}
+              {product.sizes && product.sizes.length > 0 && (
+                <div>
+                  <label className="block text-xs font-semibold text-bark-700 uppercase tracking-wider mb-2">
+                    Select Size / Age:
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {product.sizes.map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        onClick={() => setSelectedSize(size)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                          selectedSize === size
+                            ? 'bg-rose-400 text-white shadow-soft font-semibold'
+                            : 'bg-white text-bark-700 border border-bark-200 hover:border-rose-300'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Colors Selection */}
+              {product.colors && product.colors.length > 0 && (
+                <div>
+                  <label className="block text-xs font-semibold text-bark-700 uppercase tracking-wider mb-2">
+                    Available Shades:
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {product.colors.map((color) => (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => setSelectedColor(color)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                          selectedColor === color
+                            ? 'bg-bark-900 text-white shadow-soft font-semibold'
+                            : 'bg-white text-bark-700 border border-bark-200 hover:border-bark-400'
+                        }`}
+                      >
+                        {color}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Quantity */}
+              <div>
+                <label className="block text-xs font-semibold text-bark-700 uppercase tracking-wider mb-2">
+                  Quantity:
+                </label>
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center border border-bark-200 rounded-xl bg-white">
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="px-3 py-1.5 text-bark-600 hover:bg-bark-50 rounded-l-xl transition-colors font-medium"
+                    >
+                      -
+                    </button>
+                    <span className="px-4 text-sm font-semibold text-bark-900">
+                      {quantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="px-3 py-1.5 text-bark-600 hover:bg-bark-50 rounded-r-xl transition-colors font-medium"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <span className="text-xs text-bark-400 flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-sage-500" />
+                    Baby-safe certified fabric
+                  </span>
+                </div>
+              </div>
             </div>
+
+            {/* Actions */}
+            <div className="pt-6 space-y-2.5">
+              <button
+                type="button"
+                onClick={handleAddToBag}
+                className="w-full py-3.5 px-6 rounded-full bg-rose-400 hover:bg-rose-500 text-white font-medium flex items-center justify-center space-x-2 shadow-soft hover:shadow-soft-lg transition-all"
+              >
+                <ShoppingBag className="w-4 h-4" />
+                <span>Add to Shopping Bag</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleProceedToCheckout}
+                className="w-full py-2.5 px-6 rounded-full bg-linen hover:bg-linen-hover text-bark-800 font-medium text-xs flex items-center justify-center space-x-1.5 transition-colors"
+              >
+                <span>Express Checkout</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default ProductQuickViewModal;

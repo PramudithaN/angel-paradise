@@ -1,11 +1,12 @@
 import React from 'react';
-import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import { Eye, ShoppingBag } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
-import { Link } from 'react-router-dom';
-import { Eye } from 'lucide-react';
+import Swal from 'sweetalert2';
 
-interface Product {
+export interface Product {
   id: string;
+  _id?: string;
   name: string;
   price: number;
   image: string;
@@ -18,123 +19,148 @@ interface Product {
   featured?: boolean;
 }
 
-
 interface ProductCardProps {
   product: Product;
   showWhatsAppButton?: boolean;
-  onQuickView?: (productId: string) => void;
+  onQuickView?: (product: Product) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({  product, onQuickView }) => {
-console.log(product, "Product Info");
+const ProductCard: React.FC<ProductCardProps> = ({ product, onQuickView }) => {
   const { addToCart } = useCart();
-  const handleAddToCart = () => {
+  const navigate = useNavigate();
+  const productId = product._id || product.id;
+
+  const handleCardClick = () => {
+    navigate(`/product/${productId}`);
+  };
+
+  const handleQuickViewClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onQuickView) {
+      onQuickView(product);
+    } else {
+      navigate(`/product/${productId}`);
+    }
+  };
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // If product has multiple sizes, open quick view or navigate so parent can choose the right fit
+    if (product.sizes && product.sizes.length > 1 && onQuickView) {
+      onQuickView(product);
+      return;
+    }
+
+    const defaultSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : undefined;
+    const defaultColor = product.colors && product.colors.length > 0 ? product.colors[0] : undefined;
+
     addToCart({
-      _id: product.id,
+      _id: productId,
       name: product.name,
       image: product.image,
       price: product.price,
       quantity: 1,
-      sizes: product.sizes,
-      colors: product.colors,
+      selectedSize: defaultSize,
+      selectedColor: defaultColor,
       category: product.category,
     });
+
     Swal.fire({
       icon: 'success',
-      title: 'Added to Cart',
-      text: `${product.name} has been added to your cart!`,
-      timer: 1200,
+      title: 'Added to Bag',
+      text: `${product.name} has been added to your shopping bag.`,
+      timer: 1500,
       showConfirmButton: false,
       position: 'top-end',
       toast: true,
-      background: '#fff',
+      background: '#FAF7F2',
+      color: '#261E18',
     });
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden group">
-      <div className="relative overflow-hidden">
+    <div
+      onClick={handleCardClick}
+      className="group bg-white rounded-3xl overflow-hidden border border-bark-100/80 shadow-soft hover:shadow-soft-lg transition-all duration-300 hover:-translate-y-1 flex flex-col cursor-pointer"
+    >
+      {/* Product Image Frame */}
+      <div className="relative aspect-[4/5] bg-linen/40 overflow-hidden">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-48 sm:h-56 object-cover group-hover:scale-110 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+          loading="lazy"
         />
-        <div className="absolute top-3 right-3">
-          <span className="bg-yellow-100 text-yellow-600 text-xs font-semibold px-3 py-1 rounded-full">
+
+        {/* Category Badge */}
+        <div className="absolute top-3.5 left-3.5">
+          <span className="bg-white/90 backdrop-blur-md text-bark-700 text-[11px] font-semibold tracking-wider uppercase px-2.5 py-1 rounded-full shadow-soft">
             {product.category}
           </span>
         </div>
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <Link
-            to={`/product/${product.id}`}
-            onClick={e => {
-              e.stopPropagation();
-              if (onQuickView) onQuickView(product.id);
-            }}
-            className="bg-white/90 backdrop-blur-sm text-orange-600 px-4 py-2 rounded-full flex items-center space-x-2 font-medium hover:bg-white transition-all duration-200"
-          >
-            <Eye className="w-4 h-4" />
-            <span>Quick View</span>
-          </Link>
-        </div>
-      </div>
 
-      <div className="p-4 space-y-3">
-        <div>
-          <h3 className="font-semibold text-gray-800 text-sm sm:text-base line-clamp-2 leading-tight">
-            {product.name}
-          </h3>
-          {product.sizes && (
-            <p className="text-xs text-gray-500 mt-1">
-              Sizes: {product.sizes.join(', ')}
-            </p>
-          )}
-          {product.colors && product.colors.length > 0 && (
-            <p className="text-xs text-gray-500 mt-1">
-              Colors: {product.colors.join(', ')}
-            </p>
-          )}
-          {product.description && (
-            <p className="text-xs text-gray-600 mt-1 line-clamp-2">{product.description}</p>
-          )}
-        </div>
-
-        <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-orange-600">
-            ${product.price}
-          </span>
-          {product.inStock === false && (
-            <span className="text-xs text-red-500 font-semibold ml-2">Out of Stock</span>
-          )}
-          {product.featured && (
-            <span className="text-xs text-yellow-500 font-semibold ml-2">★ Featured</span>
-          )}
-        </div>
-
-        {product.gallery && product.gallery.length > 1 && (
-          <div className="flex gap-2 mt-2">
-            {product.gallery.slice(0, 3).map((img, idx) => (
-              <img key={idx} src={img} alt={product.name + ' gallery'} className="w-10 h-10 object-cover rounded" />
-            ))}
+        {/* Stock status / Featured */}
+        {product.inStock === false && (
+          <div className="absolute top-3.5 right-3.5">
+            <span className="bg-bark-900/80 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+              Sold Out
+            </span>
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row gap-2">
+        {/* Floating Quick View Overlay */}
+        <div className="absolute inset-0 bg-bark-900/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
           <button
-            onClick={handleAddToCart}
-            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full text-center font-medium transition-all duration-200 hover:scale-105 text-sm"
+            type="button"
+            onClick={handleQuickViewClick}
+            className="bg-white/95 backdrop-blur-md text-bark-800 hover:text-rose-500 px-4 py-2 rounded-full flex items-center space-x-2 text-xs font-semibold tracking-wide shadow-soft-lg transform translate-y-2 group-hover:translate-y-0 transition-all duration-300"
           >
-            Add to Cart
+            <Eye className="w-3.5 h-3.5" />
+            <span>Quick View</span>
           </button>
-          {/* {showWhatsAppButton && (
-            <button
-              onClick={handleWhatsAppOrder}
-              className="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full flex items-center justify-center space-x-2 font-medium transition-all duration-200 hover:scale-105 text-sm"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span>Order via WhatsApp</span>
-            </button>
-          )} */}
+        </div>
+      </div>
+
+      {/* Product Information */}
+      <div className="p-5 flex flex-col flex-1 justify-between">
+        <div className="space-y-1.5">
+          <h3 className="font-heading font-semibold text-bark-900 text-base line-clamp-1 group-hover:text-rose-500 transition-colors">
+            {product.name}
+          </h3>
+
+          {product.sizes && product.sizes.length > 0 && (
+            <p className="text-xs text-bark-400">
+              Ages: {product.sizes.slice(0, 4).join(', ')}{product.sizes.length > 4 ? '...' : ''}
+            </p>
+          )}
+
+          {product.description && (
+            <p className="text-xs text-bark-500 line-clamp-2 leading-relaxed pt-0.5">
+              {product.description}
+            </p>
+          )}
+        </div>
+
+        <div className="pt-4 mt-2 border-t border-bark-100/60 flex items-center justify-between">
+          <div>
+            <span className="text-xs text-bark-400 block -mb-0.5">Price</span>
+            <span className="font-heading font-bold text-lg text-bark-900">
+              ${Number(product.price).toFixed(2)}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={product.inStock === false}
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-rose-50 text-rose-600 hover:bg-rose-400 hover:text-white font-medium text-xs transition-all shadow-soft disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ShoppingBag className="w-3.5 h-3.5" />
+            <span>{product.sizes && product.sizes.length > 1 ? 'Select Size' : 'Add to Bag'}</span>
+          </button>
         </div>
       </div>
     </div>

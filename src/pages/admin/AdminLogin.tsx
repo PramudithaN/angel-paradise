@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { Baby, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Navigate, Link } from 'react-router-dom';
+import { Lock, Mail, Eye, EyeOff, AlertCircle, ArrowLeft, Sparkles } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
-const AdminLogin = () => {
+const AdminLogin: React.FC = () => {
   const { isAuthenticated, login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,7 +11,6 @@ const AdminLogin = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirect if already authenticated
   if (isAuthenticated) {
     return <Navigate to="/admin" replace />;
   }
@@ -21,81 +20,96 @@ const AdminLogin = () => {
     setError('');
     setIsLoading(true);
 
-    // Simulate loading delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 600));
 
     const success = login(email, password);
-    
     if (!success) {
-      setError('Invalid email or password. Please try again.');
+      setError('Invalid email or password. Please verify your credentials.');
     }
-    
     setIsLoading(false);
   };
 
+  const fillDemoCredentials = () => {
+    setEmail('admin@angelsparadise.com');
+    setPassword('admin123');
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-yellow-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        {/* Logo and Brand */}
-        <div className="text-center mb-8">
-          <div className="bg-gradient-to-br from-orange-200 to-yellow-200 p-4 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-            <Baby className="w-10 h-10 text-yellow-600" />
+    <div className="min-h-screen bg-voile flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full mx-auto space-y-8">
+        {/* Brand Header */}
+        <div className="text-center space-y-3">
+          <Link to="/" className="inline-block group">
+            <div className="w-16 h-16 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center font-heading font-bold text-3xl italic shadow-soft mx-auto group-hover:scale-105 transition-transform">
+              A
+            </div>
+          </Link>
+          <div className="space-y-1">
+            <h1 className="font-heading text-3xl font-bold text-bark-900">
+              Angel's Paradise Studio
+            </h1>
+            <p className="text-xs text-bark-400 font-medium uppercase tracking-widest">
+              Boutique Administrative Portal
+            </p>
           </div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent mb-2">
-            Angel's Paradise
-          </h1>
-          <p className="text-gray-600">Admin Portal</p>
         </div>
 
-        {/* Login Form */}
-        <div className="bg-white rounded-2xl shadow-xl border border-orange-100 p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
-            Sign In to Dashboard
-          </h2>
+        {/* Card */}
+        <div className="bg-white p-8 sm:p-10 rounded-4xl border border-bark-100 shadow-soft-lg space-y-6">
+          <div className="border-b border-bark-100 pb-4 text-center">
+            <h2 className="font-heading text-xl font-bold text-bark-900">
+              Studio Sign In
+            </h2>
+            <p className="text-xs text-bark-500 mt-0.5">
+              Access orders, pieces, inventory, and storefront settings.
+            </p>
+          </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex items-center space-x-3">
-              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-              <p className="text-orange-700 text-sm">{error}</p>
+            <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-center space-x-3 animate-fadeIn text-xs text-rose-700">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-500" />
+              <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+              <label className="block text-xs font-bold uppercase tracking-wider text-bark-700 mb-1.5">
+                Staff Email
               </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent transition-all duration-200"
-                placeholder="admin@angelsparadise.com"
-              />
+              <div className="relative">
+                <Mail className="w-4 h-4 text-bark-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="admin@angelsparadise.com"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-voile text-bark-800 text-xs border border-bark-200 focus:outline-none focus:border-rose-400"
+                />
+              </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-bark-700 mb-1.5">
                 Password
               </label>
               <div className="relative">
+                <Lock className="w-4 h-4 text-bark-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  id="password"
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-transparent transition-all duration-200"
-                  placeholder="Enter your password"
+                  placeholder="••••••••"
+                  className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-voile text-bark-800 text-xs border border-bark-200 focus:outline-none focus:border-rose-400"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-bark-400 hover:text-bark-600"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
@@ -103,35 +117,37 @@ const AdminLogin = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-3 px-4 rounded-lg font-medium transition-all duration-200 hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full py-3.5 px-6 rounded-full bg-rose-400 hover:bg-rose-500 text-white font-medium text-xs shadow-soft hover:shadow-soft-lg transition-all disabled:opacity-50 mt-2"
             >
-              {isLoading ? (
-                <div className="flex items-center justify-center space-x-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  <span>Signing In...</span>
-                </div>
-              ) : (
-                'Sign In'
-              )}
+              {isLoading ? 'Verifying...' : 'Sign In to Dashboard'}
             </button>
           </form>
 
-          {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-xs text-yellow-800 font-medium mb-2">Demo Credentials:</p>
-            <p className="text-xs text-yellow-700">Email: admin@angelsparadise.com</p>
-            <p className="text-xs text-yellow-700">Password: admin123</p>
+          {/* Demo Credentials Helper */}
+          <div className="pt-4 border-t border-bark-100/80 text-center space-y-2">
+            <button
+              type="button"
+              onClick={fillDemoCredentials}
+              className="inline-flex items-center space-x-1 text-xs text-rose-500 hover:text-rose-600 font-semibold underline underline-offset-2"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Auto-Fill Studio Credentials</span>
+            </button>
+            <p className="text-[11px] text-bark-400 font-mono">
+              admin@angelsparadise.com / admin123
+            </p>
           </div>
         </div>
 
-        {/* Back to Store */}
-        <div className="text-center mt-6">
-          <a
-            href="/"
-            className="text-yellow-500 hover:text-yellow-600 text-sm font-medium transition-colors duration-200"
+        {/* Back Link */}
+        <div className="text-center">
+          <Link
+            to="/"
+            className="inline-flex items-center space-x-1.5 text-xs text-bark-400 hover:text-bark-700 transition-colors"
           >
-            ← Back to Store
-          </a>
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Return to Customer Storefront</span>
+          </Link>
         </div>
       </div>
     </div>

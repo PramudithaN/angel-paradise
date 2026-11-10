@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { MessageCircle, Mail, MapPin, Facebook, Instagram, Baby } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { MessageCircle, Mail, MapPin, Facebook, Instagram, Heart, Sparkles } from 'lucide-react';
 
 interface BusinessInfo {
   name?: string;
@@ -11,14 +12,12 @@ interface BusinessInfo {
   whatsapp?: string;
   facebook?: string;
   instagram?: string;
-  twitter?: string;
-  heroTitle?: string;
-  heroSubtitle?: string;
 }
 
-const Footer = () => {
+const Footer: React.FC = () => {
   const [info, setInfo] = useState<BusinessInfo | null>(null);
   const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
   useEffect(() => {
     const fetchInfo = async () => {
       try {
@@ -30,92 +29,173 @@ const Footer = () => {
       }
     };
     fetchInfo();
-  }, []);
+  }, [API_BASE]);
 
   return (
-    <footer className="bg-gradient-to-r from-yellow-100 to-yellow-50 border-t-2 border-yellow-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Brand Info */}
+    <footer className="bg-linen/70 border-t border-bark-100 text-bark-800 pt-16 pb-12 mt-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 pb-12 border-b border-bark-200/60">
+          {/* Brand Philosophy */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-br from-yellow-200 to-yellow-200 p-2 rounded-full">
-                <Baby className="w-6 h-6 text-orange-600" />
+              <div className="w-9 h-9 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center font-heading font-bold text-lg italic shadow-soft">
+                A
               </div>
               <div>
-                <h3 className="text-lg font-bold text-orange-600">{info?.name || "Angel's Paradise"}</h3>
-                <p className="text-sm text-orange-400">{info?.tagline || "Little Girl's Fashion"}</p>
+                <h3 className="font-heading text-lg font-bold text-bark-900">
+                  {info?.name || "Angel's Paradise"}
+                </h3>
+                <p className="text-xs text-rose-400 font-medium tracking-wide">
+                  {info?.tagline || "Little Girl's Boutique"}
+                </p>
               </div>
             </div>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              {info?.about || "Your trusted destination for adorable, high-quality clothing and accessories for little angels."}
+            <p className="text-sm text-bark-500 leading-relaxed">
+              {info?.about ||
+                "Created with pure devotion for dressing little angels. We craft and curate tender, heirloom-quality clothing designed for cherished moments and sensitive skin."}
             </p>
-          </div>
-
-          {/* Contact Info */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">Contact Us</h4>
-            <div className="space-y-3">
-              {info?.contactPhone && (
-                <div className="flex items-center space-x-3 text-gray-600">
-                  <MessageCircle className="w-4 h-4 text-green-500" />
-                  <span className="text-sm">{info.contactPhone}</span>
-                </div>
-              )}
-              {info?.contactEmail && (
-                <div className="flex items-center space-x-3 text-gray-600">
-                  <Mail className="w-4 h-4 text-yellow-500" />
-                  <span className="text-sm">{info.contactEmail}</span>
-                </div>
-              )}
-              {info?.address && (
-                <div className="flex items-center space-x-3 text-gray-600">
-                  <MapPin className="w-4 h-4 text-red-500" />
-                  <span className="text-sm">{info.address}</span>
-                </div>
-              )}
+            <div className="pt-2 flex items-center gap-1.5 text-xs text-bark-400">
+              <Sparkles className="w-3.5 h-3.5 text-rose-400" />
+              <span>Certified child-safe fabrics & gentle dyes</span>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">Quick Links</h4>
-            <ul className="space-y-2">
-              <li><a href="/shop" className="text-gray-600 hover:text-yellow-500 text-sm transition-colors duration-200">Shop</a></li>
-              <li><a href="/about" className="text-gray-600 hover:text-yellow-500 text-sm transition-colors duration-200">About Us</a></li>
-              <li><a href="/contact" className="text-gray-600 hover:text-yellow-500 text-sm transition-colors duration-200">Contact</a></li>
-              <li><a href="/privacy" className="text-gray-600 hover:text-yellow-500 text-sm transition-colors duration-200">Privacy Policy</a></li>
-              <li><a href="/terms" className="text-gray-600 hover:text-yellow-500 text-sm transition-colors duration-200">Terms of Service</a></li>
+          <div className="space-y-3">
+            <h4 className="font-heading text-base font-semibold text-bark-900 tracking-tight">
+              Boutique
+            </h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/shop" className="text-bark-600 hover:text-rose-500 transition-colors">
+                  All Collections
+                </Link>
+              </li>
+              <li>
+                <Link to="/shop?category=Dresses" className="text-bark-600 hover:text-rose-500 transition-colors">
+                  Princess Dresses
+                </Link>
+              </li>
+              <li>
+                <Link to="/shop?category=Rompers" className="text-bark-600 hover:text-rose-500 transition-colors">
+                  Playsuits & Rompers
+                </Link>
+              </li>
+              <li>
+                <Link to="/shop?category=Accessories" className="text-bark-600 hover:text-rose-500 transition-colors">
+                  Hair & Bows
+                </Link>
+              </li>
+              <li>
+                <Link to="/all-reviews" className="text-bark-600 hover:text-rose-500 transition-colors">
+                  Customer Stories
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Social Media */}
+          {/* Client Care & Our Story */}
+          <div className="space-y-3">
+            <h4 className="font-heading text-base font-semibold text-bark-900 tracking-tight">
+              Client Care
+            </h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/about" className="text-bark-600 hover:text-rose-500 transition-colors">
+                  Our Story & Values
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-bark-600 hover:text-rose-500 transition-colors">
+                  Size Guide & Inquiries
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="text-bark-600 hover:text-rose-500 transition-colors">
+                  Shipping & Gifting
+                </Link>
+              </li>
+              <li>
+                <Link to="/payment" className="text-bark-600 hover:text-rose-500 transition-colors">
+                  Review Shopping Bag
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact Details & WhatsApp */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-gray-800 mb-4">Follow Us</h4>
-            <div className="flex space-x-4">
+            <h4 className="font-heading text-base font-semibold text-bark-900 tracking-tight">
+              Get in Touch
+            </h4>
+            <div className="space-y-2.5 text-sm text-bark-600">
+              {info?.contactPhone && (
+                <div className="flex items-center space-x-2.5">
+                  <MessageCircle className="w-4 h-4 text-sage-500 flex-shrink-0" />
+                  <span>{info.contactPhone}</span>
+                </div>
+              )}
+              {info?.contactEmail && (
+                <div className="flex items-center space-x-2.5">
+                  <Mail className="w-4 h-4 text-rose-400 flex-shrink-0" />
+                  <span>{info.contactEmail}</span>
+                </div>
+              )}
+              {info?.address && (
+                <div className="flex items-start space-x-2.5">
+                  <MapPin className="w-4 h-4 text-bark-400 flex-shrink-0 mt-0.5" />
+                  <span>{info.address}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Social Icons */}
+            <div className="flex items-center space-x-3 pt-2">
+              {info?.whatsapp && (
+                <a
+                  href={`https://wa.me/${info.whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full bg-sage-100 text-sage-600 hover:bg-sage-200 flex items-center justify-center transition-colors"
+                  aria-label="WhatsApp"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                </a>
+              )}
               {info?.facebook && (
-                <a href={info.facebook} target="_blank" rel="noopener noreferrer" className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
+                <a
+                  href={info.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full bg-rose-100 text-rose-500 hover:bg-rose-200 flex items-center justify-center transition-colors"
+                  aria-label="Facebook"
+                >
                   <Facebook className="w-4 h-4" />
                 </a>
               )}
               {info?.instagram && (
-                <a href={info.instagram} target="_blank" rel="noopener noreferrer" className="bg-pink-500 hover:bg-pink-600 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
+                <a
+                  href={info.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full bg-rose-100 text-rose-500 hover:bg-rose-200 flex items-center justify-center transition-colors"
+                  aria-label="Instagram"
+                >
                   <Instagram className="w-4 h-4" />
-                </a>
-              )}
-              {info?.whatsapp && (
-                <a href={`https://wa.me/${info.whatsapp}`} target="_blank" rel="noopener noreferrer" className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full transition-all duration-300 hover:scale-110">
-                  <MessageCircle className="w-4 h-4" />
                 </a>
               )}
             </div>
           </div>
         </div>
 
-        <div className="border-t border-orange-200 mt-8 pt-8 text-center">
-          <p className="text-gray-600 text-sm">
-            &copy; 2025 {info?.name || "Angel's Paradise"}. All rights reserved. Made with ❤️ for little angels everywhere.
-          </p>
+        {/* Bottom bar */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-bark-400 gap-4">
+          <p>© {new Date().getFullYear()} Angel's Paradise. Handcrafted with care.</p>
+          <div className="flex items-center space-x-1 text-bark-500">
+            <span>Dressed with</span>
+            <Heart className="w-3.5 h-3.5 text-rose-400 fill-current inline" />
+            <span>for your little angels</span>
+          </div>
         </div>
       </div>
     </footer>
